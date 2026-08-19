@@ -1,0 +1,43 @@
+{
+  "capability": "olp.proof-verification.v1",
+  "category": "negative",
+  "description": "Missing explicitly supplied verification material yields UNAVAILABLE, not invalid signature.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "cryptographic_validity": "NOT_EVALUATED",
+      "error_codes": [
+        "VERIFICATION_METHOD_UNAVAILABLE"
+      ],
+      "verification_method_resolution": "UNAVAILABLE"
+    }
+  },
+  "id": "proof.verify.negative.method-unavailable.001",
+  "input": {
+    "proof": {
+      "critical": [],
+      "cryptosuite": "eddsa-ed25519-v1",
+      "extensions": {},
+      "proofPurpose": "assertion",
+      "proofValue_hex": "a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805",
+      "recordCommitment": {
+        "algorithm": -16,
+        "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+      },
+      "type": "OLPProof",
+      "verificationMethod": "urn:example:olp:test-key-1",
+      "version": 1
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    },
+    "resolved_method": null
+  },
+  "operation": "verify_proof",
+  "schema": "olp-conformance-vector-v1"
+}

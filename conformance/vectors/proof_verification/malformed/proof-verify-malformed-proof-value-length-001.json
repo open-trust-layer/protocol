@@ -1,0 +1,48 @@
+{
+  "capability": "olp.proof-verification.v1",
+  "category": "malformed",
+  "description": "Ed25519 proofValue must contain exactly 64 octets.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conformance": "NONCONFORMING",
+      "cryptographic_validity": "NOT_EVALUATED",
+      "error_codes": [
+        "INVALID_PROOF_VALUE_LENGTH"
+      ]
+    }
+  },
+  "id": "proof.verify.malformed.proof-value-length.001",
+  "input": {
+    "proof": {
+      "critical": [],
+      "cryptosuite": "eddsa-ed25519-v1",
+      "extensions": {},
+      "proofPurpose": "assertion",
+      "proofValue_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "recordCommitment": {
+        "algorithm": -16,
+        "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+      },
+      "type": "OLPProof",
+      "verificationMethod": "urn:example:olp:test-key-1",
+      "version": 1
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    },
+    "resolved_method": {
+      "identifier": "urn:example:olp:test-key-1",
+      "key_type": "Ed25519",
+      "provenance": "supplied",
+      "public_key_hex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+    }
+  },
+  "operation": "verify_proof",
+  "schema": "olp-conformance-vector-v1"
+}

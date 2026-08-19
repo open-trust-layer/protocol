@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:conformance:schema:profile:v1",
+  "type": "object",
+  "required": ["schema", "id", "status", "capabilities"],
+  "properties": {
+    "schema": {"const": "olp-conformance-profile-v1"},
+    "id": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "minLength": 1},
+    "capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  },
+  "additionalProperties": false
+}

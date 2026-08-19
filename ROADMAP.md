@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 13 complete; Milestone 14 executable conformance harness next
+**Current phase:** Phase II — Milestone 14 complete; Milestone 15 independent second implementation next
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -82,7 +82,7 @@ Initial implementation goals:
 
 ### Milestone 14 — Executable Conformance Harness
 
-**Next.**
+**Completed.**
 
 Turn Specification 0011 into a public, versioned test corpus containing:
 
@@ -97,6 +97,8 @@ Turn Specification 0011 into a public, versioned test corpus containing:
 - machine-readable conformance reports.
 
 ### Milestone 15 — Independent Second Implementation
+
+**Next.**
 
 Create or coordinate at least one implementation independent of the reference codebase.
 

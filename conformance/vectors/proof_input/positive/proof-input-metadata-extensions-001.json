@@ -1,0 +1,36 @@
+{
+  "capability": "olp.proof-input.v1",
+  "category": "positive",
+  "description": "Authenticated metadata, extensions, and critical declaration encode deterministically.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7a50074323032362d30382d32305430303a30303a30305a0174323032362d31322d33315430303a30303a30305a026c6578616d706c652e746573740344010203040442aabba2781c68747470733a2f2f6578616d706c652e6f72672f6578742f666c6167f5781d68747470733a2f2f6578616d706c652e6f72672f6578742f6c6576656c0781781c68747470733a2f2f6578616d706c652e6f72672f6578742f666c6167",
+      "proof_input_length": 267
+    }
+  },
+  "id": "proof.input.metadata-extensions.001",
+  "input": {
+    "challenge_hex": "01020304",
+    "created": "2026-08-20T00:00:00Z",
+    "critical": [
+      "https://example.org/ext/flag"
+    ],
+    "cryptosuite": "eddsa-ed25519-v1",
+    "domain": "example.test",
+    "expires": "2026-12-31T00:00:00Z",
+    "extensions": {
+      "https://example.org/ext/flag": true,
+      "https://example.org/ext/level": 7
+    },
+    "nonce_hex": "aabb",
+    "proof_purpose": "assertion",
+    "record_commitment": {
+      "algorithm": -16,
+      "digest_hex": "bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7"
+    },
+    "verification_method": "urn:example:olp:test-key-1"
+  },
+  "operation": "encode_proof_input",
+  "schema": "olp-conformance-vector-v1"
+}

@@ -1,0 +1,50 @@
+{
+  "capability": "olp.proof-verification.v1",
+  "category": "malformed",
+  "description": "critical identifiers must name present extensions.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conformance": "NONCONFORMING",
+      "cryptographic_validity": "NOT_EVALUATED",
+      "error_codes": [
+        "INVALID_CRITICAL_DECLARATION"
+      ]
+    }
+  },
+  "id": "proof.verify.malformed.critical-absent.001",
+  "input": {
+    "proof": {
+      "critical": [
+        "https://example.org/ext/missing"
+      ],
+      "cryptosuite": "eddsa-ed25519-v1",
+      "extensions": {},
+      "proofPurpose": "assertion",
+      "proofValue_hex": "a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805",
+      "recordCommitment": {
+        "algorithm": -16,
+        "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+      },
+      "type": "OLPProof",
+      "verificationMethod": "urn:example:olp:test-key-1",
+      "version": 1
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    },
+    "resolved_method": {
+      "identifier": "urn:example:olp:test-key-1",
+      "key_type": "Ed25519",
+      "provenance": "supplied",
+      "public_key_hex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+    }
+  },
+  "operation": "verify_proof",
+  "schema": "olp-conformance-vector-v1"
+}

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "open-layer-protocol"
-version = "0.0.1.dev0"
-description = "Reference implementation of the Open Layer Protocol core"
+version = "0.0.2.dev0"
+description = "Open Layer Protocol reference implementation and executable conformance harness"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
@@ -13,6 +13,9 @@ authors = [{name = "Open Trust Foundation"}]
 dependencies = [
   "cryptography>=41.0",
 ]
+
+[project.scripts]
+olp-conformance = "olp_conformance.cli:main"
 
 [project.optional-dependencies]
 test = [

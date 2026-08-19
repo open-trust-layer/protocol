@@ -1,0 +1,30 @@
+{
+  "capability": "olp.proof.eddsa-ed25519.v1",
+  "category": "malformed",
+  "description": "Ed25519 private seed must contain exactly 32 octets.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "MALFORMED_INPUT"
+  },
+  "id": "proof.create.malformed.private-key.001",
+  "input": {
+    "private_seed_hex": "00",
+    "proof_configuration": {
+      "commitment_algorithm": -16,
+      "cryptosuite": "eddsa-ed25519-v1",
+      "proof_purpose": "assertion",
+      "verification_method": "urn:example:olp:test-key-1"
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "create_proof",
+  "schema": "olp-conformance-vector-v1"
+}

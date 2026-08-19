@@ -1,0 +1,26 @@
+{
+  "capability": "olp.record-commitment.sha256.v1",
+  "category": "positive",
+  "description": "SHA-256/COSE -16 commitment over exact OLP-CIE-1 Record Identity preimage bytes.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "algorithm": -16,
+      "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+    }
+  },
+  "id": "record.commitment.sha256.001",
+  "input": {
+    "algorithm": -16,
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_commitment",
+  "schema": "olp-conformance-vector-v1"
+}

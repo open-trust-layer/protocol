@@ -1,0 +1,9 @@
+{
+  "schema": "olp-conformance-profile-v1",
+  "id": "record-v1",
+  "status": "draft-v0.1",
+  "capabilities": [
+    "olp.record-identity.v1",
+    "olp.record-commitment.sha256.v1"
+  ]
+}

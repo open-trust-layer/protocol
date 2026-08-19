@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Milestone 13 reference implementation core complete; executable conformance harness next
+**Current phase:** Milestone 14 executable conformance harness complete; independent second implementation next
 
 ---
 
@@ -185,15 +185,19 @@ Record + proof configuration
 
 The implementation reproduces the normative `0003` and `0004` vectors byte-for-byte, creates and verifies the mandatory Ed25519 proof suite, preserves structured verification outcomes, and performs no implicit network resolution.
 
-Next, the project should turn Specification 0011 into a public, versioned executable conformance corpus and test independent implementations against identical canonical vectors. Draft v0.1 remains implementation-test material, not a stable production standard.
+Milestone 14 now turns Specification 0011 into an executable, implementation-neutral conformance corpus. The `core-v1` profile covers Record Identity, SHA-256 Record Commitment, ProofInputV1, mandatory Ed25519 proof creation, and structured proof verification through positive, negative, malformed, and unsupported cases.
+
+The harness supports both an in-process Python adapter and a JSON-lines subprocess contract suitable for independent implementations in other languages. The Python reference adapter passes the complete current corpus, while an intentionally broken adapter is required to fail as a harness self-test.
+
+Next, the project should build an independent second implementation and require cross-implementation agreement on the same official vectors. Draft v0.1 remains implementation-test material, not a stable production standard.
 
 ---
 
 ## Near-term roadmap
 
 1. **Reference implementation core — complete** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results, normative vectors, and negative tests.
-2. **Executable conformance suite** — positive, negative, malformed, unsupported, canonicalization, and security vectors.
-3. **Second independent implementation** — verify cross-language and cross-codebase interoperability.
+2. **Executable conformance harness — complete** — implementation-neutral positive, negative, malformed, and unsupported corpus; adapter boundary; CLI; machine-readable reports; harness self-tests; CI.
+3. **Second independent implementation — next** — verify cross-language and cross-codebase interoperability against the same corpus.
 4. **Adversarial/security review** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
 5. **Draft v0.2 integration pass** — feed implementation and security findings back into the specifications.
 
@@ -232,6 +236,8 @@ The current specifications are **Draft v0.1** and are expected to change as the 
 - [`specification/0000-overview.md`](specification/0000-overview.md) — non-normative specification entry point and dependency map.
 
 The `src/`, `tests/`, and `vectors/` directories now contain the Milestone 13 reference implementation, its test corpus, and reproducible vectors. See [`docs/reference-implementation.md`](docs/reference-implementation.md).
+
+The `conformance/` directory and `olp_conformance` package contain the Milestone 14 executable corpus and runner. See [`conformance/README.md`](conformance/README.md) and [`docs/conformance-harness.md`](docs/conformance-harness.md).
 
 ---
 

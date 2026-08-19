@@ -1,0 +1,65 @@
+{
+  "capability": "olp.proof.eddsa-ed25519.v1",
+  "category": "positive",
+  "description": "Optional authenticated proof metadata participates in deterministic Ed25519 signing.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof": {
+        "challenge_hex": "01020304",
+        "created": "2026-08-20T00:00:00Z",
+        "critical": [
+          "https://example.org/ext/flag"
+        ],
+        "cryptosuite": "eddsa-ed25519-v1",
+        "domain": "example.test",
+        "expires": "2026-12-31T00:00:00Z",
+        "extensions": {
+          "https://example.org/ext/flag": true
+        },
+        "nonce_hex": "aabb",
+        "proofPurpose": "assertion",
+        "proofValue_hex": "9ea72e2db0c22f48f8bd07c4c384a640043256aed7deee02083c3a363d341cf0126897be3e251027967489bcc3f65bfbc0a11174a3e15c58c62c11a1c57eb808",
+        "recordCommitment": {
+          "algorithm": -16,
+          "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+        },
+        "type": "OLPProof",
+        "verificationMethod": "urn:example:olp:test-key-1",
+        "version": 1
+      },
+      "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4a50074323032362d30382d32305430303a30303a30305a0174323032362d31322d33315430303a30303a30305a026c6578616d706c652e746573740344010203040442aabba1781c68747470733a2f2f6578616d706c652e6f72672f6578742f666c6167f581781c68747470733a2f2f6578616d706c652e6f72672f6578742f666c6167"
+    }
+  },
+  "id": "proof.create.metadata.001",
+  "input": {
+    "private_seed_hex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+    "proof_configuration": {
+      "challenge_hex": "01020304",
+      "commitment_algorithm": -16,
+      "created": "2026-08-20T00:00:00Z",
+      "critical": [
+        "https://example.org/ext/flag"
+      ],
+      "cryptosuite": "eddsa-ed25519-v1",
+      "domain": "example.test",
+      "expires": "2026-12-31T00:00:00Z",
+      "extensions": {
+        "https://example.org/ext/flag": true
+      },
+      "nonce_hex": "aabb",
+      "proof_purpose": "assertion",
+      "verification_method": "urn:example:olp:test-key-1"
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "create_proof",
+  "schema": "olp-conformance-vector-v1"
+}

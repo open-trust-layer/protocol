@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:conformance:schema:adapter-response:v1",
+  "type": "object",
+  "required": ["protocol", "ok"],
+  "properties": {
+    "protocol": {"const": "olp-conformance-adapter-v1"},
+    "ok": {"type": "boolean"},
+    "output": {"type": "object"},
+    "error": {
+      "type": "object",
+      "required": ["classification", "reason", "message"],
+      "properties": {
+        "classification": {"type": "string"},
+        "reason": {"type": "string"},
+        "message": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

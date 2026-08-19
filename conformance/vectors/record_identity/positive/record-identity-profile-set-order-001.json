@@ -1,0 +1,30 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "positive",
+  "description": "Profile set is ordered deterministically by UTF-8 bytes.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "identity_bytes_hex": "886a4f4c502d5245434f52440165636c61696da16973746174656d656e746870726f66696c6573a0827575726e3a6578616d706c653a70726f66696c653a617575726e3a6578616d706c653a70726f66696c653a7a80a0",
+      "identity_bytes_length": 87,
+      "record_identity_digest_hex": "03bc4a0193665f56def65850bc13df7ab70f1d82074c26fc0b283eb8da1d1a04",
+      "record_identity_text": "r1_A7xKAZNmX1be9lhQvBPfercPHYIHTCb8Cyg-uNodGgQ"
+    }
+  },
+  "id": "record.identity.profile-set-order.001",
+  "input": {
+    "record": {
+      "content": {
+        "statement": "profiles"
+      },
+      "envelope_version": 1,
+      "profiles": [
+        "urn:example:profile:z",
+        "urn:example:profile:a"
+      ],
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

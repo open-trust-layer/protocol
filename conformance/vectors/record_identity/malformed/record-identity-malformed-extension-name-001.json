@@ -1,0 +1,23 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "malformed",
+  "description": "Record extension keys must be absolute URIs.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "NONCONFORMING"
+  },
+  "id": "record.identity.malformed.extension-name.001",
+  "input": {
+    "record": {
+      "content": {},
+      "envelope_version": 1,
+      "extensions": {
+        "relative": 1
+      },
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

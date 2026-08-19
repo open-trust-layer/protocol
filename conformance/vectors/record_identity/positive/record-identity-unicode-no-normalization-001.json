@@ -1,0 +1,26 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "positive",
+  "description": "Unicode is encoded as supplied; implementations must not invent normalization.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "identity_bytes_hex": "886a4f4c502d5245434f52440165636c61696da164746578746365cc81a08080a0",
+      "identity_bytes_length": 33,
+      "record_identity_digest_hex": "73ba0e0846198c2d38a0b9f957653cdd3e7da8cb32a4c1d7ff47c17b62989252",
+      "record_identity_text": "r1_c7oOCEYZjC04oLn5V2U83T59qMsypMHX_0fBe2KYklI"
+    }
+  },
+  "id": "record.identity.unicode-no-normalization.001",
+  "input": {
+    "record": {
+      "content": {
+        "text": "e\u0301"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

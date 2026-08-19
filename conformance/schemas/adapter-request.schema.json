@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:conformance:schema:adapter-request:v1",
+  "type": "object",
+  "required": ["protocol", "operation", "input"],
+  "properties": {
+    "protocol": {"const": "olp-conformance-adapter-v1"},
+    "operation": {"type": "string", "minLength": 1},
+    "input": {"type": "object"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,20 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "malformed",
+  "description": "Unsupported record envelope version is non-conforming for RecordV1.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "NONCONFORMING"
+  },
+  "id": "record.identity.malformed.version.001",
+  "input": {
+    "record": {
+      "content": {},
+      "envelope_version": 2,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

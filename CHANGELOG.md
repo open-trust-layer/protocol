@@ -24,6 +24,13 @@ The project is experimental and has not yet made a stable release. The format is
 - Structured VerificationResult model preserving malformed, unsupported, unavailable, invalid, mismatch, temporal, and method-status dimensions.
 - Reproducible Specification 0003 and 0004 vectors plus a Milestone 13 end-to-end vector.
 - Comprehensive Milestone 13 test suite covering canonicalization, mutations, extension criticality, context checks, status separation, and offline verification behavior.
+- Milestone 14 executable conformance harness for the currently implemented Specification 0003 and 0004 capabilities.
+- Implementation-neutral conformance manifest and 41 deterministic positive, negative, malformed, and unsupported vectors.
+- Capability-scoped `record-v1`, `proof-v1`, and `core-v1` conformance profiles.
+- Python `ConformanceAdapter` protocol plus language-neutral JSON-lines subprocess adapter contract.
+- `olp-conformance` CLI with filtering and machine-readable `olp-conformance-report-v1` output.
+- Harness self-tests using an intentionally broken implementation to prove false behavior is detected.
+- GitHub Actions workflow running repository tests and the complete core conformance profile across supported Python versions.
 
 ### Specification foundation
 
@@ -44,8 +51,7 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Convert Specification 0011 into an executable conformance corpus.
-- Test interoperability with an independent implementation.
+- Build and test an independent second implementation against the executable conformance corpus.
 - Perform an adversarial security review.
 - Feed findings into a coordinated Draft v0.2 specification pass.
 

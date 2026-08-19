@@ -1,0 +1,24 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "malformed",
+  "description": "Duplicate profile identifiers are forbidden.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "NONCONFORMING"
+  },
+  "id": "record.identity.malformed.duplicate-profile.001",
+  "input": {
+    "record": {
+      "content": {},
+      "envelope_version": 1,
+      "profiles": [
+        "urn:p:a",
+        "urn:p:a"
+      ],
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

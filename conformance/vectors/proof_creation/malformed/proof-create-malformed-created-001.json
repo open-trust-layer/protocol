@@ -1,0 +1,31 @@
+{
+  "capability": "olp.proof.eddsa-ed25519.v1",
+  "category": "malformed",
+  "description": "created must be RFC 3339 with explicit offset.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "INVALID_CORE_PROPERTY"
+  },
+  "id": "proof.create.malformed.created.001",
+  "input": {
+    "private_seed_hex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+    "proof_configuration": {
+      "commitment_algorithm": -16,
+      "created": "2026-08-20",
+      "cryptosuite": "eddsa-ed25519-v1",
+      "proof_purpose": "assertion",
+      "verification_method": "urn:example:olp:test-key-1"
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "create_proof",
+  "schema": "olp-conformance-vector-v1"
+}

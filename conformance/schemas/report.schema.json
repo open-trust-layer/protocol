@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:conformance:schema:report:v1",
+  "type": "object",
+  "required": ["schema", "harness_version", "manifest_version", "adapter", "capabilities", "summary", "results"],
+  "properties": {
+    "schema": {"const": "olp-conformance-report-v1"},
+    "harness_version": {"type": "string"},
+    "manifest_version": {"const": 1},
+    "adapter": {"type": "string"},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "unsupported", "errors", "overall"],
+      "properties": {"overall": {"enum": ["PASS", "PARTIAL", "FAIL"]}}
+    },
+    "results": {"type": "array"}
+  }
+}

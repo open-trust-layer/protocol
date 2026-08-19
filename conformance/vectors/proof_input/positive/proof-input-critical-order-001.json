@@ -1,0 +1,32 @@
+{
+  "capability": "olp.proof-input.v1",
+  "category": "positive",
+  "description": "Critical extension identifiers are canonicalized as an order-independent set.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7a0a2781968747470733a2f2f6578616d706c652e6f72672f6578742f6102781968747470733a2f2f6578616d706c652e6f72672f6578742f7a0182781968747470733a2f2f6578616d706c652e6f72672f6578742f61781968747470733a2f2f6578616d706c652e6f72672f6578742f7a",
+      "proof_input_length": 216
+    }
+  },
+  "id": "proof.input.critical-order.001",
+  "input": {
+    "critical": [
+      "https://example.org/ext/z",
+      "https://example.org/ext/a"
+    ],
+    "cryptosuite": "eddsa-ed25519-v1",
+    "extensions": {
+      "https://example.org/ext/a": 2,
+      "https://example.org/ext/z": 1
+    },
+    "proof_purpose": "assertion",
+    "record_commitment": {
+      "algorithm": -16,
+      "digest_hex": "bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7"
+    },
+    "verification_method": "urn:example:olp:test-key-1"
+  },
+  "operation": "encode_proof_input",
+  "schema": "olp-conformance-vector-v1"
+}

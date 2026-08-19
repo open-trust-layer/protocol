@@ -1,0 +1,353 @@
+{
+  "cases": [
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "positive",
+      "description": "Normative Specification 0003 OLP-TV-1 vector.",
+      "id": "record.identity.spec-vector.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/positive/record-identity-spec-vector-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "positive",
+      "description": "Map insertion order cannot affect deterministic Record Identity.",
+      "id": "record.identity.map-order.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/positive/record-identity-map-order-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "positive",
+      "description": "Profile set is ordered deterministically by UTF-8 bytes.",
+      "id": "record.identity.profile-set-order.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/positive/record-identity-profile-set-order-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "positive",
+      "description": "Unicode is encoded as supplied; implementations must not invent normalization.",
+      "id": "record.identity.unicode-no-normalization.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/positive/record-identity-unicode-no-normalization-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "malformed",
+      "description": "Unsupported record envelope version is non-conforming for RecordV1.",
+      "id": "record.identity.malformed.version.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/malformed/record-identity-malformed-version-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "malformed",
+      "description": "Required record content is absent.",
+      "id": "record.identity.malformed.missing-content.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/malformed/record-identity-malformed-missing-content-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "malformed",
+      "description": "Duplicate profile identifiers are forbidden.",
+      "id": "record.identity.malformed.duplicate-profile.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/malformed/record-identity-malformed-duplicate-profile-001.json"
+    },
+    {
+      "capability": "olp.record-identity.v1",
+      "category": "malformed",
+      "description": "Record extension keys must be absolute URIs.",
+      "id": "record.identity.malformed.extension-name.001",
+      "operation": "derive_record_identity",
+      "vector": "vectors/record_identity/malformed/record-identity-malformed-extension-name-001.json"
+    },
+    {
+      "capability": "olp.record-commitment.sha256.v1",
+      "category": "positive",
+      "description": "SHA-256/COSE -16 commitment over exact OLP-CIE-1 Record Identity preimage bytes.",
+      "id": "record.commitment.sha256.001",
+      "operation": "derive_record_commitment",
+      "vector": "vectors/record_commitment/positive/record-commitment-sha256-001.json"
+    },
+    {
+      "capability": "olp.record-commitment.sha256.v1",
+      "category": "unsupported",
+      "description": "Unknown commitment algorithm is unsupported, not invalid.",
+      "id": "record.commitment.unsupported.algorithm.001",
+      "operation": "derive_record_commitment",
+      "vector": "vectors/record_commitment/unsupported/record-commitment-unsupported-algorithm-001.json"
+    },
+    {
+      "capability": "olp.proof-input.v1",
+      "category": "positive",
+      "description": "Normative Specification 0004 ProofInputV1 vector.",
+      "id": "proof.input.spec-vector.001",
+      "operation": "encode_proof_input",
+      "vector": "vectors/proof_input/positive/proof-input-spec-vector-001.json"
+    },
+    {
+      "capability": "olp.proof-input.v1",
+      "category": "positive",
+      "description": "Authenticated metadata, extensions, and critical declaration encode deterministically.",
+      "id": "proof.input.metadata-extensions.001",
+      "operation": "encode_proof_input",
+      "vector": "vectors/proof_input/positive/proof-input-metadata-extensions-001.json"
+    },
+    {
+      "capability": "olp.proof-input.v1",
+      "category": "positive",
+      "description": "Critical extension identifiers are canonicalized as an order-independent set.",
+      "id": "proof.input.critical-order.001",
+      "operation": "encode_proof_input",
+      "vector": "vectors/proof_input/positive/proof-input-critical-order-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "positive",
+      "description": "Deterministic end-to-end Ed25519 proof creation vector.",
+      "id": "proof.create.end-to-end.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/positive/proof-create-end-to-end-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "positive",
+      "description": "Optional authenticated proof metadata participates in deterministic Ed25519 signing.",
+      "id": "proof.create.metadata.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/positive/proof-create-metadata-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "unsupported",
+      "description": "Unsupported producer cryptosuite is classified as unsupported.",
+      "id": "proof.create.unsupported.cryptosuite.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/unsupported/proof-create-unsupported-cryptosuite-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "unsupported",
+      "description": "Unsupported commitment algorithm is classified as unsupported.",
+      "id": "proof.create.unsupported.commitment.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/unsupported/proof-create-unsupported-commitment-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "malformed",
+      "description": "verificationMethod must be an absolute URI.",
+      "id": "proof.create.malformed.verification-method.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/malformed/proof-create-malformed-verification-method-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "malformed",
+      "description": "created must be RFC 3339 with explicit offset.",
+      "id": "proof.create.malformed.created.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/malformed/proof-create-malformed-created-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "malformed",
+      "description": "critical cannot name an absent extension.",
+      "id": "proof.create.malformed.critical-missing.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/malformed/proof-create-malformed-critical-missing-001.json"
+    },
+    {
+      "capability": "olp.proof.eddsa-ed25519.v1",
+      "category": "malformed",
+      "description": "Ed25519 private seed must contain exactly 32 octets.",
+      "id": "proof.create.malformed.private-key.001",
+      "operation": "create_proof",
+      "vector": "vectors/proof_creation/malformed/proof-create-malformed-private-key-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "positive",
+      "description": "Valid mandatory-suite proof verifies with explicitly supplied key material.",
+      "id": "proof.verify.valid.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/positive/proof-verify-valid-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "positive",
+      "description": "Valid proof satisfies explicit purpose/domain/challenge/time context and critical extension understanding.",
+      "id": "proof.verify.context.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/positive/proof-verify-context-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Mutating proofValue invalidates the Ed25519 signature.",
+      "id": "proof.verify.negative.signature.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-signature-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Mutating the record causes record commitment mismatch before signature evaluation.",
+      "id": "proof.verify.negative.record.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-record-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "A cryptographically valid assertion does not satisfy an authorization requirement.",
+      "id": "proof.verify.negative.purpose-context.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-purpose-context-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Resolved verification method must match the authenticated reference exactly.",
+      "id": "proof.verify.negative.method.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-method-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Domain mismatch is distinct from cryptographic invalidity.",
+      "id": "proof.verify.negative.domain.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-domain-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Challenge mismatch is distinct from cryptographic invalidity.",
+      "id": "proof.verify.negative.challenge.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-challenge-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Expiration affects temporal applicability while preserving signature validity.",
+      "id": "proof.verify.negative.expired.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-expired-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Verification-method revocation is reported independently from mathematical signature validity.",
+      "id": "proof.verify.negative.revoked-status.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-revoked-status-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "negative",
+      "description": "Missing explicitly supplied verification material yields UNAVAILABLE, not invalid signature.",
+      "id": "proof.verify.negative.method-unavailable.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/negative/proof-verify-negative-method-unavailable-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "unsupported",
+      "description": "Unknown cryptosuite is unsupported and cryptographic validity is not evaluated.",
+      "id": "proof.verify.unsupported.cryptosuite.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/unsupported/proof-verify-unsupported-cryptosuite-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "unsupported",
+      "description": "Unknown critical extension prevents complete semantic processing without relabeling the signature invalid.",
+      "id": "proof.verify.unsupported.critical-extension.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/unsupported/proof-verify-unsupported-critical-extension-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "unsupported",
+      "description": "Unknown record commitment algorithm is unsupported.",
+      "id": "proof.verify.unsupported.commitment.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/unsupported/proof-verify-unsupported-commitment-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "unsupported",
+      "description": "Unknown proof-object version is unsupported.",
+      "id": "proof.verify.unsupported.version.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/unsupported/proof-verify-unsupported-version-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "malformed",
+      "description": "Ed25519 proofValue must contain exactly 64 octets.",
+      "id": "proof.verify.malformed.proof-value-length.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/malformed/proof-verify-malformed-proof-value-length-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "malformed",
+      "description": "Authenticated verificationMethod must be an absolute URI.",
+      "id": "proof.verify.malformed.relative-method.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/malformed/proof-verify-malformed-relative-method-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "malformed",
+      "description": "critical identifiers cannot be duplicated.",
+      "id": "proof.verify.malformed.critical-duplicate.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/malformed/proof-verify-malformed-critical-duplicate-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "malformed",
+      "description": "critical identifiers must name present extensions.",
+      "id": "proof.verify.malformed.critical-absent.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/malformed/proof-verify-malformed-critical-absent-001.json"
+    },
+    {
+      "capability": "olp.proof-verification.v1",
+      "category": "malformed",
+      "description": "Resolved Ed25519 public key must contain exactly 32 octets.",
+      "id": "proof.verify.malformed.public-key-length.001",
+      "operation": "verify_proof",
+      "vector": "vectors/proof_verification/malformed/proof-verify-malformed-public-key-length-001.json"
+    }
+  ],
+  "harness_version": "0.1.0",
+  "profiles": {
+    "core-v1": [
+      "olp.record-identity.v1",
+      "olp.record-commitment.sha256.v1",
+      "olp.proof-input.v1",
+      "olp.proof.eddsa-ed25519.v1",
+      "olp.proof-verification.v1"
+    ],
+    "proof-v1": [
+      "olp.proof-input.v1",
+      "olp.proof.eddsa-ed25519.v1",
+      "olp.proof-verification.v1"
+    ],
+    "record-v1": [
+      "olp.record-identity.v1",
+      "olp.record-commitment.sha256.v1"
+    ]
+  },
+  "schema": "olp-conformance-manifest-v1",
+  "version": 1
+}

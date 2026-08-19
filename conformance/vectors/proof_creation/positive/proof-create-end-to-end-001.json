@@ -1,0 +1,45 @@
+{
+  "capability": "olp.proof.eddsa-ed25519.v1",
+  "category": "positive",
+  "description": "Deterministic end-to-end Ed25519 proof creation vector.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof": {
+        "critical": [],
+        "cryptosuite": "eddsa-ed25519-v1",
+        "extensions": {},
+        "proofPurpose": "assertion",
+        "proofValue_hex": "a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805",
+        "recordCommitment": {
+          "algorithm": -16,
+          "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+        },
+        "type": "OLPProof",
+        "verificationMethod": "urn:example:olp:test-key-1",
+        "version": 1
+      },
+      "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4a0a080"
+    }
+  },
+  "id": "proof.create.end-to-end.001",
+  "input": {
+    "private_seed_hex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+    "proof_configuration": {
+      "commitment_algorithm": -16,
+      "cryptosuite": "eddsa-ed25519-v1",
+      "proof_purpose": "assertion",
+      "verification_method": "urn:example:olp:test-key-1"
+    },
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "create_proof",
+  "schema": "olp-conformance-vector-v1"
+}

@@ -1,0 +1,27 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "positive",
+  "description": "Map insertion order cannot affect deterministic Record Identity.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "identity_bytes_hex": "886a4f4c502d5245434f52440165636c61696da2616102617a01a08080a0",
+      "identity_bytes_length": 30,
+      "record_identity_digest_hex": "4cc8ff365e60ebd0bcf3d76f1f968bad02af95534bee8b45f2d3e04956406374",
+      "record_identity_text": "r1_TMj_Nl5g69C889dvH5aLrQKvlVNL7otF8tPgSVZAY3Q"
+    }
+  },
+  "id": "record.identity.map-order.001",
+  "input": {
+    "record": {
+      "content": {
+        "a": 2,
+        "z": 1
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

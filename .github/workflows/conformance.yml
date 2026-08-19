@@ -1,0 +1,43 @@
+name: OLP conformance
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-conformance:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[test]'
+
+      - name: Run repository tests
+        run: python -m pytest -q
+
+      - name: Run OLP core conformance profile
+        run: olp-conformance run --profile core-v1 --quiet --report conformance-report.json
+
+      - name: Upload conformance report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: conformance-python-${{ matrix.python-version }}
+          path: conformance-report.json
+          if-no-files-found: error

@@ -1,0 +1,24 @@
+{
+  "capability": "olp.record-commitment.sha256.v1",
+  "category": "unsupported",
+  "description": "Unknown commitment algorithm is unsupported, not invalid.",
+  "expected": {
+    "classification": "UNSUPPORTED",
+    "outcome": "ERROR",
+    "reason": "UNSUPPORTED_COMMITMENT_ALGORITHM"
+  },
+  "id": "record.commitment.unsupported.algorithm.001",
+  "input": {
+    "algorithm": -999,
+    "record": {
+      "content": {
+        "statement": "example",
+        "subject": "urn:example:subject:1"
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_commitment",
+  "schema": "olp-conformance-vector-v1"
+}
