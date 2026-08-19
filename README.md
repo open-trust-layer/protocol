@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** specification stack complete through `0012`; reference implementation and executable conformance work next
+**Current phase:** Milestone 13 reference implementation core complete; executable conformance harness next
 
 ---
 
@@ -169,9 +169,7 @@ transport security   != OLP object proof validity
 
 The Draft v0.1 semantic and exchange stack is now defined through Specification 0012.
 
-The project is moving into **reference implementation and executable conformance** rather than adding more major protocol layers immediately.
-
-The first implementation slice should make Specifications 0003 and 0004 executable:
+Milestone 13 now provides the first executable reference slice for Specifications 0003 and 0004:
 
 ```text
 Record
@@ -185,15 +183,15 @@ Record + proof configuration
   -> structured VerificationResult
 ```
 
-After that, the project should turn Specification 0011 into a public, versioned conformance corpus and test independent implementations against identical canonical vectors.
+The implementation reproduces the normative `0003` and `0004` vectors byte-for-byte, creates and verifies the mandatory Ed25519 proof suite, preserves structured verification outcomes, and performs no implicit network resolution.
 
-Draft v0.1 should be treated as implementation-test material, not as a stable production standard.
+Next, the project should turn Specification 0011 into a public, versioned executable conformance corpus and test independent implementations against identical canonical vectors. Draft v0.1 remains implementation-test material, not a stable production standard.
 
 ---
 
 ## Near-term roadmap
 
-1. **Reference implementation core** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results.
+1. **Reference implementation core — complete** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results, normative vectors, and negative tests.
 2. **Executable conformance suite** — positive, negative, malformed, unsupported, canonicalization, and security vectors.
 3. **Second independent implementation** — verify cross-language and cross-codebase interoperability.
 4. **Adversarial/security review** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
@@ -233,7 +231,7 @@ The current specifications are **Draft v0.1** and are expected to change as the 
 - [`SECURITY.md`](SECURITY.md) — vulnerability reporting and current security-support status.
 - [`specification/0000-overview.md`](specification/0000-overview.md) — non-normative specification entry point and dependency map.
 
-The `src/`, `tests/`, and `vectors/` directories are intentionally empty placeholders until Milestone 13 begins. No reference implementation is being implied by their presence.
+The `src/`, `tests/`, and `vectors/` directories now contain the Milestone 13 reference implementation, its test corpus, and reproducible vectors. See [`docs/reference-implementation.md`](docs/reference-implementation.md).
 
 ---
 

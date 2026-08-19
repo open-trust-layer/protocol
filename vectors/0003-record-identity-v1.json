@@ -1,0 +1,18 @@
+{
+  "id": "OLP-TV-1",
+  "source_specification": "specification/0003-record-representation.md#24-olp-tv-1-interoperability-vector",
+  "record": {
+    "envelope_version": 1,
+    "type": "claim",
+    "content": {
+      "subject": "urn:example:subject:1",
+      "statement": "example"
+    }
+  },
+  "expected": {
+    "identity_bytes_hex": "886a4f4c502d5245434f52440165636c61696da2677375626a6563747575726e3a6578616d706c653a7375626a6563743a316973746174656d656e74676578616d706c65a08080a0",
+    "identity_bytes_length": 72,
+    "record_identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+    "record_identity_text": "r1_xp7Q9MIvwCQtqTnUVEjsH6t0ZPoFSvM0kn3A-RdBy7Q"
+  }
+}

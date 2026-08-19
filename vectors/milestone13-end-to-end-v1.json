@@ -1,0 +1,28 @@
+{
+  "id": "OLP-M13-E2E-1",
+  "status": "reference-derived",
+  "description": "End-to-end Milestone 13 vector combining the Specification 0003 record vector with the Specification 0004 Ed25519 test seed.",
+  "record": {
+    "envelope_version": 1,
+    "type": "claim",
+    "content": {
+      "subject": "urn:example:subject:1",
+      "statement": "example"
+    }
+  },
+  "proof_configuration": {
+    "cryptosuite": "eddsa-ed25519-v1",
+    "proof_purpose": "assertion",
+    "verification_method": "urn:example:olp:test-key-1",
+    "commitment_algorithm": -16
+  },
+  "key": {
+    "private_seed_hex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+    "public_key_hex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+  },
+  "expected": {
+    "record_commitment_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+    "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4a0a080",
+    "proof_value_hex": "a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805"
+  }
+}

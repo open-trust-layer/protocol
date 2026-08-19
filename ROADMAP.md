@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — reference implementation and executable conformance
+**Current phase:** Phase II — Milestone 13 complete; Milestone 14 executable conformance harness next
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -50,7 +50,7 @@ Completed.
 
 ### Milestone 13 — Reference Implementation Core
 
-**Next.**
+**Completed.**
 
 Build the smallest rigorous executable vertical slice from Specifications 0003 and 0004:
 
@@ -81,6 +81,8 @@ Initial implementation goals:
 - unit tests built directly from specification vectors.
 
 ### Milestone 14 — Executable Conformance Harness
+
+**Next.**
 
 Turn Specification 0011 into a public, versioned test corpus containing:
 

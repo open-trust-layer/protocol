@@ -15,6 +15,15 @@ The project is experimental and has not yet made a stable release. The format is
 - Security policy for responsible vulnerability reporting.
 - Apache License 2.0 repository license.
 - Initial repository placeholders for `docs/`, `src/`, `tests/`, and `vectors/`.
+- Milestone 13 Python reference implementation core for Specifications 0003 and 0004.
+- Minimal deterministic CBOR encoder implementing the OLP canonical subset.
+- OLP-CI-1 Record Identity, Definition Identity, Blob Identity, and canonical textual Record Identity presentation.
+- Algorithm-agile RecordCommitment model with mandatory SHA-256 / COSE `-16` support.
+- Exact nine-element ProofInputV1 construction and deterministic encoding.
+- Mandatory `eddsa-ed25519-v1` proof creation and verification using explicit supplied verification material.
+- Structured VerificationResult model preserving malformed, unsupported, unavailable, invalid, mismatch, temporal, and method-status dimensions.
+- Reproducible Specification 0003 and 0004 vectors plus a Milestone 13 end-to-end vector.
+- Comprehensive Milestone 13 test suite covering canonicalization, mutations, extension criticality, context checks, status separation, and offline verification behavior.
 
 ### Specification foundation
 
@@ -35,7 +44,6 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Implement the deterministic record/proof core from Specifications 0003 and 0004.
 - Convert Specification 0011 into an executable conformance corpus.
 - Test interoperability with an independent implementation.
 - Perform an adversarial security review.
