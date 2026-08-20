@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 23 — Transport Encoding Core
+**Current phase:** Milestone 24 — Streaming & HTTP API Core
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -124,9 +124,18 @@ No native field-level redaction, zero-knowledge disclosure, global completeness 
 
 ### Milestone 23 — Transport Encoding Core
 
-**In progress.**
+**Accepted.**
 
-Make the deterministic non-network subset of Specification 0012 independently executable before implementing live HTTP behavior.
+The deterministic non-network subset of Specification 0012 is independently executable in the separate 22-case `transport-encoding-v1` profile.
+
+Acceptance includes:
+
+```text
+Python 3.11-3.14 transport-encoding-v1  22 / 22 PASS
+Rust 1.85 transport-encoding-v1         22 / 22 PASS
+Python <-> Rust M23 interoperability     PASS
+Earlier accepted profiles/regressions   PASS
+```
 
 Scope:
 
@@ -137,16 +146,21 @@ Scope:
 - strict/unsupported OJVE wrapper handling;
 - single-object `OLPTransportEnvelopeV1` processing;
 - JSON transport representation using OJVE-1;
+- exact deterministic CBOR parity for the accepted envelope/Record/Proof cases;
 - transport/object identity separation; and
 - implementation-neutral Python/Rust conformance and interoperability.
 
-M23 deliberately excludes live sockets, DNS, HTTP authentication/authorization, HTTP Message Signatures, redirects, caching, and streaming bundle-state semantics.
+The final adversarial pass strengthened the original green corpus after detecting that Rust had not actually been required to reproduce Python's deterministic CBOR output. The accepted corpus now makes those bytes explicit rather than inferring JSON/CBOR parity from JSON-only success.
+
+M23 deliberately excludes live sockets, DNS, HTTP authentication/authorization, HTTP Message Signatures, redirects, caching, content-digest handling, and streaming bundle-state semantics.
+
+See `docs/transport-encoding-core.md` and `conformance/VECTOR-INDEX-M23.md`.
 
 ### Milestone 24 — Streaming & HTTP API Core
 
-**Planned after M23.**
+**Next.**
 
-Take the network/API-sensitive remainder of Specification 0012 only after the transport encoding is independently fixed:
+Take the network/API-sensitive remainder of Specification 0012 only after the transport encoding has been independently fixed:
 
 - JSON Text Sequence / CBOR Sequence frame processing;
 - truncation and manifest-first behavior;
