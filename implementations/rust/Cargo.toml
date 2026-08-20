@@ -1,0 +1,18 @@
+[package]
+name = "open-layer-protocol-rust"
+version = "0.0.1"
+edition = "2021"
+rust-version = "1.85"
+description = "Independent Rust implementation of the Open Layer Protocol 0003/0004 core"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+name = "olp_rust"
+path = "src/lib.rs"
+
+[[bin]]
+name = "olp-conformance-adapter"
+path = "src/bin/olp-conformance-adapter.rs"
+
+[dependencies]

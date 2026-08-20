@@ -1,0 +1,10 @@
+//! RFC 3339 syntax/evaluation helpers sufficient for Specification 0004.
+#[derive(Clone,Copy,Debug,PartialEq,Eq,PartialOrd,Ord)]pub struct Instant{pub seconds:i64,pub nanos:u32}
+fn leap(y:i64)->bool{y%4==0&&(y%100!=0||y%400==0)}
+fn dim(y:i64,m:i64)->i64{match m{1|3|5|7|8|10|12=>31,4|6|9|11=>30,2=>if leap(y){29}else{28},_=>0}}
+fn days_from_civil(y:i64,m:i64,d:i64)->i64{let y=y-if m<=2{1}else{0};let era=if y>=0{y}else{y-399}/400;let yoe=y-era*400;let mp=m+if m>2{-3}else{9};let doy=(153*mp+2)/5+d-1;let doe=yoe*365+yoe/4-yoe/100+doy;era*146097+doe-719468}
+fn two(s:&[u8],i:usize)->Option<i64>{if i+2>s.len()||!s[i..i+2].iter().all(u8::is_ascii_digit){None}else{Some(((s[i]-b'0')*10+(s[i+1]-b'0'))as i64)}}
+fn four(s:&[u8],i:usize)->Option<i64>{if i+4>s.len()||!s[i..i+4].iter().all(u8::is_ascii_digit){None}else{Some(s[i..i+4].iter().fold(0i64,|a,b|a*10+(b-b'0')as i64))}}
+pub fn parse(v:&str)->Option<Instant>{let b=v.as_bytes();if b.len()<20{return None;}let y=four(b,0)?;if b.get(4)!=Some(&b'-'){return None;}let mo=two(b,5)?;if b.get(7)!=Some(&b'-'){return None;}let d=two(b,8)?;if !matches!(b.get(10),Some(b'T')|Some(b't')){return None;}let h=two(b,11)?;if b.get(13)!=Some(&b':'){return None;}let mi=two(b,14)?;if b.get(16)!=Some(&b':'){return None;}let mut sec=two(b,17)?;if !(1..=12).contains(&mo)||d<1||d>dim(y,mo)||h>23||mi>59||sec>60{return None;}let leap_sec=sec==60;if leap_sec{sec=59;}let mut i=19;let mut nanos=0u32;if b.get(i)==Some(&b'.'){i+=1;let start=i;while i<b.len()&&b[i].is_ascii_digit(){i+=1;}if i==start{return None;}let digits=&b[start..i];for j in 0..9{nanos*=10;if j<digits.len(){nanos+=(digits[j]-b'0')as u32;}}}
+let offset:i64;if i<b.len()&&(b[i]==b'Z'||b[i]==b'z'){i+=1;offset=0;}else{if i+6!=b.len()||!(b[i]==b'+'||b[i]==b'-')||b[i+3]!=b':'{return None;}let oh=two(b,i+1)?;let om=two(b,i+4)?;if oh>23||om>59{return None;}let raw=oh*3600+om*60;offset=if b[i]==b'+'{raw}else{-raw};i+=6;}if i!=b.len(){return None;}let mut total=days_from_civil(y,mo,d)*86400+h*3600+mi*60+sec-offset;if leap_sec{total+=1;}Some(Instant{seconds:total,nanos})}
+pub fn valid(v:&str)->bool{parse(v).is_some()}

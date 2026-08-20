@@ -31,6 +31,12 @@ The project is experimental and has not yet made a stable release. The format is
 - `olp-conformance` CLI with filtering and machine-readable `olp-conformance-report-v1` output.
 - Harness self-tests using an intentionally broken implementation to prove false behavior is detected.
 - GitHub Actions workflow running repository tests and the complete core conformance profile across supported Python versions.
+- Milestone 15 independent Rust implementation of the currently executable Specification 0003/0004 core.
+- Standalone Rust `olp-conformance-adapter` implementing the existing JSON-lines subprocess contract without importing Python code.
+- Rust normative-vector tests for Record Identity, ProofInputV1, deterministic Ed25519 proof generation, and public-key derivation.
+- Bidirectional Python↔Rust interoperability tests for identity, proof-input bytes, proof creation, and cross-verification.
+- Dedicated `rust-interoperability` GitHub Actions gate requiring Rust unit tests, full `core-v1` conformance, and cross-language tests.
+- Documentation for the independent implementation boundary and Milestone 15 acceptance procedure.
 
 ### Specification foundation
 
@@ -51,7 +57,7 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Build and test an independent second implementation against the executable conformance corpus.
+- Require a green Milestone 15 Rust interoperability CI gate for repository acceptance.
 - Perform an adversarial security review.
 - Feed findings into a coordinated Draft v0.2 specification pass.
 

@@ -149,3 +149,18 @@ All other cases are deterministic supplemental conformance vectors derived from 
 ## Stability
 
 Harness and vector formats are development artifacts while OLP remains Draft v0.1. Changes to a normative vector require a corresponding specification correction; they must never be silently adjusted merely to make an implementation pass.
+
+## Independent Rust adapter
+
+Milestone 15 includes an independent subprocess implementation at `implementations/rust/`. After building it:
+
+```bash
+cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
+
+olp-conformance run \
+  --profile core-v1 \
+  --adapter subprocess \
+  --adapter-command implementations/rust/target/release/olp-conformance-adapter
+```
+
+The Rust process does not import the Python reference implementation. The repository CI requires this adapter to pass the same `core-v1` corpus and then runs bidirectional Python/Rust interoperability tests.

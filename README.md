@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Milestone 14 executable conformance harness complete; independent second implementation next
+**Current phase:** Milestone 15 independent Rust implementation added; cross-language CI is the acceptance gate
 
 ---
 
@@ -189,7 +189,9 @@ Milestone 14 now turns Specification 0011 into an executable, implementation-neu
 
 The harness supports both an in-process Python adapter and a JSON-lines subprocess contract suitable for independent implementations in other languages. The Python reference adapter passes the complete current corpus, while an intentionally broken adapter is required to fail as a harness self-test.
 
-Next, the project should build an independent second implementation and require cross-implementation agreement on the same official vectors. Draft v0.1 remains implementation-test material, not a stable production standard.
+Milestone 15 adds an independent Rust implementation under `implementations/rust/`. It speaks the existing language-neutral subprocess contract, is built without importing the Python implementation, and is covered by bidirectional Python↔Rust interoperability tests. The dedicated `rust-interoperability` CI job is the acceptance gate: it must compile and test the Rust crate, pass the same `core-v1` corpus, and pass the cross-language exchange tests.
+
+Draft v0.1 remains implementation-test material, not a stable production standard.
 
 ---
 
@@ -197,8 +199,8 @@ Next, the project should build an independent second implementation and require 
 
 1. **Reference implementation core — complete** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results, normative vectors, and negative tests.
 2. **Executable conformance harness — complete** — implementation-neutral positive, negative, malformed, and unsupported corpus; adapter boundary; CLI; machine-readable reports; harness self-tests; CI.
-3. **Second independent implementation — next** — verify cross-language and cross-codebase interoperability against the same corpus.
-4. **Adversarial/security review** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
+3. **Second independent implementation — implementation added; CI-gated** — independent Rust core plus shared-corpus and bidirectional Python↔Rust interoperability gates.
+4. **Adversarial/security review — next after a green Milestone 15 gate** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
 5. **Draft v0.2 integration pass** — feed implementation and security findings back into the specifications.
 
 Before a future stable v1.0 release, the project should require reproducible canonical vectors, independent interoperable implementations, a public conformance corpus, and security review of the core cryptographic and network boundaries.
@@ -238,6 +240,8 @@ The current specifications are **Draft v0.1** and are expected to change as the 
 The `src/`, `tests/`, and `vectors/` directories now contain the Milestone 13 reference implementation, its test corpus, and reproducible vectors. See [`docs/reference-implementation.md`](docs/reference-implementation.md).
 
 The `conformance/` directory and `olp_conformance` package contain the Milestone 14 executable corpus and runner. See [`conformance/README.md`](conformance/README.md) and [`docs/conformance-harness.md`](docs/conformance-harness.md).
+
+The `implementations/rust/` crate is the Milestone 15 independent second implementation. See [`implementations/README.md`](implementations/README.md) and [`docs/rust-implementation.md`](docs/rust-implementation.md).
 
 ---
 

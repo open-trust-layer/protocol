@@ -41,3 +41,67 @@ jobs:
           name: conformance-python-${{ matrix.python-version }}
           path: conformance-report.json
           if-no-files-found: error
+
+  rust-interoperability:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Set up Rust 1.85.0
+        uses: dtolnay/rust-toolchain@1.85.0
+
+      - name: Install OpenSSL development library
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libssl-dev
+
+      - name: Install Python package and test dependencies
+        run: python -m pip install -e '.[test]'
+
+      - name: Test independent Rust implementation
+        run: cargo test --locked --manifest-path implementations/rust/Cargo.toml
+
+      - name: Build independent Rust conformance adapter
+        run: cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
+
+      - name: Run Rust implementation against official core-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile core-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust.json
+
+      - name: Assert Milestone 15 conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 41, f"expected 41 core-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust core-v1 conformance: 41/41 PASS")
+          PY
+
+      - name: Run bidirectional Python-Rust interoperability tests
+        env:
+          OLP_RUN_RUST_INTEROP: "1"
+        run: python -m pytest -q tests/interoperability/test_python_rust.py
+
+      - name: Upload Rust conformance report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: conformance-rust-1.85.0
+          path: conformance-rust.json
+          if-no-files-found: error

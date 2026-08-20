@@ -58,3 +58,6 @@ Desktop.ini
 
 # Generated conformance output
 conformance-report.json
+
+# Rust build output
+implementations/rust/target/

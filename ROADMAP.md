@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 14 complete; Milestone 15 independent second implementation next
+**Current phase:** Phase II — Milestone 15 implementation delivered; Rust interoperability CI is the acceptance gate
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -98,9 +98,9 @@ Turn Specification 0011 into a public, versioned test corpus containing:
 
 ### Milestone 15 — Independent Second Implementation
 
-**Next.**
+**Implementation delivered; completion is gated on the `rust-interoperability` CI job.**
 
-Create or coordinate at least one implementation independent of the reference codebase.
+Maintain at least one implementation independent of the reference codebase. Milestone 15 introduces the Rust implementation in `implementations/rust/` and a language-neutral CI gate against the existing conformance corpus.
 
 The decisive interoperability tests are:
 
@@ -112,6 +112,8 @@ The decisive interoperability tests are:
 - structured failure classifications agree for required vectors.
 
 A second language is preferred because it exposes hidden assumptions more effectively than a second copy of the same code.
+
+Milestone 15 is accepted only when the Rust crate compiles/tests, the Rust adapter passes the complete current `core-v1` corpus, and bidirectional Python↔Rust interoperability tests pass.
 
 ### Milestone 16 — Adversarial & Security Review
 
