@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-1.0 candidate work  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Milestone 26 — v1.0 Candidate Boundary & Promotion Gates
+**Current phase:** Post-Milestone 26 — public technical review / independent external security review
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -115,9 +115,9 @@ See `docs/draft-v0.3-integration.md` and `specification/0014-release-profiles-an
 
 ### Milestone 26 — v1.0 Candidate Boundary & Promotion Gates
 
-**In acceptance.**
+**Accepted and merged.**
 
-M26 adds no new evidence semantics or wire-format generation. It selects a conservative stable-candidate boundary and makes promotion requirements executable.
+M26 added no new evidence semantics or wire-format generation. It selected a conservative stable-candidate boundary and made promotion requirements executable.
 
 Mandatory candidate core:
 
@@ -148,12 +148,12 @@ M26 outputs include:
 - machine-readable candidate/review/report schemas;
 - `olp-conformance promotion-check` with `INVALID`, `BLOCKED`, and `READY` states;
 - a pinned v1 candidate threat model;
-- a machine-readable contradiction/review register;
+- a machine-readable contradiction/review register covering Specifications 0000–0015;
 - stable release, migration, deprecation, errata, and rollback rules;
 - adversarial promotion-gate tests; and
 - Python 3.11–3.14 promotion-readiness CI.
 
-The intended acceptance state is deliberately:
+The accepted M26 state is deliberately:
 
 ```text
 internal readiness:                       PASS
@@ -169,7 +169,7 @@ PUBLIC_TECHNICAL_REVIEW_REQUIRED
 INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
 ```
 
-A successful M26 does not publish v1.0. It makes the remaining external work explicit and prevents internal conformance from being misrepresented as independent security review.
+M26 does not publish v1.0. It makes the remaining external work explicit and prevents internal conformance from being misrepresented as independent security review.
 
 See `docs/v1-candidate-readiness.md`, `docs/v1-threat-model.md`, `docs/v1-release-process.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
 
@@ -188,15 +188,17 @@ A stable OLP v1.0 should require at minimum:
 9. independent external security review of the intended stable boundary; and
 10. documented deployment/threat assumptions and release criteria.
 
-M25 materially completed the corpus/release-identity layer. M26 is designed to complete the internally satisfiable parts of items 1, 6, 7, and 10 while making item 9 and public technical review impossible to bypass accidentally.
+M25 materially completed the corpus/release-identity layer. M26 completed the internally satisfiable parts of stable-boundary selection, contradiction review, governance, and threat/release assumptions while making independent external security review and public technical review impossible to bypass accidentally.
 
-After M26 acceptance, the next legitimate work should be review-driven:
+The current next legitimate work is review-driven:
 
 1. freeze an exact candidate snapshot for public technical review;
 2. obtain independent external security review;
 3. disposition material findings through clarification, errata, or explicit version changes;
 4. rerun exact conformance/interoperability on the resulting snapshot; and
 5. only when promotion state becomes `READY`, perform release-candidate/stable publication mechanics.
+
+No Milestone 27 protocol-feature scope is declared by this roadmap update.
 
 ## Deliberately not on the immediate roadmap
 
