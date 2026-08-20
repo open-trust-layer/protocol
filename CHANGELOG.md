@@ -25,7 +25,7 @@ The project is experimental and has not yet made a stable release. The format is
 - Reproducible Specification 0003 and 0004 vectors plus a Milestone 13 end-to-end vector.
 - Comprehensive Milestone 13 test suite covering canonicalization, mutations, extension criticality, context checks, status separation, and offline verification behavior.
 - Milestone 14 executable conformance harness for the currently implemented Specification 0003 and 0004 capabilities.
-- Implementation-neutral conformance manifest and 41 deterministic positive, negative, malformed, and unsupported vectors.
+- Implementation-neutral conformance manifest, now expanded to 57 deterministic positive, negative, malformed, and unsupported vectors.
 - Capability-scoped `record-v1`, `proof-v1`, and `core-v1` conformance profiles.
 - Python `ConformanceAdapter` protocol plus language-neutral JSON-lines subprocess adapter contract.
 - `olp-conformance` CLI with filtering and machine-readable `olp-conformance-report-v1` output.
@@ -37,6 +37,12 @@ The project is experimental and has not yet made a stable release. The format is
 - Bidirectional Python↔Rust interoperability tests for identity, proof-input bytes, proof creation, and cross-verification.
 - Dedicated `rust-interoperability` GitHub Actions gate requiring Rust unit tests, full `core-v1` conformance, and cross-language tests.
 - Documentation for the independent implementation boundary and Milestone 15 acceptance procedure.
+- Milestone 16 executable Evidence Graph Core for Specification 0005.
+- Deterministic OLP-PIE-1 Proof Identity derivation and typed `EvidenceRefV1` encoding.
+- Immutable relationship statement processing for the seven core relationship types.
+- Provenance-preserving evidence graph projection, dangling-reference handling, cycle-safe traversal, and explicit traversal limits.
+- `evidence-v1` conformance profile and 16 new implementation-neutral Specification 0005 cases, expanding `core-v1` to 57 cases across eight capabilities.
+- Rust implementations of Proof Identity, EvidenceRef, and relationship processing plus three new Python↔Rust evidence interoperability checks.
 
 ### Specification foundation
 
@@ -57,9 +63,9 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Require a green Milestone 15 Rust interoperability CI gate for repository acceptance.
-- Perform an adversarial security review.
-- Feed findings into a coordinated Draft v0.2 specification pass.
+- Require a green Milestone 16 expanded Python/Rust conformance gate for repository acceptance.
+- Perform the Milestone 17 adversarial security review.
+- Feed findings into the Milestone 18 Draft v0.2 specification pass.
 
 ## Release history
 

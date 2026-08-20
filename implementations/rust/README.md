@@ -1,7 +1,7 @@
-# OLP Rust Core — Milestone 15
+# OLP Rust Core — Milestones 15–16
 
 This crate is an **independent second implementation** of the Open Layer
-Protocol core currently covered by Specifications `0003` and `0004`.
+Protocol core currently covered by Specifications `0003`, `0004`, and the deterministic Evidence Graph Core of `0005`.
 
 It is intentionally derived from the normative specifications and the public,
 implementation-neutral Milestone 14 conformance corpus rather than from Python
@@ -14,10 +14,13 @@ implementation internals.
 - `olp.proof-input.v1`
 - `olp.proof.eddsa-ed25519.v1`
 - `olp.proof-verification.v1`
+- `olp.proof-identity.v1`
+- `olp.evidence-ref.v1`
+- `olp.evidence-relationship.v1`
 
 The crate has no crates.io dependencies. Deterministic CBOR, SHA-256, record
-identity, ProofInputV1, proof construction, and the structured verification
-state machine are implemented in Rust. Ed25519 primitive operations use the
+identity, ProofInputV1, proof construction, the structured verification state
+machine, Proof Identity, EvidenceRef, and relationship processing are implemented in Rust. Ed25519 primitive operations use the
 system OpenSSL EVP implementation through a narrow FFI boundary.
 
 ### Requirements
@@ -60,7 +63,7 @@ The root GitHub Actions workflow contains a `rust-interoperability` job that:
 1. installs Rust 1.85.0 and `libssl-dev`;
 2. runs `cargo test --locked`;
 3. builds the release subprocess adapter;
-4. runs that adapter against all 41 cases in the official `core-v1` corpus; and
+4. runs that adapter against all 57 cases in the official `core-v1` corpus; and
 5. runs the bidirectional Python↔Rust interoperability tests.
 
-Milestone 15 should be considered accepted only when that job is green.
+Milestone 16 evidence interoperability should be considered accepted only when that job is green.

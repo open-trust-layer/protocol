@@ -1,0 +1,19 @@
+{
+  "capability": "olp.evidence-ref.v1",
+  "category": "positive",
+  "description": "Canonical two-element ProofRef encoding.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "evidence_ref_hex": "8201582002f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+      "evidence_ref_length": 36
+    }
+  },
+  "id": "evidence.ref.proof.001",
+  "input": {
+    "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+    "kind": 1
+  },
+  "operation": "encode_evidence_ref",
+  "schema": "olp-conformance-vector-v1"
+}

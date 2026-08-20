@@ -1,0 +1,17 @@
+{
+  "capability": "olp.evidence-ref.v1",
+  "category": "malformed",
+  "description": "Unknown EvidenceRefV1 kinds are non-conforming in v1.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "EVIDENCE_REFERENCE_MALFORMED"
+  },
+  "id": "evidence.ref.malformed.kind.001",
+  "input": {
+    "identity_digest_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+    "kind": 2
+  },
+  "operation": "encode_evidence_ref",
+  "schema": "olp-conformance-vector-v1"
+}

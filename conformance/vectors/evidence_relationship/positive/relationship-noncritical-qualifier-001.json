@@ -1,0 +1,69 @@
+{
+  "capability": "olp.evidence-relationship.v1",
+  "category": "positive",
+  "description": "Unknown non-critical qualifier does not prevent structural relationship processing.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "critical": [],
+      "objects": [
+        {
+          "identity_digest_hex": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e",
+          "kind": 0
+        }
+      ],
+      "projected_edges": [
+        {
+          "object": {
+            "identity_digest_hex": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e",
+            "kind": 0
+          },
+          "relation_type": "references",
+          "relationship_record_identity_hex": "49d4d8e915cf82498f49431a226e2402ba94da21c5ae535fbb0624bec0a969bf",
+          "subject": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        }
+      ],
+      "relation_type": "references",
+      "relationship_record_identity_hex": "49d4d8e915cf82498f49431a226e2402ba94da21c5ae535fbb0624bec0a969bf",
+      "subject": {
+        "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+        "kind": 0
+      }
+    }
+  },
+  "id": "relationship.noncritical-qualifier.001",
+  "input": {
+    "record": {
+      "content": [
+        "OLP-EVIDENCE-RELATIONSHIP",
+        1,
+        "references",
+        [
+          0,
+          {
+            "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+          }
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e"
+            }
+          ]
+        ],
+        {
+          "https://example.org/qualifier/note": "context"
+        },
+        []
+      ],
+      "envelope_version": 1,
+      "type": "evidence.relationship"
+    }
+  },
+  "operation": "process_relationship",
+  "schema": "olp-conformance-vector-v1"
+}

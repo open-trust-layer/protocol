@@ -1,0 +1,17 @@
+{
+  "capability": "olp.evidence-ref.v1",
+  "category": "malformed",
+  "description": "EvidenceRef digest must contain exactly 32 octets.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "EVIDENCE_REFERENCE_MALFORMED"
+  },
+  "id": "evidence.ref.malformed.digest.001",
+  "input": {
+    "identity_digest_hex": "00000000000000000000000000000000000000000000000000000000000000",
+    "kind": 0
+  },
+  "operation": "encode_evidence_ref",
+  "schema": "olp-conformance-vector-v1"
+}

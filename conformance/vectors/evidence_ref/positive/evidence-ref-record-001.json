@@ -1,0 +1,19 @@
+{
+  "capability": "olp.evidence-ref.v1",
+  "category": "positive",
+  "description": "Canonical two-element RecordRef encoding.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "evidence_ref_hex": "82005820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+      "evidence_ref_length": 36
+    }
+  },
+  "id": "evidence.ref.record.001",
+  "input": {
+    "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+    "kind": 0
+  },
+  "operation": "encode_evidence_ref",
+  "schema": "olp-conformance-vector-v1"
+}

@@ -1,0 +1,56 @@
+{
+  "capability": "olp.evidence-relationship.v1",
+  "category": "positive",
+  "description": "Countersignature statement uses null subject and ProofRef targets.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "critical": [],
+      "objects": [
+        {
+          "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+          "kind": 1
+        }
+      ],
+      "projected_edges": [
+        {
+          "object": {
+            "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+            "kind": 1
+          },
+          "relation_type": "countersigns",
+          "relationship_record_identity_hex": "c5e52bb3a11aad05defab59a56b256d1a6d4c408c3494e49acd5cff30efb6647",
+          "subject": null
+        }
+      ],
+      "relation_type": "countersigns",
+      "relationship_record_identity_hex": "c5e52bb3a11aad05defab59a56b256d1a6d4c408c3494e49acd5cff30efb6647",
+      "subject": null
+    }
+  },
+  "id": "relationship.countersigns.001",
+  "input": {
+    "record": {
+      "content": [
+        "OLP-EVIDENCE-RELATIONSHIP",
+        1,
+        "countersigns",
+        null,
+        [
+          [
+            1,
+            {
+              "$bytes": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba"
+            }
+          ]
+        ],
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "type": "evidence.relationship"
+    }
+  },
+  "operation": "process_relationship",
+  "schema": "olp-conformance-vector-v1"
+}

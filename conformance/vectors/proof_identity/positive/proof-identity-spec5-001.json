@@ -1,0 +1,32 @@
+{
+  "capability": "olp.proof-identity.v1",
+  "category": "positive",
+  "description": "Specification 0005 Proof Identity over the published mandatory-suite proof.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof_identity_bytes_hex": "846c4f4c502d50524f4f462d494401586a89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4a0a0805840a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805",
+      "proof_identity_bytes_length": 189,
+      "proof_identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba"
+    }
+  },
+  "id": "proof.identity.spec5.001",
+  "input": {
+    "proof": {
+      "critical": [],
+      "cryptosuite": "eddsa-ed25519-v1",
+      "extensions": {},
+      "proofPurpose": "assertion",
+      "proofValue_hex": "a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805",
+      "recordCommitment": {
+        "algorithm": -16,
+        "digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+      },
+      "type": "OLPProof",
+      "verificationMethod": "urn:example:olp:test-key-1",
+      "version": 1
+    }
+  },
+  "operation": "derive_proof_identity",
+  "schema": "olp-conformance-vector-v1"
+}

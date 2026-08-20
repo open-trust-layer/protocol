@@ -1,8 +1,8 @@
 # OLP Executable Conformance Harness
 
-**Milestone 14 · Harness v0.1.0**
+**Milestones 14–16 · Harness v0.1.0**
 
-This directory contains implementation-neutral conformance material for the OLP capabilities currently executable from Specifications `0003` and `0004`.
+This directory contains implementation-neutral conformance material for the OLP capabilities currently executable from Specifications `0003`, `0004`, and the deterministic Evidence Graph Core of `0005`.
 
 The harness tests observable protocol behavior. Official vectors do not import or depend on private Python implementation details.
 
@@ -15,8 +15,11 @@ The harness tests observable protocol behavior. Official vectors do not import o
 | `olp.proof-input.v1` | deterministic-CBOR `ProofInputV1` |
 | `olp.proof.eddsa-ed25519.v1` | mandatory Pure Ed25519 proof creation |
 | `olp.proof-verification.v1` | structured proof verification semantics |
+| `olp.proof-identity.v1` | deterministic Proof Identity (OLP-PIE-1) |
+| `olp.evidence-ref.v1` | typed canonical EvidenceRefV1 encoding |
+| `olp.evidence-relationship.v1` | relationship statement validation and projection |
 
-`core-v1` requires all five capabilities.
+`core-v1` requires all eight capabilities. `evidence-v1` scopes the three Specification 0005 evidence capabilities.
 
 ## Case categories
 
@@ -140,6 +143,8 @@ Successful result objects use subset matching: a vector lists the protocol prope
 
 `proof.input.spec-vector.001` reproduces the normative `0004` ProofInputV1 / Ed25519 input vector.
 
+`proof.identity.spec5.001` and `evidence.ref.record.001` anchor deterministic Specification 0005 identity/reference behavior.
+
 All other cases are deterministic supplemental conformance vectors derived from the same Draft v0.1 rules. They do not create new protocol semantics.
 
 ## Harness self-test
@@ -152,7 +157,7 @@ Harness and vector formats are development artifacts while OLP remains Draft v0.
 
 ## Independent Rust adapter
 
-Milestone 15 includes an independent subprocess implementation at `implementations/rust/`. After building it:
+Milestone 15 introduced the independent subprocess implementation at `implementations/rust/`; Milestone 16 extends it with the deterministic Specification 0005 evidence capabilities. After building it:
 
 ```bash
 cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
