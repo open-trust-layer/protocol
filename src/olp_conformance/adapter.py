@@ -14,6 +14,8 @@ import subprocess
 from dataclasses import dataclass
 from typing import Any, Protocol, runtime_checkable
 
+from .strict_json import MAX_JSON_BYTES, loads as strict_json_loads
+
 
 @dataclass(slots=True)
 class AdapterExecutionError(Exception):
@@ -101,7 +103,11 @@ class SubprocessAdapter:
         lines = [line for line in completed.stdout.splitlines() if line.strip()]
         if len(lines) != 1:
             raise RuntimeError("subprocess adapter MUST emit exactly one JSON response line")
-        response = json.loads(lines[0])
+        if len(completed.stdout.encode("utf-8", "replace")) > MAX_JSON_BYTES:
+            raise RuntimeError("subprocess adapter response exceeds size limit")
+        response = strict_json_loads(lines[0])
+        if not isinstance(response, dict):
+            raise RuntimeError("subprocess adapter response MUST be an object")
         if response.get("protocol") != "olp-conformance-adapter-v1":
             raise RuntimeError("subprocess adapter response protocol mismatch")
         return response

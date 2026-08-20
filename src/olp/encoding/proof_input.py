@@ -50,7 +50,28 @@ def build_proof_input(
     critical: tuple[str, ...] | list[str] = (),
 ) -> tuple[Any, ...]:
     ext = dict(extensions or {})
-    sorted_critical = tuple(sorted(critical, key=lambda item: item.encode("utf-8")))
+    # ProofInputV1 fields inherit the structural constraints of the proof
+    # properties they authenticate. Validate them here as well so callers of
+    # the direct ProofInput builder cannot bypass URI, timestamp, extension,
+    # or critical-declaration checks that OLPProof.validate_structure enforces.
+    probe = OLPProof(
+        type="OLPProof",
+        version=1,
+        cryptosuite=cryptosuite,
+        proofPurpose=proof_purpose,
+        verificationMethod=verification_method,
+        recordCommitment=record_commitment,
+        proofValue=b"\x00" * 64,
+        created=created,
+        expires=expires,
+        domain=domain,
+        challenge=challenge,
+        nonce=nonce,
+        critical=tuple(critical),
+        extensions=ext,
+    )
+    probe.validate_structure()
+    sorted_critical = probe.sorted_critical()
     metadata = metadata_map(
         created=created,
         expires=expires,

@@ -148,9 +148,12 @@ class ReferenceAdapter:
             allow_unknown_relation=bool(payload.get("allow_unknown_relation", False)),
         )
         digest = record_identity(record)
+        understood = frozenset(payload.get("understood_critical_qualifiers", ()))
+        uninterpreted = sorted(set(statement.qualifiers) - set(understood), key=lambda item: item.encode("utf-8"))
         return {
             "relationship_record_identity_hex": digest.hex(),
             "relation_type": statement.relation_type,
+            "uninterpreted_qualifiers": uninterpreted,
             "subject": None if statement.subject is None else {
                 "kind": int(statement.subject.kind),
                 "identity_digest_hex": statement.subject.identity_digest.hex(),

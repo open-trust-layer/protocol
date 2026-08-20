@@ -51,8 +51,8 @@ class RecordV1:
         )
 
     def validate(self) -> None:
-        if self.envelope_version != 1:
-            raise ConformanceError("RecordV1 envelope_version MUST equal 1")
+        if isinstance(self.envelope_version, bool) or not isinstance(self.envelope_version, int) or self.envelope_version != 1:
+            raise ConformanceError("RecordV1 envelope_version MUST be integer 1")
         if not is_semantic_identifier(self.type):
             raise ConformanceError("RecordV1 type is not a valid SemanticIdentifier")
         validate_record_value(self.content, path="content")

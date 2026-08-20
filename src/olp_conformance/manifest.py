@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from .strict_json import load_path
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,7 +30,7 @@ class ConformanceManifest:
 
 def load_manifest(path: str | Path) -> ConformanceManifest:
     path = Path(path).resolve()
-    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw = load_path(path)
     if raw.get("schema") != "olp-conformance-manifest-v1":
         raise ValueError("unsupported conformance manifest schema")
     if raw.get("version") != 1:
@@ -63,4 +64,4 @@ def load_vector(manifest: ConformanceManifest, case: ConformanceCase) -> dict[st
         path.relative_to(manifest.root)
     except ValueError as exc:
         raise ValueError(f"vector escapes manifest root: {case.vector}") from exc
-    return json.loads(path.read_text(encoding="utf-8"))
+    return load_path(path)

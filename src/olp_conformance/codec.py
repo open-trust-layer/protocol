@@ -18,6 +18,14 @@ from olp.model.verification import (
 
 
 def decode_value(value: Any) -> Any:
+    """Decode the conformance JSON projection into an abstract OLP value.
+
+    ``$bytes`` represents byte strings. ``$map`` is the escape hatch for
+    integer-keyed maps and for literal maps that would otherwise collide with
+    a wrapper name. Ordinary JSON objects remain the compact representation
+    for unambiguous text-keyed maps.
+    """
+
     if isinstance(value, list):
         return tuple(decode_value(item) for item in value)
     if isinstance(value, dict):
@@ -26,6 +34,21 @@ def decode_value(value: Any) -> Any:
             if not isinstance(raw, str):
                 raise ValueError("$bytes MUST contain a hexadecimal string")
             return bytes.fromhex(raw)
+        if set(value) == {"$map"}:
+            entries = value["$map"]
+            if not isinstance(entries, list):
+                raise ValueError("$map MUST contain an array of [key, value] pairs")
+            result: dict[str | int, Any] = {}
+            for entry in entries:
+                if not isinstance(entry, list) or len(entry) != 2:
+                    raise ValueError("$map entries MUST be two-element arrays")
+                key = decode_value(entry[0])
+                if isinstance(key, bool) or not isinstance(key, (str, int)):
+                    raise ValueError("$map keys MUST be text strings or integer labels")
+                if key in result:
+                    raise ValueError("$map contains a duplicate abstract key")
+                result[key] = decode_value(entry[1])
+            return result
         return {key: decode_value(item) for key, item in value.items()}
     return value
 
@@ -36,7 +59,15 @@ def encode_value(value: Any) -> Any:
     if isinstance(value, tuple):
         return [encode_value(item) for item in value]
     if isinstance(value, Mapping):
-        return {str(key): encode_value(item) for key, item in value.items()}
+        keys = tuple(value.keys())
+        if all(isinstance(key, str) for key in keys) and set(keys) not in ({"$bytes"}, {"$map"}):
+            return {key: encode_value(item) for key, item in value.items()}
+        entries = []
+        for key, item in value.items():
+            if isinstance(key, bool) or not isinstance(key, (str, int)):
+                raise TypeError("conformance value-map keys MUST be strings or integers")
+            entries.append([encode_value(key), encode_value(item)])
+        return {"$map": entries}
     return value
 
 

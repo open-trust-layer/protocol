@@ -1,8 +1,7 @@
 """Open Layer Protocol Draft v0.1 reference implementation core.
 
 The package implements the deterministic record/proof core from Specifications
-0003 and 0004 plus the Milestone 16 Evidence Graph Core from Specification 0005. The package intentionally performs no implicit
-network resolution.
+0003 and 0004 plus the Milestone 16 Evidence Graph Core from Specification 0005 and Milestone 17 adversarial hardening. The package intentionally performs no implicit network resolution.
 """
 
 from .constants import MANDATORY_CRYPTOSUITE, SHA256_COSE_ALGORITHM_ID

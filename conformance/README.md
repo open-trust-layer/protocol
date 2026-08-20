@@ -1,6 +1,6 @@
 # OLP Executable Conformance Harness
 
-**Milestones 14–16 · Harness v0.1.0**
+**Milestones 14–17 · Harness v0.1.0**
 
 This directory contains implementation-neutral conformance material for the OLP capabilities currently executable from Specifications `0003`, `0004`, and the deterministic Evidence Graph Core of `0005`.
 
@@ -20,6 +20,8 @@ The harness tests observable protocol behavior. Official vectors do not import o
 | `olp.evidence-relationship.v1` | relationship statement validation and projection |
 
 `core-v1` requires all eight capabilities. `evidence-v1` scopes the three Specification 0005 evidence capabilities.
+
+Milestone 17 hardens the adapter boundary: JSON inputs use unique object names, finite size/depth limits, and reversible `$map` projection for abstract maps whose keys cannot be represented safely as an ordinary JSON object.
 
 ## Case categories
 
@@ -100,7 +102,7 @@ The special `capabilities` operation has an empty input object.
 
 The included module `python -m olp_conformance.subprocess_reference` implements this contract using the Python reference core and is used by harness self-tests.
 
-## JSON representation of byte strings
+## JSON representation of generic OLP values
 
 Known cryptographic fields use explicit names such as `digest_hex`, `proofValue_hex`, `public_key_hex`, and `challenge_hex`.
 
@@ -110,7 +112,15 @@ Generic OLP values inside records or extensions represent byte strings as:
 {"$bytes": "001122aabb"}
 ```
 
-This projection exists only for conformance JSON. It is not an OLP transport serialization.
+When an abstract map contains integer keys, or when a literal text-keyed map would collide with a reserved wrapper shape, the conformance projection uses:
+
+```json
+{"$map": [[1, "integer-key"], ["1", "text-key"]]}
+```
+
+`$map` entries are two-element `[key, value]` arrays. Keys are text strings or integers and are recursively projected. Duplicate abstract keys are rejected.
+
+This projection exists only for conformance JSON. It is not the OJVE-1 transport serialization from Specification 0012. Strict conformance JSON also rejects duplicate JSON object names, floats, non-standard numeric constants, excessive input/depth, and non-scalar Unicode.
 
 ## Expectations
 

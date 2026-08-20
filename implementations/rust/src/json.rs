@@ -51,9 +51,13 @@ impl Json {
     }
 }
 
+pub const MAX_JSON_BYTES: usize = 4 * 1024 * 1024;
+pub const MAX_JSON_DEPTH: usize = 128;
+
 pub fn parse(input: &str) -> Result<Json, String> {
+    if input.len() > MAX_JSON_BYTES { return Err("JSON input exceeds adapter size limit".into()); }
     let mut p = Parser { bytes: input.as_bytes(), pos: 0 };
-    let value = p.value()?;
+    let value = p.value(0)?;
     p.ws();
     if p.pos != p.bytes.len() { return Err(format!("trailing JSON data at byte {}", p.pos)); }
     Ok(value)
@@ -117,14 +121,15 @@ impl<'a> Parser<'a> {
         while self.pos < self.bytes.len() && matches!(self.bytes[self.pos], b' ' | b'\n' | b'\r' | b'\t') { self.pos += 1; }
     }
     fn peek(&mut self) -> Option<u8> { self.ws(); self.bytes.get(self.pos).copied() }
-    fn value(&mut self) -> Result<Json, String> {
+    fn value(&mut self, depth: usize) -> Result<Json, String> {
+        if depth > MAX_JSON_DEPTH { return Err("JSON nesting depth exceeds adapter limit".into()); }
         match self.peek().ok_or_else(|| "unexpected end of JSON".to_string())? {
             b'n' => { self.literal(b"null")?; Ok(Json::Null) }
             b't' => { self.literal(b"true")?; Ok(Json::Bool(true)) }
             b'f' => { self.literal(b"false")?; Ok(Json::Bool(false)) }
             b'"' => Ok(Json::String(self.string()?)),
-            b'[' => self.array(),
-            b'{' => self.object(),
+            b'[' => self.array(depth),
+            b'{' => self.object(depth),
             b'-' | b'0'..=b'9' => self.number(),
             other => Err(format!("unexpected JSON byte 0x{other:02x} at {}", self.pos)),
         }
@@ -197,22 +202,22 @@ impl<'a> Parser<'a> {
         let n = s.parse::<i128>().map_err(|_| "JSON integer outside supported range")?;
         Ok(Json::Int(n))
     }
-    fn array(&mut self) -> Result<Json, String> {
+    fn array(&mut self, depth: usize) -> Result<Json, String> {
         self.ws(); self.pos += 1; let mut out = Vec::new(); self.ws();
         if self.bytes.get(self.pos) == Some(&b']') { self.pos += 1; return Ok(Json::Array(out)); }
         loop {
-            out.push(self.value()?); self.ws();
+            out.push(self.value(depth + 1)?); self.ws();
             match self.bytes.get(self.pos) { Some(b',') => { self.pos += 1; }, Some(b']') => { self.pos += 1; break; }, _ => return Err("expected ',' or ']'".into()) }
         }
         Ok(Json::Array(out))
     }
-    fn object(&mut self) -> Result<Json, String> {
+    fn object(&mut self, depth: usize) -> Result<Json, String> {
         self.ws(); self.pos += 1; let mut out = BTreeMap::new(); self.ws();
         if self.bytes.get(self.pos) == Some(&b'}') { self.pos += 1; return Ok(Json::Object(out)); }
         loop {
             let key = self.string()?; self.ws();
             if self.bytes.get(self.pos) != Some(&b':') { return Err("expected ':'".into()); }
-            self.pos += 1; let value = self.value()?;
+            self.pos += 1; let value = self.value(depth + 1)?;
             if out.insert(key.clone(), value).is_some() { return Err(format!("duplicate JSON property {key:?}")); }
             self.ws();
             match self.bytes.get(self.pos) { Some(b',') => { self.pos += 1; }, Some(b'}') => { self.pos += 1; break; }, _ => return Err("expected ',' or '}'".into()) }
@@ -226,4 +231,8 @@ mod tests {
     use super::*;
     #[test] fn roundtrip() { let v=parse(r#"{"a":[1,true,null,"é"],"z":-2}"#).unwrap(); assert_eq!(parse(&stringify(&v)).unwrap(),v); }
     #[test] fn duplicate_rejected() { assert!(parse(r#"{"a":1,"a":2}"#).is_err()); }
+    #[test] fn excessive_depth_rejected() {
+        let text = format!("{}0{}", "[".repeat(MAX_JSON_DEPTH + 1), "]".repeat(MAX_JSON_DEPTH + 1));
+        assert!(parse(&text).is_err());
+    }
 }

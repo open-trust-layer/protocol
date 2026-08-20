@@ -81,16 +81,16 @@ jobs:
             --quiet \
             --report conformance-rust.json
 
-      - name: Assert Milestone 16 conformance count
+      - name: Assert Milestone 17 conformance count
         run: |
           python - <<'PY'
           import json
           report = json.load(open("conformance-rust.json", encoding="utf-8"))
           results = report["results"]
-          assert len(results) == 57, f"expected 57 core-v1 cases, got {len(results)}"
+          assert len(results) == 62, f"expected 62 core-v1 cases, got {len(results)}"
           failed = [item for item in results if item["status"] != "PASS"]
           assert not failed, failed
-          print("Rust core-v1 conformance: 57/57 PASS")
+          print("Rust core-v1 conformance: 62/62 PASS")
           PY
 
       - name: Run bidirectional Python-Rust interoperability tests

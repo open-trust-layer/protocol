@@ -471,6 +471,16 @@ An implementation MAY understand a commitment algorithm while local security pol
 
 Such rejection MUST be represented separately from proof syntax and mathematical signature validity.
 
+If the commitment algorithm is technically supported and all mathematical verification inputs are otherwise available, a local policy rejection MUST NOT by itself prevent recomputing the record commitment or verifying the signature. In that case, an implementation MAY report simultaneously, for example:
+
+```text
+commitmentAlgorithmSupport = REJECTED_BY_POLICY
+recordBinding = VALID
+cryptographicValidity = VALID
+```
+
+The application remains free to reject reliance because the policy dimension is not acceptable.
+
 ---
 
 ## 9. OLP Proof Input v1
@@ -1002,6 +1012,15 @@ cryptosuiteSecurityStatus = DEPRECATED
 
 A suite being deprecated for new proof creation does not make historical signatures mathematically invalid.
 
+The same rule applies when local policy rejects a cryptosuite that the implementation can still technically verify. If all verification inputs are available, policy rejection MUST remain distinct from mathematical signature validity. A verifier MAY therefore report both:
+
+```text
+cryptosuiteSupport = REJECTED_BY_POLICY
+cryptographicValidity = VALID
+```
+
+This does not make the proof acceptable under that policy.
+
 ---
 
 ## 17. Deterministic CBOR Encoding
@@ -1281,6 +1300,7 @@ UNSUPPORTED_VERSION
 
 ```text
 UNSUPPORTED_CRYPTOSUITE
+CRYPTOSUITE_REJECTED_BY_POLICY
 UNSUPPORTED_COMMITMENT_ALGORITHM
 COMMITMENT_ALGORITHM_REJECTED_BY_POLICY
 RECORD_COMMITMENT_MISMATCH

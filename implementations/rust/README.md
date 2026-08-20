@@ -63,7 +63,7 @@ The root GitHub Actions workflow contains a `rust-interoperability` job that:
 1. installs Rust 1.85.0 and `libssl-dev`;
 2. runs `cargo test --locked`;
 3. builds the release subprocess adapter;
-4. runs that adapter against all 57 cases in the official `core-v1` corpus; and
+4. runs that adapter against all 62 cases in the official `core-v1` corpus; and
 5. runs the bidirectional Python↔Rust interoperability tests.
 
-Milestone 16 evidence interoperability should be considered accepted only when that job is green.
+Milestone 17 hardened cross-language conformance should be considered accepted only when that job is green.

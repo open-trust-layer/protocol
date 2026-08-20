@@ -181,9 +181,17 @@ def verify_proof(
     result.version_support = Status.SUPPORTED
 
     suite_supported = proof.cryptosuite == MANDATORY_CRYPTOSUITE
-    result.cryptosuite_support = Status.SUPPORTED if suite_supported else Status.UNSUPPORTED
     if not suite_supported:
+        result.cryptosuite_support = Status.UNSUPPORTED
         result.error(ReasonCode.UNSUPPORTED_CRYPTOSUITE, f"unsupported cryptosuite {proof.cryptosuite!r}")
+    elif policy.allowed_cryptosuites is not None and proof.cryptosuite not in policy.allowed_cryptosuites:
+        result.cryptosuite_support = Status.REJECTED_BY_POLICY
+        result.error(
+            ReasonCode.CRYPTOSUITE_REJECTED_BY_POLICY,
+            f"cryptosuite {proof.cryptosuite!r} rejected by local policy",
+        )
+    else:
+        result.cryptosuite_support = Status.SUPPORTED
 
     unknown_critical = [item for item in proof.critical if item not in policy.understood_extensions]
     unknown_noncritical = [
@@ -218,16 +226,16 @@ def verify_proof(
                 ReasonCode.COMMITMENT_ALGORITHM_REJECTED_BY_POLICY,
                 f"commitment algorithm {algorithm} rejected by local policy",
             )
+        # Mathematical record binding remains evaluable even when local policy
+        # rejects a technically supported algorithm. Policy is a separate
+        # dimension and MUST NOT rewrite cryptographic history.
+        canonical_record = record_identity_bytes(record)
+        actual_digest = digest_bytes(canonical_record, algorithm)
+        if hmac.compare_digest(actual_digest, proof.recordCommitment.digest):
+            result.record_binding = Status.VALID
         else:
-            # A malformed record is an invalid caller input rather than a proof
-            # classification; keep this contract explicit by letting validation raise.
-            canonical_record = record_identity_bytes(record)
-            actual_digest = digest_bytes(canonical_record, algorithm)
-            if hmac.compare_digest(actual_digest, proof.recordCommitment.digest):
-                result.record_binding = Status.VALID
-            else:
-                result.record_binding = Status.INVALID
-                result.error(ReasonCode.RECORD_COMMITMENT_MISMATCH, "record commitment does not match supplied record")
+            result.record_binding = Status.INVALID
+            result.error(ReasonCode.RECORD_COMMITMENT_MISMATCH, "record commitment does not match supplied record")
 
     if resolved_method is None:
         result.verification_method_resolution = Status.UNAVAILABLE
@@ -255,8 +263,8 @@ def verify_proof(
 
     prerequisites = (
         suite_supported
+        and algorithm in supported_commitment_algorithms()
         and result.record_binding == Status.VALID
-        and result.commitment_algorithm_support == Status.SUPPORTED
         and resolved_method is not None
         and result.verification_method_compatibility == Status.COMPATIBLE
     )

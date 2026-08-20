@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Milestone 16 Evidence Graph Core complete and independently verified; Milestone 17 adversarial/security review next
+**Current phase:** Milestone 17 adversarial/security hardening implemented; cross-language security conformance is the acceptance gate
 
 ---
 
@@ -191,7 +191,9 @@ The harness supports both an in-process Python adapter and a JSON-lines subproce
 
 Milestone 15 added and verified an independent Rust implementation under `implementations/rust/`. The Rust adapter passed the same implementation-neutral corpus and bidirectional Python↔Rust interoperability gates.
 
-Milestone 16 makes Specification 0005 executable: deterministic Proof Identity, typed `EvidenceRefV1`, ordinary immutable relationship records, provenance-preserving graph projection, dangling-reference handling, cycle-safe traversal, and explicit resource-boundary results. The conformance corpus now contains 57 cases across eight capabilities, including an `evidence-v1` profile exercised by both Python and Rust.
+Milestone 16 makes Specification 0005 executable: deterministic Proof Identity, typed `EvidenceRefV1`, ordinary immutable relationship records, provenance-preserving graph projection, dangling-reference handling, cycle-safe traversal, and explicit resource-boundary results. The conformance corpus now contains 62 cases across eight capabilities, including an `evidence-v1` profile exercised by both Python and Rust.
+
+Milestone 17 hardens the executable core against parser differentials, malformed URI injection, unbounded recursion, policy/cryptography conflation, graph-cycle misclassification, stale projections, and ambiguous adapter map encoding. The detailed findings are in [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
 
 Draft v0.1 remains implementation-test material, not a stable production standard.
 
@@ -202,8 +204,8 @@ Draft v0.1 remains implementation-test material, not a stable production standar
 1. **Reference implementation core — complete** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results, normative vectors, and negative tests.
 2. **Executable conformance harness — complete** — implementation-neutral positive, negative, malformed, and unsupported corpus; adapter boundary; CLI; machine-readable reports; harness self-tests; CI.
 3. **Second independent implementation — complete and verified** — independent Rust core plus shared-corpus and bidirectional Python↔Rust interoperability gates.
-4. **Evidence Graph Core — complete and independently verified** — Proof Identity, EvidenceRef, relationship records, graph projection/traversal, 57-case shared corpus, and Rust parity for deterministic evidence primitives.
-5. **Adversarial/security review — next** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
+4. **Evidence Graph Core — complete and independently verified** — Proof Identity, EvidenceRef, relationship records, graph projection/traversal, and Rust parity for deterministic evidence primitives.
+5. **Adversarial/security review — implementation complete; CI-gated** — parser ambiguity, policy separation, resource exhaustion, graph correctness, and cross-language transport hardening; `core-v1` expanded to 62 cases.
 6. **Draft v0.2 integration pass** — feed implementation and security findings back into the specifications.
 
 Before a future stable v1.0 release, the project should require reproducible canonical vectors, independent interoperable implementations, a public conformance corpus, and security review of the core cryptographic and network boundaries.

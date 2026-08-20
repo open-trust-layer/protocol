@@ -19,3 +19,22 @@ def test_subprocess_adapter_contract_runs_reference_implementation():
     )
     assert report.total == 2
     assert report.overall == 'PASS'
+
+
+def test_reference_subprocess_rejects_duplicate_request_properties():
+    import json
+    import subprocess
+
+    raw = '{"protocol":"olp-conformance-adapter-v1","operation":"capabilities","operation":"evil","input":{}}\n'
+    completed = subprocess.run(
+        [sys.executable, '-m', 'olp_conformance.subprocess_reference'],
+        input=raw,
+        text=True,
+        capture_output=True,
+        env={**os.environ, 'PYTHONPATH': str(Path('src').resolve())},
+        check=True,
+    )
+    response = json.loads(completed.stdout)
+    assert response['ok'] is False
+    assert response['error']['classification'] == 'MALFORMED'
+    assert response['error']['reason'] == 'INVALID_JSON'

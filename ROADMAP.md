@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 16 Evidence Graph Core complete and independently verified; Milestone 17 adversarial/security review next
+**Current phase:** Phase II — Milestone 17 adversarial/security review implemented; cross-language CI is the acceptance gate
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -138,6 +138,8 @@ Milestone 16 was accepted after both implementations passed the expanded 57-case
 
 ### Milestone 17 — Adversarial & Security Review
 
+**Implementation complete; acceptance is gated on the hardened shared Python/Rust conformance CI.**
+
 Attack the executable design rather than reviewing prose alone.
 
 At minimum test:
@@ -157,6 +159,8 @@ At minimum test:
 - downgrade behavior.
 
 Security or interoperability defects discovered here must feed back into the specifications, not only into implementation patches.
+
+Milestone 17 acceptance requires the 62-case `core-v1` corpus to pass in both Python and Rust, the repository security regressions to pass, and the existing bidirectional interoperability suite to remain green.
 
 ### Milestone 18 — Draft v0.2 Integration Pass
 

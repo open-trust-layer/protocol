@@ -33,6 +33,10 @@ A useful report should include, where possible:
 - known mitigations; and
 - any proposed specification wording change.
 
+## Current executable security review
+
+Milestone 17 records the first systematic adversarial review of the executable core. Findings, fixes, normative amendments, residual risks, and the acceptance gate are documented in [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md). This is an internal project security milestone, not a substitute for independent external review.
+
 ## High-priority security areas
 
 Reports are especially valuable for:

@@ -2,7 +2,7 @@
 
 Harness version: `0.1.0`
 
-Total cases: **57**
+Total cases: **62**
 
 | Case | Category | Capability | Operation |
 |---|---|---|---|
@@ -63,21 +63,26 @@ Total cases: **57**
 | `relationship.unsupported.version.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
 | `relationship.unsupported.relation-type.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
 | `relationship.unsupported.critical-qualifier.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
+| `record.identity.adapter-wrapper-collision.001` | positive | `olp.record-identity.v1` | `derive_record_identity` |
+| `proof.input.mixed-map-keys.001` | positive | `olp.proof-input.v1` | `encode_proof_input` |
+| `proof.verify.negative.cryptosuite-policy.001` | negative | `olp.proof-verification.v1` | `verify_proof` |
+| `proof.verify.negative.commitment-policy.001` | negative | `olp.proof-verification.v1` | `verify_proof` |
+| `proof.verify.malformed.verification-method-uri.001` | malformed | `olp.proof-verification.v1` | `verify_proof` |
 
 ## Category totals
 
-- positive: 19
-- negative: 9
-- malformed: 19
+- positive: 21
+- negative: 11
+- malformed: 20
 - unsupported: 10
 
 ## Capability totals
 
-- `olp.record-identity.v1`: 8
-- `olp.record-commitment.sha256.v1`: 2
-- `olp.proof-input.v1`: 3
-- `olp.proof.eddsa-ed25519.v1`: 8
-- `olp.proof-verification.v1`: 20
-- `olp.proof-identity.v1`: 3
 - `olp.evidence-ref.v1`: 4
 - `olp.evidence-relationship.v1`: 9
+- `olp.proof-identity.v1`: 3
+- `olp.proof-input.v1`: 4
+- `olp.proof-verification.v1`: 23
+- `olp.proof.eddsa-ed25519.v1`: 8
+- `olp.record-commitment.sha256.v1`: 2
+- `olp.record-identity.v1`: 9

@@ -91,17 +91,22 @@ def _encode(value: Any, *, limits: CborLimits, depth: int) -> bytes:
     if isinstance(value, (list, tuple)):
         if len(value) > limits.max_collection_items:
             raise ResourceLimitError("array exceeds implementation item limit")
-        body = b"".join(_encode(item, limits=limits, depth=depth + 1) for item in value)
-        result = _head(4, len(value)) + body
-        if len(result) > limits.max_output_bytes:
-            raise ResourceLimitError("deterministic CBOR output exceeds implementation limit")
-        return result
+        prefix = _head(4, len(value))
+        body = bytearray()
+        for item in value:
+            encoded_item = _encode(item, limits=limits, depth=depth + 1)
+            if len(prefix) + len(body) + len(encoded_item) > limits.max_output_bytes:
+                raise ResourceLimitError("deterministic CBOR output exceeds implementation limit")
+            body.extend(encoded_item)
+        return prefix + bytes(body)
 
     if isinstance(value, Mapping):
         if len(value) > limits.max_collection_items:
             raise ResourceLimitError("map exceeds implementation item limit")
         entries: list[tuple[bytes, bytes]] = []
         seen_encoded_keys: set[bytes] = set()
+        prefix = _head(5, len(value))
+        accumulated = len(prefix)
         for key, item in value.items():
             if isinstance(key, bool) or not isinstance(key, (str, int)):
                 raise EncodingError("OLP deterministic CBOR map keys must be text strings or integer labels")
@@ -110,12 +115,17 @@ def _encode(value: Any, *, limits: CborLimits, depth: int) -> bytes:
                 raise EncodingError("duplicate canonical map key")
             seen_encoded_keys.add(key_bytes)
             value_bytes = _encode(item, limits=limits, depth=depth + 1)
+            accumulated += len(key_bytes) + len(value_bytes)
+            if accumulated > limits.max_output_bytes:
+                raise ResourceLimitError("deterministic CBOR output exceeds implementation limit")
             entries.append((key_bytes, value_bytes))
         entries.sort(key=lambda pair: pair[0])
-        body = b"".join(key_bytes + value_bytes for key_bytes, value_bytes in entries)
-        result = _head(5, len(entries)) + body
-        if len(result) > limits.max_output_bytes:
-            raise ResourceLimitError("deterministic CBOR output exceeds implementation limit")
-        return result
+        body = bytearray()
+        for key_bytes, value_bytes in entries:
+            if len(prefix) + len(body) + len(key_bytes) + len(value_bytes) > limits.max_output_bytes:
+                raise ResourceLimitError("deterministic CBOR output exceeds implementation limit")
+            body.extend(key_bytes)
+            body.extend(value_bytes)
+        return prefix + bytes(body)
 
     raise EncodingError(f"unsupported deterministic CBOR value type: {type(value).__name__}")

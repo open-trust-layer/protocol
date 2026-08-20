@@ -53,7 +53,7 @@ Milestone 16 adds three capability IDs:
 - `olp.evidence-ref.v1`
 - `olp.evidence-relationship.v1`
 
-The `evidence-v1` profile contains these capabilities. `core-v1` now contains eight capabilities and 57 implementation-neutral cases total.
+The `evidence-v1` profile contains these capabilities. Milestone 16 introduced 57 implementation-neutral cases; after Milestone 17 security hardening, `core-v1` contains eight capabilities and 62 cases total.
 
 The new cases cover deterministic identities/references, relationship ordering and uniqueness, relation-specific type constraints, extension relation handling, critical qualifiers, countersignatures, and ordinary relationship-record identity/projection behavior.
 
@@ -62,7 +62,7 @@ The new cases cover deterministic identities/references, relationship ordering a
 The independent Rust implementation implements the same three evidence capabilities through the existing JSON-lines subprocess adapter. CI requires:
 
 - Rust unit/normative-vector tests;
-- 57/57 `core-v1` conformance;
+- 57/57 Milestone 16 `core-v1` conformance at acceptance (subsequently expanded by Milestone 17);
 - Proof Identity equality between Python and Rust;
 - EvidenceRef equality between Python and Rust; and
 - relationship-processing equality for the shared vector.
