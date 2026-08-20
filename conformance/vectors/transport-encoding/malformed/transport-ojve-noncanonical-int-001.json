@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.noncanonical-int.001","capability":"olp.transport-encoding.v1","category":"malformed","operation":"decode_ojve","input":{"ojve":{"$olp":"int","v":"01"}},"expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"MALFORMED_OJVE"}}

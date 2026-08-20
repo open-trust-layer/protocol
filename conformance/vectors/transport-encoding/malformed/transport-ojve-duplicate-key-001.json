@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.duplicate-key.001","capability":"olp.transport-encoding.v1","category":"malformed","operation":"decode_ojve","input":{"ojve":{"$olp":"map","v":[[1,"a"],[1,"b"]]}},"expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"DUPLICATE_OJVE_MAP_KEY"}}

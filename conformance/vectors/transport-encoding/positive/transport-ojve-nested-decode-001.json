@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.nested.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"decode_ojve","input":{"ojve":{"$olp":"map","v":[["x",[{"$olp":"bytes","v":"_w"},{"$olp":"int","v":"9007199254740992"}]]]}},"expected":{"outcome":"SUCCESS","result":{"value":{"$map":[["x",[{"$bytes":"ff"},9007199254740992]]]}}}}

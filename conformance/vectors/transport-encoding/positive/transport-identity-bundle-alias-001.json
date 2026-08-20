@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.identity.bundle-alias.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"encode_identity_text","input":{"kind":"bundle","digest_hex":"1111111111111111111111111111111111111111111111111111111111111111"},"expected":{"outcome":"SUCCESS","result":{"text":"b1_ERERERERERERERERERERERERERERERERERERERERERE"}}}

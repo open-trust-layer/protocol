@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.bytes.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"encode_ojve","input":{"value":{"$bytes":"0001ff"}},"expected":{"outcome":"SUCCESS","result":{"ojve":{"$olp":"bytes","v":"AAH_"}}}}
