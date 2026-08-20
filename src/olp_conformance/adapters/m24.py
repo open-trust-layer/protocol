@@ -3,10 +3,17 @@
 from __future__ import annotations
 
 from olp.bundle import PackagedResourceV1
+from olp.http_policy import (
+    evaluate_cache_policy,
+    evaluate_http_limit,
+    evaluate_range_semantics,
+    evaluate_rate_limit,
+)
 from olp.model.bundle import ResourceRefV1
 from olp.streaming_http import (
     TransportFrameV1,
     encode_stream_frame,
+    encode_stream_sequence,
     evaluate_http_operation,
     evaluate_immutable_http_read,
     evaluate_redirect,
@@ -14,7 +21,7 @@ from olp.streaming_http import (
     separate_http_auth_from_olp,
     validate_content_digest,
 )
-from olp.transport import project_abstract, unproject_abstract
+from olp.transport import unproject_abstract
 
 from ..codec import proof_from_json, record_from_json
 from .m23 import ReferenceAdapter as M23ReferenceAdapter
@@ -36,9 +43,7 @@ def _resource_from_json(value):
 
 def _stream_frame_from_json(value):
     frame_type = value["type"]
-    if frame_type == "manifest":
-        payload = record_from_json(value["record"])
-    elif frame_type == "record":
+    if frame_type in {"manifest", "record"}:
         payload = record_from_json(value["record"])
     elif frame_type == "proof":
         payload = proof_from_json(value["proof"])
@@ -54,8 +59,17 @@ def _stream_frame_from_json(value):
     )
 
 
+def _wire_frame_from_json(value):
+    return TransportFrameV1(
+        frame_type=value["type"],
+        payload=unproject_abstract(value.get("payload")),
+        version=value.get("version", 1),
+        domain=value.get("domain", "OLP-FRAME"),
+    )
+
+
 class ReferenceAdapter(M23ReferenceAdapter):
-    """Python reference adapter for the deterministic M24 exchange semantics."""
+    """Python reference adapter for deterministic M24 exchange semantics."""
 
     def capabilities(self) -> frozenset[str]:
         return super().capabilities() | {M24_STREAM_CAPABILITY, M24_HTTP_CAPABILITY}
@@ -63,6 +77,10 @@ class ReferenceAdapter(M23ReferenceAdapter):
     def _op_encode_stream_frame(self, payload):
         abstract = unproject_abstract(payload.get("payload"))
         return encode_stream_frame(payload["frame_type"], abstract)
+
+    def _op_encode_stream_sequence(self, payload):
+        frames = tuple(_wire_frame_from_json(item) for item in payload["frames"])
+        return encode_stream_sequence(frames)
 
     def _op_process_bundle_stream(self, payload):
         frames = tuple(_stream_frame_from_json(item) for item in payload["frames"])
@@ -128,4 +146,34 @@ class ReferenceAdapter(M23ReferenceAdapter):
             service_authorization=payload["service_authorization"],
             olp_cryptographic_validity=payload["olp_cryptographic_validity"],
             olp_authority_evidence=payload.get("olp_authority_evidence", "NOT_EVALUATED"),
+        )
+
+    def _op_evaluate_http_cache(self, payload):
+        representations = {
+            key: bytes.fromhex(value)
+            for key, value in payload["representations_hex"].items()
+        }
+        return evaluate_cache_policy(
+            representations,
+            sensitive=bool(payload.get("sensitive", False)),
+            public_cache_requested=bool(payload.get("public_cache_requested", False)),
+            explicit_public_cache_policy=bool(payload.get("explicit_public_cache_policy", False)),
+        )
+
+    def _op_evaluate_http_range(self, payload):
+        return evaluate_range_semantics(
+            partial_representation=bool(payload["partial_representation"]),
+            full_object_verification_requested=bool(payload["full_object_verification_requested"]),
+        )
+
+    def _op_evaluate_http_limit(self, payload):
+        return evaluate_http_limit(
+            observed_bytes=payload["observed_bytes"],
+            max_bytes=payload["max_bytes"],
+        )
+
+    def _op_evaluate_http_rate_limit(self, payload):
+        return evaluate_rate_limit(
+            limited=bool(payload["limited"]),
+            retry_after_seconds=payload.get("retry_after_seconds"),
         )
