@@ -32,6 +32,7 @@ jobs:
         run: |
           python -m pytest -q \
             tests/conformance/test_promotion.py \
+            tests/conformance/test_promotion_review_binding.py \
             tests/conformance/test_promotion_schemas.py \
             tests/conformance/test_commitment.py \
             tests/conformance/test_draft_v03_release.py
@@ -44,12 +45,20 @@ jobs:
           python - <<'PY'
           import json
           value = json.load(open("v1-promotion-report.json", encoding="utf-8"))
-          assert value["schema"] == "olp-v1-promotion-report-v1"
+          assert value["schema"] == "olp-v1-promotion-report-v2"
+          assert value["version"] == 2
           assert value["candidate"] == "olp-v1.0"
           assert value["mandatory_profile"] == "core-v1"
           assert len(value["mandatory_capabilities"]) == 8
           assert len(value["optional_profiles"]) == 6
           assert len(value["optional_capabilities"]) == 7
+          assert value["review_target_id"] == "olp-v1.0-review-1"
+          assert value["review_target_status"] in {"preparing", "frozen"}
+          if value["review_target_status"] == "preparing":
+              assert value["review_target_source_commit"] is None
+          else:
+              assert isinstance(value["review_target_source_commit"], str)
+              assert len(value["review_target_source_commit"]) == 40
           assert value["internal_readiness"] == "PASS"
           assert value["status"] == "BLOCKED"
           assert value["blockers"] == [
@@ -59,8 +68,9 @@ jobs:
           assert value["release_corpus_commitment"] == "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
           assert value["core_corpus_commitment"] == "8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e"
           assert not [item for item in value["checks"] if item["status"] == "FAIL"]
-          print("M26 internal readiness: PASS")
-          print("M26 stable promotion: BLOCKED (expected)")
+          print("v1 candidate internal readiness: PASS")
+          print("v1 stable promotion: BLOCKED (expected)")
+          print("review target:", value["review_target_id"], value["review_target_status"], value["review_target_source_commit"])
           PY
 
       - name: Prove stable promotion cannot pass while reviews are pending
@@ -86,11 +96,11 @@ jobs:
       - name: Write candidate core commitment evidence
         run: olp-conformance commitment --profile core-v1 --json > v1-core-candidate-commitment.json
 
-      - name: Upload M26 readiness evidence
+      - name: Upload v1 candidate readiness evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: m26-v1-candidate-readiness-python-${{ matrix.python-version }}
+          name: v1-candidate-readiness-python-${{ matrix.python-version }}
           path: |
             v1-promotion-report.json
             v1-core-candidate-commitment.json
