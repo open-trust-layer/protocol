@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 20 — executable Resolution & Discovery Core; Python/Rust `resolution-v1` conformance is the acceptance gate
+**Current phase:** Milestone 23 — executable Transport Encoding Core
 
 ---
 
@@ -45,9 +45,9 @@ The full Milestone 18 integration rationale is documented in [`docs/draft-v0.2-i
 
 ---
 
-## Independently verified core
+## Independently verified executable profiles
 
-The current `core-v1` interoperability profile contains eight capabilities:
+The frozen `core-v1` interoperability profile contains eight capabilities:
 
 ```text
 olp.record-identity.v1
@@ -63,15 +63,24 @@ olp.evidence-relationship.v1
 Milestone 17 acceptance demonstrated:
 
 ```text
-Python core-v1 conformance      62 / 62 PASS
-Rust core-v1 conformance        62 / 62 PASS
-Python <-> Rust interoperability 9 / 9 PASS
-Python 3.11-3.14 CI             PASS
+Python core-v1 conformance       62 / 62 PASS
+Rust core-v1 conformance         62 / 62 PASS
+Python <-> Rust interoperability PASS
+Python 3.11-3.14 CI              PASS
 ```
 
-This does **not** imply that every higher-layer behavior in Specifications 0006–0010 has been independently implemented and security-tested.
+Higher-layer behavior is added through separate profiles rather than silently changing `core-v1`:
 
-Milestone 19 added the separately verified `bundle-v1` profile for Specification 0008. Milestone 20 adds `resolution-v1` for the deterministic offline-first subset of Specification 0009. `core-v1` remains frozen at the Draft v0.2 eight-capability / 62-case contract; higher-layer capabilities use separate profiles rather than silently changing `core-v1`.
+```text
+bundle-v1                         8 / 8 PASS  (Python + Rust)
+resolution-v1                    16 / 16 PASS  (Python + Rust)
+identity-authority-lifecycle-v1  18 / 18 PASS  (Python + Rust)
+privacy-disclosure-v1            18 / 18 PASS  (Python + Rust)
+```
+
+Direct Python↔Rust interoperability gates cover all of those accepted executable slices.
+
+Milestone 23 is now isolating the deterministic non-network portion of Specification 0012 into a separate transport-encoding profile before any live HTTP behavior is considered accepted.
 
 ---
 
@@ -87,13 +96,13 @@ Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 | 0003 | Record Representation | Verified core |
 | 0004 | Proofs and Verification | Verified core |
 | 0005 | Evidence Relationships and Graphs | Verified core subset |
-| 0006 | Identity and Authority Evidence | Draft design |
-| 0007 | Status, Revocation, and Lifecycle Evidence | Draft design |
+| 0006 | Identity and Authority Evidence | Executable `identity-authority-lifecycle-v1` subset |
+| 0007 | Status, Revocation, and Lifecycle Evidence | Executable `identity-authority-lifecycle-v1` subset |
 | 0008 | Evidence Exchange and Bundles | Executable `bundle-v1` subset |
 | 0009 | Resolution and Discovery Profiles | Executable `resolution-v1` subset |
-| 0010 | Privacy, Selective Disclosure, and Data Minimization | Draft design |
+| 0010 | Privacy, Selective Disclosure, and Data Minimization | Executable `privacy-disclosure-v1` subset |
 | 0011 | Conformance and Interoperability | Executable framework |
-| 0012 | Transport and API Profiles | Draft transport/API profile |
+| 0012 | Transport and API Profiles | M23 transport-encoding slice in progress; HTTP/network slice not yet accepted |
 | 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | Cross-cutting v0.2 governance |
 
 The individual numbered documents retain their own document revisions. The **Draft v0.2** label identifies the repository-level specification-set release.
@@ -143,6 +152,7 @@ resolution           != verification
 bundle integrity     != completeness
 conformance          != trustworthiness
 transport security   != OLP object proof validity
+transport encoding   != OLP evidence identity
 ```
 
 ---
@@ -160,7 +170,9 @@ The repository contains:
 
 Milestones 13–17 established executable identity/proof/evidence behavior, independent implementation parity, and adversarial hardening.
 
-Draft v0.2 integrates those findings back into the specification set without changing already verified core bytes.
+Milestones 19–22 independently reproduced bundle, resolution, identity/authority/lifecycle, and privacy/disclosure higher-layer slices without changing the frozen deterministic core.
+
+Milestone 23 is making textual identities, OJVE-1, and the single-object transport envelope independently executable before streaming and HTTP behavior are admitted into the interoperability surface.
 
 ---
 
@@ -168,9 +180,11 @@ Draft v0.2 integrates those findings back into the specification set without cha
 
 OLP is still experimental and is **not** a production security certification.
 
-Milestone 17 hardened the currently executable core against parser differentials, malformed URI inputs, recursive/resource exhaustion, policy/cryptographic conflation, graph-processing errors, and cross-language representation drift.
+Milestone 17 hardened the executable core against parser differentials, URI ambiguity, recursive/resource exhaustion, policy/cryptography conflation, graph-processing errors, and cross-language representation drift.
 
-Milestone 19 added bounded bundle ingestion, and Milestone 20 models resolver SSRF/redirect/private-address policy through deterministic network snapshots with no ambient I/O. Authority evaluation, lifecycle/status conflict handling, and privacy/disclosure behavior still require executable review.
+Milestone 19 added bounded bundle ingestion. Milestone 20 added deterministic resolver SSRF/redirect/private-address policy. Milestone 21 added exact delegation identity/scope checks and immutable lifecycle conflict handling. Milestone 22 added identity-preserving disclosure minimization and correlation/privacy warnings without field-level redaction or ambient network access.
+
+Transport parsing and HTTP/API boundaries remain security-sensitive work. Milestone 23 intentionally attacks the deterministic encoding boundary first; live HTTP, redirects, caching, message authentication, and stream truncation remain outside the accepted surface until the later transport/API milestone.
 
 See [`SECURITY.md`](SECURITY.md) and [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
 
@@ -180,7 +194,7 @@ See [`SECURITY.md`](SECURITY.md) and [`docs/security-review-milestone-17.md`](do
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-The immediate post-v0.2 goal is wider technical review and selecting the next executable higher-layer slice based on risk and interoperability value rather than adding speculative protocol scope.
+The immediate goal is Milestone 23 — Transport Encoding Core, followed by a separately reviewed streaming/HTTP API milestone. The project continues to choose executable slices by security risk and interoperability value rather than by adding speculative protocol scope.
 
 ---
 
