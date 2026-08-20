@@ -12,8 +12,8 @@ def test_manifest_loads_all_cases():
     manifest = load_manifest(MANIFEST)
     assert manifest.version == 1
     assert manifest.harness_version == '0.1.0'
-    assert len(manifest.cases) == 144
-    assert len({case.id for case in manifest.cases}) == 144
+    assert len(manifest.cases) == 180
+    assert len({case.id for case in manifest.cases}) == 180
 
 
 def test_core_profile_contains_expected_capabilities():
@@ -86,3 +86,18 @@ def test_m23_profile_is_additive_and_separate_from_frozen_core():
     assert 'olp.transport-encoding.v1' not in set(manifest.profiles['core-v1'])
     m23_cases = [case for case in manifest.cases if case.capability == 'olp.transport-encoding.v1']
     assert len(m23_cases) == 22
+
+
+def test_m24_profile_is_additive_and_separate_from_frozen_core():
+    manifest = load_manifest(MANIFEST)
+    assert set(manifest.profiles['streaming-http-v1']) == {
+        'olp.streaming-transport.v1',
+        'olp.http-api.v1',
+    }
+    assert 'olp.streaming-transport.v1' not in set(manifest.profiles['core-v1'])
+    assert 'olp.http-api.v1' not in set(manifest.profiles['core-v1'])
+    m24_cases = [
+        case for case in manifest.cases
+        if case.capability in {'olp.streaming-transport.v1', 'olp.http-api.v1'}
+    ]
+    assert len(m24_cases) == 36

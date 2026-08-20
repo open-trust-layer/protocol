@@ -125,8 +125,61 @@ def test_rust_transport_encoding_preserves_typed_values_identity_and_cbor():
         assert token in cbor_bridge
     assert "proof_identity::proof_identity_digest_for" in proof_bridge
     assert "transport_cbor::encode_envelope" in proof_bridge
-    # M23 is deliberately non-network. The accepted source must not grow a
-    # transport client/server or authorization surface under this capability.
     combined = source + "\n" + cbor_bridge + "\n" + proof_bridge
     for token in ("TcpStream", "UdpSocket", "reqwest", "hyper::", "std::net", "authorized"):
         assert token not in combined
+
+
+def test_rust_streaming_http_capabilities_preserve_exchange_separations_without_network_io():
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8")
+    source=(RUST/"src"/"streaming_http.rs").read_text(encoding="utf-8")
+    assert "olp.streaming-transport.v1" in lib
+    assert "olp.http-api.v1" in lib
+    assert "streaming_http::operation" in lib
+    for operation in (
+        "encode_stream_frame",
+        "encode_stream_sequence",
+        "process_bundle_stream",
+        "evaluate_http_read",
+        "evaluate_http_operation",
+        "validate_content_digest",
+        "evaluate_http_redirect",
+        "separate_http_auth_from_olp",
+        "evaluate_http_cache",
+        "evaluate_http_range",
+        "evaluate_http_limit",
+        "evaluate_http_rate_limit",
+    ):
+        assert operation in source
+    for token in (
+        "OLP-FRAME",
+        "STREAM_MANIFEST_NOT_FIRST",
+        "DUPLICATE_STREAM_MANIFEST",
+        "MALFORMED_CONTENT_DIGEST",
+        "HTTP_AUTHENTICATION_REQUIRED",
+        "HTTP_AUTHORIZATION_DENIED",
+        "SELF_CONTAINED_REQUIREMENT_UNSATISFIED",
+        "HTTPS_DOWNGRADE",
+        "REDIRECT_IDENTITY_CHANGED",
+        "SENSITIVE_METHOD_REDIRECT_BLOCKED",
+        "PARTIAL_REPRESENTATION_NOT_FULL_OBJECT",
+        "record::identity_digest",
+        "proof_identity::proof_identity_digest_for",
+        "bundle::process_bundle_operation",
+        "object_identity_automatically_reused_as_strong_etag",
+        "evidence_invalid",
+    ):
+        assert token in source
+    # M24 conformance models HTTP/stream semantics from explicit caller state.
+    # It must not quietly become an HTTP client/server implementation.
+    for token in (
+        "std::net",
+        "TcpStream",
+        "UdpSocket",
+        "reqwest",
+        "hyper::",
+        "ureq",
+        "curl",
+        "tokio",
+    ):
+        assert token not in source

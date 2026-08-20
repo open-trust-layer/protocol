@@ -43,6 +43,22 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add independent Rust implementation and cross-language interoperability CI.
 - Add executable Specification 0005 Evidence Graph Core: Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, and Rust parity.
 
+### Milestone 24 streaming and HTTP API core
+
+- Add deterministic Specification 0012 sequence and HTTP exchange semantics without introducing ambient network I/O, a universal OLP server, or a mandatory authentication framework.
+- Add separate `olp.streaming-transport.v1` and `olp.http-api.v1` capabilities with the combined 36-case `streaming-http-v1` acceptance profile.
+- Produce exact RFC 7464 JSON Text Sequence and deterministic CBOR Sequence frame bytes while keeping stream semantic processing on already-parsed frames rather than claiming a general hostile-input sequence decoder.
+- Enforce manifest-first streams, exactly one manifest, final `end` behavior, order-independent record/proof/resource semantics, explicit truncation, and preservation of independently addressable present objects.
+- Preserve stream completeness independently from evidence validity, including complete transport carrying a resource that fails its committed digest.
+- Recompute immutable Record/Proof/manifest identity for identity-bearing HTTP reads and preserve HTTP 404 as a local endpoint result rather than global nonexistence.
+- Preserve successful HTTP execution separately from detailed OLP semantic states such as resolution `NOT_FOUND`.
+- Preserve HTTP authentication, service authorization, OLP cryptographic validity, and OLP authority evidence as separate dimensions.
+- Prevent silent self-contained bundle-query downgrade, HTTPS-to-HTTP redirect downgrade, identity-changing immutable redirects, sensitive-method redirects by default, and cross-origin credential forwarding without explicit policy.
+- Model RFC 9530 `Content-Digest` at the parsed RFC 8941 dictionary boundary: the HTTP stack parses Structured Fields, while OLP independently validates algorithm/digest-byte semantics over HTTP content.
+- Keep representation-specific cache validators separate from OLP object identity; require explicit policy for public caching of sensitive evidence.
+- Keep partial byte ranges separate from full-object verification and keep HTTP 413/429 resource/service states separate from evidence invalidity.
+- Add independent dependency-free Rust 1.85 reproduction, source-contract guards forbidding network-client growth, and direct Python↔Rust M24 interoperability coverage.
+
 ### Milestone 23 transport encoding core
 
 - Add the deterministic non-network Specification 0012 transport-encoding core without making HTTP, JSON, or any server architecture part of OLP evidence identity.
