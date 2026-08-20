@@ -461,11 +461,12 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
         checks.append(PromotionCheck("CANDIDATE_CAPABILITY_COVERAGE", "FAIL", "candidate coverage cannot be checked"))
         checks.append(PromotionCheck("PROFILE_REGISTRY", "FAIL", "candidate profile registry cannot be checked"))
 
-    # Required pinned stabilization artifacts.
+    # Required pinned stabilization artifacts. JSON object member order is not
+    # semantic, so validate the exact key set and iterate in specification order.
     artifacts = raw.get("required_artifacts")
     artifact_paths: dict[str, Path | None] = {}
-    if not isinstance(artifacts, dict) or tuple(artifacts) != _REQUIRED_ARTIFACT_KEYS:
-        checks.append(PromotionCheck("REQUIRED_ARTIFACTS", "FAIL", "required_artifacts must contain threat_model, review_register, release_process in that order"))
+    if not isinstance(artifacts, dict) or set(artifacts) != set(_REQUIRED_ARTIFACT_KEYS):
+        checks.append(PromotionCheck("REQUIRED_ARTIFACTS", "FAIL", "required_artifacts must contain exactly threat_model, review_register, release_process"))
     else:
         for name in _REQUIRED_ARTIFACT_KEYS:
             ok, detail, path = _artifact_check(root=root, name=name, raw=artifacts[name])
@@ -481,9 +482,11 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
 
     # External gates are deliberately not self-satisfiable. Completed gates
     # require durable references; pending gates are valid but block promotion.
+    # JSON object member order is not semantic.
     external = raw.get("external_gates")
-    if not isinstance(external, dict) or tuple(external) != tuple(name for name, _ in _EXTERNAL_GATES):
-        checks.append(PromotionCheck("EXTERNAL_GATE_METADATA", "FAIL", "external gate set/order mismatch"))
+    expected_external_names = {name for name, _ in _EXTERNAL_GATES}
+    if not isinstance(external, dict) or set(external) != expected_external_names:
+        checks.append(PromotionCheck("EXTERNAL_GATE_METADATA", "FAIL", "external gate set mismatch"))
     else:
         for name, blocker in _EXTERNAL_GATES:
             value = external[name]
