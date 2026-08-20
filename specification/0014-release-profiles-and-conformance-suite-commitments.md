@@ -27,7 +27,7 @@ This specification defines:
 - the relationship between release labels and already-versioned capabilities;
 - standalone conformance-profile metadata normalization;
 - deterministic selection of cases for a release profile;
-- the exact file set committed by a profile corpus commitment;
+- deterministic selection of only the manifest fragments that contribute to that profile/case set;
 - SHA-256 file commitments;
 - the exact binary preimage for `OLP-CONFORMANCE-SUITE-COMMITMENT-V1`;
 - release-manifest requirements for pinning an accepted corpus; and
@@ -113,7 +113,9 @@ Selection is deterministic:
 
 Case IDs MUST remain globally unique.
 
-Adding a new case, removing a case, changing a case's capability, changing an expected vector, or changing profile membership changes the release corpus and therefore MUST change its suite commitment.
+Adding a selected-capability case, removing a selected case, changing a selected case's capability, changing a referenced vector, or changing aggregate profile membership changes the release corpus and therefore MUST change its suite commitment.
+
+Adding a future manifest fragment that contributes only unrelated profiles/capabilities MUST NOT change an already-frozen profile commitment.
 
 ---
 
@@ -146,9 +148,18 @@ Standalone profile metadata does not redefine capability semantics. A profile-re
 For a profile corpus commitment, the committed file set consists of:
 
 1. the base conformance manifest supplied to the commitment operation;
-2. every `.json` additive manifest fragment visible in the sibling `manifests/` directory, in that repository snapshot;
+2. each additive manifest fragment that **contributes to the selected corpus**;
 3. the standalone profile declaration `profiles/<profile>.json`; and
 4. every vector file referenced by a selected case.
+
+An additive manifest fragment contributes when either:
+
+- it defines the selected profile identifier; or
+- it contains at least one case whose capability is in the selected profile.
+
+Fragments that only introduce unrelated future profiles/capabilities are intentionally excluded. This permits append-only repository growth without changing a previously frozen release commitment.
+
+The complete manifest loader MUST still validate all visible fragments before corpus selection; excluding an unrelated fragment from a particular commitment does not make malformed global manifest composition acceptable.
 
 Each logical relative path is included at most once.
 
@@ -256,7 +267,7 @@ A specification-set release that claims an accepted aggregate conformance corpus
 - release identifier;
 - release status;
 - integration milestone;
-- baseline/release repository commit or equivalent immutable snapshot identifier;
+- baseline/release repository snapshot information;
 - previous specification-set release;
 - wire-compatibility statement;
 - aggregate profile identifier;
@@ -323,6 +334,8 @@ The eight-capability `core-v1` remains the smallest frozen deterministic core. T
 
 A corpus commitment can be misleading if the wrong corpus is selected, if case IDs are omitted, if file bytes are normalized before hashing, if a profile advertises capabilities it does not contain in the executable manifest, or if a passing report is represented as a general security certification.
 
+A release commitment can also be operationally unusable if unrelated future profile growth changes the frozen digest. Therefore unrelated manifest fragments are excluded using the deterministic contribution rule in Section 8.
+
 Implementations MUST fail on path escape, missing committed files, unknown profile identifiers, empty profile capability sets, or profiles that select no cases.
 
 Release documentation MUST preserve the distinction between deterministic conformance and deployment security.
@@ -341,8 +354,9 @@ A tool claiming support for `OLP-CONFORMANCE-SUITE-COMMITMENT-V1` MUST:
 4. preserve deterministic selected-case order;
 5. sort file paths by UTF-8 bytes;
 6. use the exact framing in Sections 10–11;
-7. reject path escape and missing files; and
-8. produce the same 32-octet digest for the same corpus snapshot.
+7. reject path escape and missing files;
+8. ignore unrelated future profile fragments for an already selected profile; and
+9. produce the same 32-octet digest for the same selected corpus snapshot.
 
 An implementation claiming `draft-v0.3-interoperable-v1` MUST implement all 15 capabilities and pass every required case in the committed release corpus.
 
