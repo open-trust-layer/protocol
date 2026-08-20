@@ -1,8 +1,10 @@
 # OLP v1 Review Package Index
 
-**Status:** preparation index; source snapshot not yet frozen
+**Status:** frozen review package index  
+**Review target:** `olp-v1.0-review-1`  
+**Source commit:** `877493826d673ccf9bb94e7b6b113b35141ad220`
 
-This index collects the materials intended to accompany the first public/external review round for the OLP v1.0 candidate.
+This index collects the materials for the first public/external review round of the OLP v1.0 candidate.
 
 ## Candidate and promotion state
 
@@ -70,12 +72,13 @@ Specification 0000 is the non-normative overview and should also be reviewed for
 
 ## Source binding
 
-The first review target is named:
+The first review target is frozen as:
 
 ```text
-olp-v1.0-review-1
+id:             olp-v1.0-review-1
+source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
 ```
 
-Its exact source commit is intentionally not written here until the snapshot-binding hardening is merged and fully verified. The next metadata-only step will freeze that identifier to the exact merge commit and open the public review tracker against that SHA.
+Reviewers must inspect that exact commit. A branch tip, later commit, or review of different source does not satisfy the promotion gate for this target.
 
-Reviewers should not treat a moving branch tip as the review target.
+If material finding disposition requires source changes, the project must create a new review-target identifier; `olp-v1.0-review-1` remains historical evidence for the bytes above.
