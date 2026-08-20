@@ -52,7 +52,11 @@ def test_draft_v03_release_is_explicitly_wire_compatible_not_security_certified(
     }
 
 
-def test_draft_v03_release_document_inventory_includes_spec_0014():
+def test_draft_v03_release_document_inventory_exists_and_includes_spec_0014():
     release = load_path(RELEASE)
-    assert release["documents"][-1] == "0014-release-profiles-and-conformance-suite-commitments.md"
-    assert len(release["documents"]) == 15
+    documents = release["documents"]
+    assert documents[-1] == "0014-release-profiles-and-conformance-suite-commitments.md"
+    assert len(documents) == 15
+    assert len(documents) == len(set(documents))
+    missing = [name for name in documents if not (Path("specification") / name).is_file()]
+    assert not missing, missing
