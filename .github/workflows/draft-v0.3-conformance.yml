@@ -46,17 +46,18 @@ jobs:
           print("Python draft-v0.3-interoperable-v1: 180/180 PASS")
           PY
 
-      - name: Compute Draft v0.3 corpus commitment
+      - name: Verify pinned Draft v0.3 corpus commitment
         run: |
           olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > draft-v0.3-corpus-commitment.json
           python - <<'PY'
           import json
-          value = json.load(open("draft-v0.3-corpus-commitment.json", encoding="utf-8"))
-          assert len(value["capabilities"]) == 15
-          assert len(value["case_ids"]) == 180
-          digest = value["commitment"]["digest_hex"]
-          assert len(digest) == 64
-          print(f"Draft v0.3 corpus SHA-256: {digest}")
+          observed = json.load(open("draft-v0.3-corpus-commitment.json", encoding="utf-8"))
+          release = json.load(open("specification/releases/draft-v0.3.json", encoding="utf-8"))
+          assert len(observed["capabilities"]) == 15
+          assert len(observed["case_ids"]) == 180
+          assert observed["commitment"] == release["conformance_suite_commitment"]
+          assert observed["commitment"]["digest_hex"] == "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
+          print(f"Draft v0.3 corpus SHA-256: {observed['commitment']['digest_hex']}")
           PY
 
       - name: Upload Draft v0.3 Python evidence
@@ -125,8 +126,17 @@ jobs:
           OLP_RUN_RUST_INTEROP: "1"
         run: python -m pytest -q tests/interoperability
 
-      - name: Compute Draft v0.3 corpus commitment
-        run: olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > draft-v0.3-corpus-commitment.json
+      - name: Verify pinned Draft v0.3 corpus commitment
+        run: |
+          olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > draft-v0.3-corpus-commitment.json
+          python - <<'PY'
+          import json
+          observed = json.load(open("draft-v0.3-corpus-commitment.json", encoding="utf-8"))
+          release = json.load(open("specification/releases/draft-v0.3.json", encoding="utf-8"))
+          assert observed["commitment"] == release["conformance_suite_commitment"]
+          assert observed["commitment"]["digest_hex"] == "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
+          print(f"Rust job confirmed Draft v0.3 corpus SHA-256: {observed['commitment']['digest_hex']}")
+          PY
 
       - name: Upload Draft v0.3 Rust evidence
         if: always()
