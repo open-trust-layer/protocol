@@ -19,7 +19,8 @@
       "0011",
       "0012",
       "0013",
-      "0014"
+      "0014",
+      "0015"
     ],
     "cross_cutting": [
       "versioning-and-capability-stability",
@@ -30,7 +31,8 @@
       "privacy-and-disclosure",
       "transport-and-object-identity",
       "conformance-and-certification",
-      "release-corpus-identity"
+      "release-corpus-identity",
+      "candidate-promotion-governance"
     ]
   },
   "findings": [
@@ -113,6 +115,14 @@
       "status": "resolved",
       "summary": "Transport security, HTTP authentication, or representation could be misread as OLP object proof validity or evidence identity.",
       "resolution": "Specification 0012 explicitly separates transport security/authentication and transport representation from OLP proof validity and evidence identity. No semantic change is required."
+    },
+    {
+      "id": "M26-R011",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Stable-promotion governance itself could conflict with existing object/capability versioning or release-corpus rules if candidate/stable labels were allowed to reinterpret protocol semantics.",
+      "resolution": "Specifications 0013-0015 explicitly keep candidate/stable status separate from object, encoding, cryptosuite, capability, and corpus versions; any changed deterministic bytes or materially changed capability semantics require explicit versioning rather than promotion metadata."
     }
   ]
 }
