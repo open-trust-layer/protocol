@@ -100,3 +100,20 @@ def test_identity_authority_lifecycle_matches_python_and_vectors(rust_adapter):
         rs = rust_adapter.execute("evaluate_authority_lifecycle", case["input"])
         assert rs == py, relative
         _assert_subset(case["expected"]["result"], rs)
+
+
+def test_privacy_disclosure_matches_python_and_vectors(rust_adapter):
+    cases = (
+        "privacy-disclosure/positive/disclosure-whole-object-minimal-001.json",
+        "privacy-disclosure/positive/disclosure-graph-subset-001.json",
+        "privacy-disclosure/positive/disclosure-offline-resource-001.json",
+        "privacy-disclosure/positive/disclosure-same-subject-warning-001.json",
+        "privacy-disclosure/negative/disclosure-redaction-identity-mismatch-001.json",
+        "privacy-disclosure/negative/disclosure-external-native-blocked-001.json",
+    )
+    for relative in cases:
+        case = _vector(relative)
+        py = ReferenceAdapter().execute("plan_disclosure", case["input"])
+        rs = rust_adapter.execute("plan_disclosure", case["input"])
+        assert rs == py, relative
+        _assert_subset(case["expected"]["result"], rs)
