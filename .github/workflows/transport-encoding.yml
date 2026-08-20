@@ -75,7 +75,10 @@ jobs:
       - name: Run direct Python-Rust interoperability tests
         env:
           OLP_RUN_RUST_INTEROP: "1"
-        run: python -m pytest -q tests/interoperability/test_python_rust.py
+        run: |
+          python -m pytest -q \
+            tests/interoperability/test_python_rust.py \
+            tests/interoperability/test_transport_python_rust.py
       - if: always()
         uses: actions/upload-artifact@v6
         with:
