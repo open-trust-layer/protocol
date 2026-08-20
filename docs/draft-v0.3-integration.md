@@ -53,7 +53,7 @@ The aggregate profile selects exactly 180 already-existing conformance cases. No
 
 ## Independent aggregate evidence
 
-The initial aggregate candidate passed as one profile rather than as separately orchestrated milestones:
+The aggregate candidate passes as one profile rather than as separately orchestrated milestones:
 
 ```text
 Python 3.11  180 / 180 PASS
@@ -63,7 +63,7 @@ Python 3.14  180 / 180 PASS
 Rust 1.85    180 / 180 PASS
 ```
 
-The complete existing Python↔Rust interoperability suite also passed in the Rust aggregate job.
+The complete existing Python↔Rust interoperability suite also passes in the Rust aggregate job.
 
 This matters because a single aggregate run can expose capability-advertisement or profile-composition errors that independent per-profile runs might not reveal.
 
@@ -74,7 +74,7 @@ M25 adds `OLP-CONFORMANCE-SUITE-COMMITMENT-V1`, specified normatively in Specifi
 The commitment covers:
 
 - the base conformance manifest;
-- all additive manifest fragments in the repository snapshot;
+- additive manifest fragments that define the selected profile or contribute selected-capability cases;
 - the standalone aggregate profile declaration;
 - ordered capability membership;
 - ordered selected case IDs; and
@@ -96,6 +96,18 @@ The commitment identifies the corpus only:
 ```text
 corpus identity != execution result != signed claim != certification != trust
 ```
+
+## Commitment-design hardening finding
+
+The first M25 commitment prototype included every additive manifest fragment visible in the repository snapshot.
+
+That would have made a frozen Draft v0.3 digest change in the future merely because an unrelated M26 profile fragment was added. Such behavior would defeat the purpose of a release freeze.
+
+Before acceptance, M25 changed the rule so an additive fragment is committed only when it defines the selected profile or contains a case whose capability is selected by that profile. The complete manifest is still globally validated before selection.
+
+An executable regression copies the conformance tree, adds an unrelated future profile fragment, and requires the Draft v0.3 digest/file inventory to remain unchanged.
+
+The current Draft v0.3 corpus already selects all existing accepted capabilities, so this future-growth correction does not change the pinned digest; it changes the stability rule for later additive repository growth.
 
 ## Profile metadata defect fixed
 
@@ -132,7 +144,7 @@ Instead, new Specification 0014 defines:
 - Draft v0.3 aggregate release profiles;
 - release-profile case selection;
 - profile metadata shape;
-- exact corpus file selection;
+- contribution-scoped corpus file selection;
 - SHA-256 file commitments;
 - binary commitment framing;
 - release-manifest pinning; and
