@@ -5,72 +5,370 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::net::{IpAddr, Ipv6Addr};
 
-use crate::{error::OlpError, json::Json, proof_identity, record, sha256, time, util::{hex_decode, hex_encode, is_absolute_uri}};
+use crate::{
+    error::OlpError,
+    json::Json,
+    proof_identity,
+    record,
+    sha256,
+    time,
+    util::{hex_decode, hex_encode, is_absolute_uri},
+};
 
 const DOMAIN: &str = "OLP-RESOLUTION-REQUEST";
-const CORE_TARGETS: [&str; 6] = ["evidence", "verificationMethod", "principal", "externalResource", "lifecycle", "service"];
+const CORE_TARGETS: [&str; 6] = [
+    "evidence",
+    "verificationMethod",
+    "principal",
+    "externalResource",
+    "lifecycle",
+    "service",
+];
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct EvidenceRef { kind: i64, digest: [u8; 32] }
+struct EvidenceRef {
+    kind: i64,
+    digest: [u8; 32],
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct ResourceRef { resource_id: Option<String>, media_type: String, algorithm: i64, digest: [u8; 32] }
+struct ResourceRef {
+    resource_id: Option<String>,
+    media_type: String,
+    algorithm: i64,
+    digest: [u8; 32],
+}
 
 #[derive(Clone, Debug)]
 struct Request {
     target_class: String,
     target: Json,
     accept: Vec<String>,
-    as_of: Option<String>,
-    options: BTreeMap<i64, Json>,
+    offline_only: bool,
+    max_bytes: Option<u64>,
+    max_results: Option<u64>,
+    allow_redirects: bool,
+    require_fresh: bool,
 }
 
-fn obj(v:&Json)->Result<&BTreeMap<String,Json>,OlpError>{match v{Json::Object(m)=>Ok(m),_=>Err(OlpError::Malformed("object required".into()))}}
-fn arr(v:&Json)->Result<&Vec<Json>,OlpError>{match v{Json::Array(a)=>Ok(a),_=>Err(OlpError::Malformed("array required".into()))}}
-fn text(v:&Json)->Result<&str,OlpError>{match v{Json::String(s)=>Ok(s),_=>Err(OlpError::Malformed("text required".into()))}}
-fn int(v:&Json)->Result<i64,OlpError>{match v{Json::Int(n)=>Ok(*n),_=>Err(OlpError::Malformed("integer required".into()))}}
-fn boolv(v:&Json)->Result<bool,OlpError>{match v{Json::Bool(b)=>Ok(*b),_=>Err(OlpError::Malformed("boolean required".into()))}}
+fn malformed(reason: &str, message: impl Into<String>) -> OlpError {
+    OlpError::malformed(reason, message)
+}
 
-fn evidence_ref_from_json(v:&Json)->Result<EvidenceRef,OlpError>{
-    let m=obj(v)?; let kind=int(m.get("kind").ok_or_else(||OlpError::Malformed("kind required".into()))?)?;
-    if kind!=0 && kind!=1{return Err(OlpError::Malformed("invalid evidence kind".into()))}
-    let raw=hex_decode(text(m.get("identity_digest_hex").ok_or_else(||OlpError::Malformed("digest required".into()))?)?)?;
-    if raw.len()!=32{return Err(OlpError::Malformed("evidence digest must be 32 bytes".into()))}
-    let mut digest=[0u8;32]; digest.copy_from_slice(&raw); Ok(EvidenceRef{kind,digest})
+fn parse_evidence_ref(v: &Json) -> Result<EvidenceRef, OlpError> {
+    let m = v
+        .as_object()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    let kind = m
+        .get("kind")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "kind required"))?
+        .as_i64()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    if kind != 0 && kind != 1 {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "invalid evidence kind",
+        ));
+    }
+    let digest_hex = m
+        .get("identity_digest_hex")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "digest required"))?
+        .as_str()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    let raw = hex_decode(digest_hex)
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    if raw.len() != 32 {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "evidence digest must be 32 bytes",
+        ));
+    }
+    let mut digest = [0u8; 32];
+    digest.copy_from_slice(&raw);
+    Ok(EvidenceRef { kind, digest })
 }
-fn evidence_ref_from_value(v:&Json)->Result<EvidenceRef,OlpError>{
-    let a=arr(v)?; if a.len()!=2{return Err(OlpError::Malformed("EvidenceRefV1 must have 2 elements".into()))}
-    let kind=int(&a[0])?; let raw=match &a[1]{Json::Bytes(b)=>b,_=>return Err(OlpError::Malformed("EvidenceRefV1 digest must be bytes".into()))};
-    if raw.len()!=32{return Err(OlpError::Malformed("EvidenceRefV1 digest length".into()))}; let mut digest=[0u8;32]; digest.copy_from_slice(raw); Ok(EvidenceRef{kind,digest})
+
+fn ref_json(r: &EvidenceRef) -> Json {
+    Json::Object(BTreeMap::from([
+        (
+            "identity_digest_hex".into(),
+            Json::String(hex_encode(&r.digest)),
+        ),
+        ("kind".into(), Json::Int(r.kind as i128)),
+    ]))
 }
-fn evidence_json(r:&EvidenceRef)->Json{Json::Object(BTreeMap::from([("identity_digest_hex".into(),Json::String(hex_encode(&r.digest))),("kind".into(),Json::Int(r.kind))]))}
-fn resource_ref_from_json(v:&Json)->Result<ResourceRef,OlpError>{
-    let m=obj(v)?; let id=m.get("resource_id").and_then(|v|match v{Json::String(s)=>Some(s.clone()),Json::Null=>None,_=>None});
-    let media=text(m.get("media_type").ok_or_else(||OlpError::Malformed("media_type required".into()))?)?.to_string();
-    let alg=int(m.get("hash_algorithm").ok_or_else(||OlpError::Malformed("hash_algorithm required".into()))?)?;
-    let raw=hex_decode(text(m.get("digest_hex").ok_or_else(||OlpError::Malformed("digest required".into()))?)?)?; if raw.len()!=32{return Err(OlpError::Malformed("resource digest must be 32 bytes".into()))}; let mut digest=[0u8;32];digest.copy_from_slice(&raw); Ok(ResourceRef{resource_id:id,media_type:media,algorithm:alg,digest})
+
+fn parse_resource_ref(v: &Json) -> Result<ResourceRef, OlpError> {
+    let m = v
+        .as_object()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    let resource_id = match m.get("resource_id") {
+        None | Some(Json::Null) => None,
+        Some(Json::String(value)) => {
+            if !is_absolute_uri(value) {
+                return Err(malformed(
+                    "MALFORMED_RESOLUTION_REQUEST",
+                    "resource_id must be an absolute URI or null",
+                ));
+            }
+            Some(value.clone())
+        }
+        Some(_) => {
+            return Err(malformed(
+                "MALFORMED_RESOLUTION_REQUEST",
+                "resource_id must be text or null",
+            ))
+        }
+    };
+    let media_type = m
+        .get("media_type")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "media_type required"))?
+        .as_str()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?
+        .to_string();
+    if media_type.is_empty() {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "media_type must be non-empty text",
+        ));
+    }
+    let algorithm = match m.get("hash_algorithm") {
+        None => -16,
+        Some(value) => value
+            .as_i64()
+            .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?,
+    };
+    let digest_hex = m
+        .get("digest_hex")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "digest required"))?
+        .as_str()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    let raw = hex_decode(digest_hex)
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+    if raw.len() != 32 {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "resource digest must be 32 bytes",
+        ));
+    }
+    let mut digest = [0u8; 32];
+    digest.copy_from_slice(&raw);
+    Ok(ResourceRef {
+        resource_id,
+        media_type,
+        algorithm,
+        digest,
+    })
 }
-fn resource_ref_from_value(v:&Json)->Result<ResourceRef,OlpError>{
-    let a=arr(v)?; if a.len()!=4{return Err(OlpError::Malformed("ResourceRefV1 must have 4 elements".into()))}
-    let id=match &a[0]{Json::Null=>None,Json::String(s)=>Some(s.clone()),_=>return Err(OlpError::Malformed("resource id".into()))}; let media=text(&a[1])?.to_string(); let alg=int(&a[2])?; let raw=match &a[3]{Json::Bytes(b)=>b,_=>return Err(OlpError::Malformed("resource digest bytes".into()))}; if raw.len()!=32{return Err(OlpError::Malformed("resource digest length".into()))}; let mut digest=[0u8;32];digest.copy_from_slice(raw);Ok(ResourceRef{resource_id:id,media_type:media,algorithm:alg,digest})
+
+fn parse_limit(value: Option<&Json>, label: &str) -> Result<Option<u64>, OlpError> {
+    match value {
+        None | Some(Json::Null) => Ok(None),
+        Some(v) => v
+            .as_u64()
+            .map(Some)
+            .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", format!("{label}: {e}"))),
+    }
 }
-fn parse_request(v:&Json)->Result<Request,OlpError>{
-    let m=obj(v)?;
-    if m.get("domain").map(text).transpose()?.unwrap_or(DOMAIN)!=DOMAIN{return Err(OlpError::Malformed("invalid resolution request domain".into()))}
-    if m.get("version").map(int).transpose()?.unwrap_or(1)!=1{return Err(OlpError::Unsupported("UNSUPPORTED_RESOLUTION_REQUEST_VERSION".into()))}
-    let tc=text(m.get("target_class").ok_or_else(||OlpError::Malformed("target_class required".into()))?)?.to_string();
-    if !CORE_TARGETS.contains(&tc.as_str()){return Err(OlpError::Unsupported("UNSUPPORTED_TARGET_CLASS".into()))}
-    if tc!="evidence" && tc!="externalResource"{return Err(OlpError::Unsupported("UNSUPPORTED_TARGET_CLASS".into()))}
-    let target=m.get("target").ok_or_else(||OlpError::Malformed("target required".into()))?.clone();
-    let accept=match m.get("accept"){None=>vec![],Some(Json::Array(a))=>a.iter().map(|v|text(v).map(str::to_string)).collect::<Result<Vec<_>,_>>()?,_=>return Err(OlpError::Malformed("accept must be array".into()))};
-    let as_of=m.get("as_of").map(text).transpose()?.map(str::to_string);
-    let mut options=BTreeMap::new(); if let Some(Json::Object(o))=m.get("options") { for (k,v) in o { let label=match k.as_str(){"offline_only"=>0,"max_bytes"=>1,"max_results"=>2,"allow_redirects"=>3,"require_fresh"=>4,"network_policy_id"=>5,_=>continue}; options.insert(label,v.clone()); }}
-    if tc=="externalResource" { if let Json::String(s)=&target { if !is_absolute_uri(s){return Err(OlpError::Malformed("externalResource target must be absolute URI".into()))} } }
-    Ok(Request{target_class:tc,target,accept,as_of,options})
+
+fn parse_option_bool(
+    options: &BTreeMap<String, Json>,
+    key: &str,
+    default: bool,
+) -> Result<bool, OlpError> {
+    match options.get(key) {
+        None => Ok(default),
+        Some(value) => value
+            .as_bool()
+            .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", format!("{key}: {e}"))),
+    }
 }
-fn opt_bool(r:&Request,k:i64,default:bool)->Result<bool,OlpError>{match r.options.get(&k){None=>Ok(default),Some(v)=>boolv(v)}}
-fn opt_int(r:&Request,k:i64)->Result<Option<i64>,OlpError>{match r.options.get(&k){None=>Ok(None),Some(v)=>Ok(Some(int(v)?))}}
-fn fresh(source:&BTreeMap<String,Json>)->String{source.get("freshness").and_then(|v|match v{Json::String(s)=>Some(s.clone()),_=>None}).unwrap_or_else(||"UNKNOWN".into())}
+
+fn parse_request(v: &Json) -> Result<Request, OlpError> {
+    let m = v
+        .as_object()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+
+    let domain = match m.get("domain") {
+        None => DOMAIN,
+        Some(value) => value
+            .as_str()
+            .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?,
+    };
+    if domain != DOMAIN {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "invalid resolution request domain",
+        ));
+    }
+
+    let version = match m.get("version") {
+        None => 1,
+        Some(value) => value
+            .as_i64()
+            .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?,
+    };
+    if version != 1 {
+        return Err(OlpError::unsupported(
+            "UNSUPPORTED_RESOLUTION_REQUEST_VERSION",
+            "unsupported resolution request version",
+        ));
+    }
+
+    let target_class = m
+        .get("target_class")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "target_class required"))?
+        .as_str()
+        .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?
+        .to_string();
+    if target_class.is_empty() {
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "target_class must be non-empty text",
+        ));
+    }
+    if !CORE_TARGETS.contains(&target_class.as_str()) {
+        if is_absolute_uri(&target_class) {
+            return Err(OlpError::unsupported(
+                "UNSUPPORTED_TARGET_CLASS",
+                "unsupported target class",
+            ));
+        }
+        return Err(malformed(
+            "MALFORMED_RESOLUTION_REQUEST",
+            "unknown compact target class",
+        ));
+    }
+    if target_class != "evidence" && target_class != "externalResource" {
+        return Err(OlpError::unsupported(
+            "UNSUPPORTED_TARGET_CLASS",
+            "target class is outside executable resolution-v1",
+        ));
+    }
+
+    let target = m
+        .get("target")
+        .ok_or_else(|| malformed("MALFORMED_RESOLUTION_REQUEST", "target required"))?
+        .clone();
+    if target_class == "evidence" {
+        parse_evidence_ref(&target)?;
+    } else {
+        match &target {
+            Json::String(uri) => {
+                if !is_absolute_uri(uri) {
+                    return Err(malformed(
+                        "MALFORMED_RESOLUTION_REQUEST",
+                        "external resource target must be absolute URI",
+                    ));
+                }
+            }
+            Json::Object(wrapper)
+                if wrapper.len() == 1 && wrapper.contains_key("resource_ref") =>
+            {
+                parse_resource_ref(wrapper.get("resource_ref").expect("checked key"))?;
+            }
+            _ => {
+                return Err(malformed(
+                    "MALFORMED_RESOLUTION_REQUEST",
+                    "external resource target malformed",
+                ))
+            }
+        }
+    }
+
+    let accept = match m.get("accept") {
+        None => Vec::new(),
+        Some(value) => {
+            let array = value
+                .as_array()
+                .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+            let mut values = Vec::with_capacity(array.len());
+            let mut seen = BTreeSet::new();
+            for item in array {
+                let text = item
+                    .as_str()
+                    .map_err(|e| malformed("MALFORMED_RESOLUTION_REQUEST", e))?;
+                if text.is_empty() || !seen.insert(text.to_string()) {
+                    return Err(malformed(
+                        "MALFORMED_RESOLUTION_REQUEST",
+                        "accept members must be unique non-empty text",
+                    ));
+                }
+                values.push(text.to_string());
+            }
+            values
+        }
+    };
+
+    if let Some(value) = m.get("as_of") {
+        match value {
+            Json::Null => {}
+            Json::String(text) if time::valid(text) => {}
+            _ => {
+                return Err(malformed(
+                    "MALFORMED_RESOLUTION_REQUEST",
+                    "as_of must be RFC 3339 or null",
+                ))
+            }
+        }
+    }
+
+    let options = match m.get("options") {
+        None => BTreeMap::new(),
+        Some(Json::Object(options)) => options.clone(),
+        Some(_) => {
+            return Err(malformed(
+                "MALFORMED_RESOLUTION_REQUEST",
+                "options must be an object",
+            ))
+        }
+    };
+    for key in options.keys() {
+        if !matches!(
+            key.as_str(),
+            "offline_only"
+                | "max_bytes"
+                | "max_results"
+                | "allow_redirects"
+                | "require_fresh"
+                | "network_policy_id"
+        ) {
+            return Err(malformed(
+                "MALFORMED_RESOLUTION_REQUEST",
+                "unknown resolution option",
+            ));
+        }
+    }
+
+    let offline_only = parse_option_bool(&options, "offline_only", false)?;
+    let max_bytes = parse_limit(options.get("max_bytes"), "max_bytes")?;
+    let max_results = parse_limit(options.get("max_results"), "max_results")?;
+    let allow_redirects = parse_option_bool(&options, "allow_redirects", false)?;
+    let require_fresh = parse_option_bool(&options, "require_fresh", false)?;
+    if let Some(value) = options.get("network_policy_id") {
+        match value {
+            Json::Null => {}
+            Json::String(uri) if is_absolute_uri(uri) => {}
+            _ => {
+                return Err(malformed(
+                    "MALFORMED_RESOLUTION_REQUEST",
+                    "network_policy_id must be absolute URI or null",
+                ))
+            }
+        }
+    }
+
+    Ok(Request {
+        target_class,
+        target,
+        accept,
+        offline_only,
+        max_bytes,
+        max_results,
+        allow_redirects,
+        require_fresh,
+    })
+}
 
 include!("resolution_part2.rs");
 include!("resolution_part3.rs");
