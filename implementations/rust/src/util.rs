@@ -10,7 +10,26 @@ pub fn hex_encode(v:&[u8])->String{const H:&[u8;16]=b"0123456789abcdef";let mut 
 
 pub fn base64url_no_pad(data:&[u8])->String{const T:&[u8;64]=b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";let mut out=String::new();let mut i=0;while i+3<=data.len(){let n=((data[i]as u32)<<16)|((data[i+1]as u32)<<8)|data[i+2]as u32;out.push(T[((n>>18)&63)as usize]as char);out.push(T[((n>>12)&63)as usize]as char);out.push(T[((n>>6)&63)as usize]as char);out.push(T[(n&63)as usize]as char);i+=3;}let r=data.len()-i;if r==1{let n=(data[i]as u32)<<16;out.push(T[((n>>18)&63)as usize]as char);out.push(T[((n>>12)&63)as usize]as char);}else if r==2{let n=((data[i]as u32)<<16)|((data[i+1]as u32)<<8);out.push(T[((n>>18)&63)as usize]as char);out.push(T[((n>>12)&63)as usize]as char);out.push(T[((n>>6)&63)as usize]as char);}out}
 
-pub fn is_absolute_uri(s:&str)->bool{let bytes=s.as_bytes();if bytes.len()<3||!bytes[0].is_ascii_alphabetic(){return false;}let mut i=1;while i<bytes.len()&&bytes[i]!=b':'{if !(bytes[i].is_ascii_alphanumeric()||matches!(bytes[i],b'+'|b'.'|b'-')){return false;}i+=1;}i<bytes.len()-1&&bytes[i]==b':' }
+pub fn is_absolute_uri(s:&str)->bool{
+    let bytes=s.as_bytes();
+    if bytes.is_empty()||!bytes[0].is_ascii_alphabetic(){return false;}
+    let mut colon=None;
+    for (i,&b) in bytes.iter().enumerate().skip(1){
+        if b==b':'{colon=Some(i);break;}
+        if !(b.is_ascii_alphanumeric()||matches!(b,b'+'|b'.'|b'-')){return false;}
+    }
+    let Some(mut i)=colon.map(|x|x+1) else{return false;};
+    while i<bytes.len(){
+        let b=bytes[i];
+        let allowed=b.is_ascii_alphanumeric()||matches!(b,b'-'|b'.'|b'_'|b'~'|b':'|b'/'|b'?'|b'#'|b'['|b']'|b'@'|b'!'|b'$'|b'&'|b'\''|b'('|b')'|b'*'|b'+'|b','|b';'|b'='|b'%');
+        if !allowed{return false;}
+        if b==b'%'{
+            if i+2>=bytes.len()||!bytes[i+1].is_ascii_hexdigit()||!bytes[i+2].is_ascii_hexdigit(){return false;}
+            i+=3;
+        }else{i+=1;}
+    }
+    true
+}
 pub fn is_core_identifier(s:&str)->bool{let b=s.as_bytes();if b.is_empty()||!b[0].is_ascii_lowercase(){return false;}let mut prev_sep=false;for &c in &b[1..]{if c.is_ascii_lowercase()||c.is_ascii_digit(){prev_sep=false;}else if matches!(c,b'.'|b'-')&&!prev_sep{prev_sep=true;}else{return false;}}!prev_sep}
 pub fn is_semantic_identifier(s:&str)->bool{is_core_identifier(s)||is_absolute_uri(s)}
 

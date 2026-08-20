@@ -121,7 +121,6 @@ class ReferenceAdapter:
         )
         return {"proof": proof_to_json(proof), "proof_input_hex": proof_input_bytes(proof).hex()}
 
-
     def _op_derive_proof_identity(self, payload: dict[str, Any]) -> dict[str, Any]:
         proof = proof_from_json(payload["proof"])
         encoded = proof_identity_bytes(proof)
@@ -148,7 +147,9 @@ class ReferenceAdapter:
             allow_unknown_relation=bool(payload.get("allow_unknown_relation", False)),
         )
         digest = record_identity(record)
-        return {
+        understood = frozenset(payload.get("understood_critical_qualifiers", ()))
+        uninterpreted = sorted(set(statement.qualifiers) - set(understood), key=lambda item: item.encode("utf-8"))
+        result = {
             "relationship_record_identity_hex": digest.hex(),
             "relation_type": statement.relation_type,
             "subject": None if statement.subject is None else {
@@ -171,6 +172,9 @@ class ReferenceAdapter:
                 } for item in statement.objects
             ],
         }
+        if uninterpreted:
+            result["uninterpreted_qualifiers"] = uninterpreted
+        return result
 
     def _op_verify_proof(self, payload: dict[str, Any]) -> dict[str, Any]:
         record = record_from_json(payload["record"])

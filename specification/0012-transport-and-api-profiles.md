@@ -326,6 +326,18 @@ Because all abstract OLP maps use the explicit `"map"` wrapper, application data
 
 A JSON parser MUST NOT silently coerce OLP integers into imprecise floating-point values.
 
+### 7.12 Duplicate JSON object names
+
+Every JSON object processed as an OLP transport envelope, OJVE-1 value, conformance-adapter message, or nested OLP JSON structure MUST contain unique member names.
+
+A receiver MUST reject a JSON text containing duplicate object member names before interpreting that object as OLP data. A receiver MUST NOT apply first-wins, last-wins, merge, or parser-specific duplicate-name behavior.
+
+This rule applies recursively at every JSON object nesting level, including wrapper objects and transport metadata.
+
+### 7.13 Parser resource bounds
+
+JSON receivers MUST impose finite input-size and structural-nesting limits before recursively materializing or processing arbitrary attacker-controlled depth. Resource exhaustion MUST NOT be reclassified as valid evidence, successful verification, or proof invalidity.
+
 ---
 
 ## 8. Single-Object Transport Envelope
@@ -1295,7 +1307,9 @@ No conflation.
 
 JSON and CBOR parsers can disagree on numbers, duplicate keys, Unicode handling, and invalid encodings.
 
-OJVE-1 and strict OLP structural validation are intended to reduce ambiguity.
+OJVE-1 and strict OLP structural validation are intended to reduce ambiguity. JSON inputs with duplicate object names MUST be rejected as required by Section 7.12 rather than resolved according to parser-specific first-wins or last-wins behavior.
+
+Implementations SHOULD apply input-size, nesting, and collection limits before expensive decoding, canonicalization, graph expansion, or cryptographic work.
 
 ### 44.2 HTTP intermediaries
 

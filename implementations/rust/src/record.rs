@@ -4,7 +4,17 @@ use crate::{cbor::{self,Value},error::OlpError,json::Json,sha256,util::{base64ur
 
 const FIELDS:[&str;7]=["envelope_version","type","content","semantic_bindings","profiles","relationships","extensions"];
 
-fn valid_record_value(v:&Json,depth:usize)->bool{if depth>64{return false;}match v{Json::Null|Json::Bool(_)|Json::String(_)=>true,Json::Int(n)=>*n>=-(1i128<<64)&&*n<=(1i128<<64)-1,Json::Array(a)=>a.iter().all(|x|valid_record_value(x,depth+1)),Json::Object(m)=>m.values().all(|x|valid_record_value(x,depth+1))}}
+fn valid_record_value(v:&Json,depth:usize)->bool{
+ if depth>cbor::MAX_DEPTH{return false;}
+ match v{
+  Json::Null|Json::Bool(_)|Json::String(_)=>true,
+  Json::Int(n)=>*n>=-(1i128<<64)&&*n<=(1i128<<64)-1,
+  Json::Array(a)=>a.len()<=cbor::MAX_COLLECTION_ITEMS&&a.iter().all(|x|valid_record_value(x,depth+1)),
+  Json::Object(m) if m.len()==1&&m.contains_key("$bytes")=>m.get("$bytes").is_some_and(|x|x.as_str().ok().is_some_and(|h|crate::util::hex_decode(h).is_ok())),
+  Json::Object(m) if m.len()==1&&m.contains_key("$map")=>m.get("$map").is_some_and(|entries|entries.as_array().ok().is_some_and(|a|a.len()<=cbor::MAX_COLLECTION_ITEMS&&a.iter().all(|entry|entry.as_array().ok().is_some_and(|pair|pair.len()==2&&matches!(&pair[0],Json::String(_))&&valid_record_value(&pair[1],depth+1))))),
+  Json::Object(m)=>m.len()<=cbor::MAX_COLLECTION_ITEMS&&m.values().all(|x|valid_record_value(x,depth+1)),
+ }
+}
 
 fn obj_or_empty<'a>(o:&'a BTreeMap<String,Json>,key:&str)->Result<BTreeMap<String,Json>,OlpError>{match o.get(key){None=>Ok(BTreeMap::new()),Some(Json::Object(m))=>Ok(m.clone()),Some(_)=>Err(OlpError::malformed("NONCONFORMING",format!("{key} must be a map")))}}
 

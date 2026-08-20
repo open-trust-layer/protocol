@@ -67,7 +67,7 @@ olp-conformance run \
   --report conformance-rust.json
 ```
 
-No Rust-specific vector exceptions are permitted. Milestone 16 acceptance requires the Rust adapter to pass the entire current 57-case `core-v1` corpus.
+No Rust-specific vector exceptions are permitted. Milestone 17 acceptance requires the Rust adapter to pass the entire current 62-case `core-v1` corpus.
 
 ## Bidirectional interoperability gate
 

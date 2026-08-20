@@ -31,7 +31,10 @@
       "subject": {
         "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
         "kind": 0
-      }
+      },
+      "uninterpreted_qualifiers": [
+        "https://example.org/qualifier/note"
+      ]
     }
   },
   "id": "relationship.noncritical-qualifier.001",

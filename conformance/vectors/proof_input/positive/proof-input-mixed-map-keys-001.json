@@ -1,0 +1,39 @@
+{
+  "capability": "olp.proof-input.v1",
+  "category": "positive",
+  "description": "Integer and text map keys that stringify alike remain distinct in the adapter projection.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "proof_input_hex": "89694f4c502d50524f4f46017065646473612d656432353531392d763169617373657274696f6e781a75726e3a6578616d706c653a6f6c703a746573742d6b65792d31822f5820bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7a0a1781d68747470733a2f2f6578616d706c652e6f72672f6578742f6d69786564a20167696e742d6b6579613168746578742d6b657980",
+      "proof_input_length": 158
+    }
+  },
+  "id": "proof.input.mixed-map-keys.001",
+  "input": {
+    "critical": [],
+    "cryptosuite": "eddsa-ed25519-v1",
+    "extensions": {
+      "https://example.org/ext/mixed": {
+        "$map": [
+          [
+            1,
+            "int-key"
+          ],
+          [
+            "1",
+            "text-key"
+          ]
+        ]
+      }
+    },
+    "proof_purpose": "assertion",
+    "record_commitment": {
+      "algorithm": -16,
+      "digest_hex": "bf37c3cd8285b777daba2aa38b2cb996a66ff4ee89e14dd9dff7895509e24ee7"
+    },
+    "verification_method": "urn:example:olp:test-key-1"
+  },
+  "operation": "encode_proof_input",
+  "schema": "olp-conformance-vector-v1"
+}

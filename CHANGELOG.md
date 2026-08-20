@@ -25,7 +25,7 @@ The project is experimental and has not yet made a stable release. The format is
 - Reproducible Specification 0003 and 0004 vectors plus a Milestone 13 end-to-end vector.
 - Comprehensive Milestone 13 test suite covering canonicalization, mutations, extension criticality, context checks, status separation, and offline verification behavior.
 - Milestone 14 executable conformance harness for the currently implemented Specification 0003 and 0004 capabilities.
-- Implementation-neutral conformance manifest, now expanded to 57 deterministic positive, negative, malformed, and unsupported vectors.
+- Implementation-neutral conformance manifest, now expanded to 62 deterministic positive, negative, malformed, and unsupported vectors.
 - Capability-scoped `record-v1`, `proof-v1`, and `core-v1` conformance profiles.
 - Python `ConformanceAdapter` protocol plus language-neutral JSON-lines subprocess adapter contract.
 - `olp-conformance` CLI with filtering and machine-readable `olp-conformance-report-v1` output.
@@ -43,6 +43,20 @@ The project is experimental and has not yet made a stable release. The format is
 - Provenance-preserving evidence graph projection, dangling-reference handling, cycle-safe traversal, and explicit traversal limits.
 - `evidence-v1` conformance profile and 16 new implementation-neutral Specification 0005 cases, expanding `core-v1` to 57 cases across eight capabilities.
 - Rust implementations of Proof Identity, EvidenceRef, and relationship processing plus three new Python↔Rust evidence interoperability checks.
+
+### Milestone 17 adversarial/security hardening
+
+- Harden absolute-URI syntax validation against whitespace/control injection and malformed percent escapes.
+- Add strict JSON duplicate-name, numeric, Unicode, size, and nesting checks at the conformance boundary.
+- Bound pre-freeze value recursion and deterministic-CBOR allocation work.
+- Enforce cryptosuite policy without conflating policy rejection with mathematical signature validity.
+- Preserve record binding and signature validity when a technically supported commitment algorithm is rejected only by local policy.
+- Correct evidence-graph cycle detection, incremental projection refresh, and edge-scan resource limits.
+- Add reversible `$map` adapter projection for mixed integer/text keys and wrapper-shaped literal maps.
+- Harden the Rust adapter input path and deterministic-CBOR map recursion limits.
+- Expose uninterpreted noncritical relationship qualifiers.
+- Expand `core-v1` from 57 to 62 implementation-neutral cases and add dedicated security regression tests.
+- Amend Specifications 0004 and 0012 for policy/math separation and duplicate-JSON/resource-bound requirements.
 
 ### Specification foundation
 
@@ -63,8 +77,8 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Perform the Milestone 17 adversarial security review.
-- Feed findings into the Milestone 18 Draft v0.2 specification pass.
+- Require a green Milestone 17 hardened Python/Rust conformance gate for repository acceptance.
+- Feed the security findings into the Milestone 18 Draft v0.2 specification pass.
 
 ## Release history
 

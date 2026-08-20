@@ -1,0 +1,31 @@
+{
+  "capability": "olp.record-identity.v1",
+  "category": "positive",
+  "description": "A literal text-keyed map shaped like the $bytes adapter wrapper remains a map when escaped with $map.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "identity_bytes_hex": "886a4f4c502d5245434f52440165636c61696da166246279746573686465616462656566a08080a0",
+      "identity_bytes_length": 40,
+      "record_identity_digest_hex": "65837b8068b73037b46206bf9267350614dad0286cce08a1afc9291c5bf315c7",
+      "record_identity_text": "r1_ZYN7gGi3MDe0Yga_kmc1BhTa0Chszgihr8kpHFvzFcc"
+    }
+  },
+  "id": "record.identity.adapter-wrapper-collision.001",
+  "input": {
+    "record": {
+      "content": {
+        "$map": [
+          [
+            "$bytes",
+            "deadbeef"
+          ]
+        ]
+      },
+      "envelope_version": 1,
+      "type": "claim"
+    }
+  },
+  "operation": "derive_record_identity",
+  "schema": "olp-conformance-vector-v1"
+}

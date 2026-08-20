@@ -106,10 +106,12 @@ class EvidenceGraph:
         self.proofs: dict[EvidenceRefV1, OLPProof] = {}
         self.relationships: list[tuple[RecordV1, RelationshipStatementV1]] = []
         self.edges: tuple[ProjectedEdge, ...] = ()
+        self._defer_projection = True
         for record in records:
             self.add_record(record)
         for proof in proofs:
             self.add_proof(proof)
+        self._defer_projection = False
         self._rebuild_projection()
 
     def add_record(self, record: RecordV1) -> EvidenceRefV1:
@@ -126,6 +128,8 @@ class EvidenceGraph:
             statement = None
         if statement is not None and not any(existing_ref == ref for existing_ref, _ in self._relationship_refs()):
             self.relationships.append((record, statement))
+            if not self._defer_projection:
+                self._rebuild_projection()
         return ref
 
     def add_proof(self, proof: OLPProof) -> EvidenceRefV1:
@@ -183,14 +187,20 @@ class EvidenceGraph:
         *,
         max_depth: int = 32,
         max_nodes: int = 10_000,
+        max_edges: int = 100_000,
         relation_types: frozenset[str] | None = None,
     ) -> TraversalResult:
-        if max_depth < 0 or max_nodes < 1:
-            raise ValueError("traversal limits must be non-negative depth and positive node count")
+        if max_depth < 0 or max_nodes < 1 or max_edges < 1:
+            raise ValueError("traversal limits must be non-negative depth and positive node/edge counts")
         outgoing: dict[EvidenceRefV1, list[ProjectedEdge]] = defaultdict(list)
-        for edge in self.edges:
-            if edge.subject is not None and (relation_types is None or edge.relation_type in relation_types):
-                outgoing[edge.subject].append(edge)
+        eligible_edges = [
+            edge
+            for edge in self.edges
+            if edge.subject is not None and (relation_types is None or edge.relation_type in relation_types)
+        ]
+        edge_scan_limited = len(eligible_edges) > max_edges
+        for edge in eligible_edges[:max_edges]:
+            outgoing[edge.subject].append(edge)
         for bucket in outgoing.values():
             bucket.sort(key=lambda edge: (edge.relation_type.encode("utf-8"), edge.object.canonical_bytes(), edge.relationship_record))
 
@@ -199,12 +209,10 @@ class EvidenceGraph:
         ordered: list[EvidenceRefV1] = []
         traversed: list[ProjectedEdge] = []
         dangling: set[EvidenceRefV1] = set()
-        limit_reached = False
-        cycles = False
+        limit_reached = edge_scan_limited
         while queue:
             ref, depth = queue.popleft()
             if ref in visited:
-                cycles = True
                 continue
             if len(visited) >= max_nodes:
                 limit_reached = True
@@ -219,10 +227,9 @@ class EvidenceGraph:
                 continue
             for edge in outgoing.get(ref, ()):
                 traversed.append(edge)
-                if edge.object in visited:
-                    cycles = True
-                else:
+                if edge.object not in visited:
                     queue.append((edge.object, depth + 1))
+        cycles = _contains_directed_cycle(visited, traversed)
         return TraversalResult(
             visited=tuple(ordered),
             traversed_edges=tuple(traversed),
@@ -231,3 +238,34 @@ class EvidenceGraph:
             limit_reached=limit_reached,
             cycles_detected=cycles,
         )
+
+
+def _contains_directed_cycle(
+    visited: set[EvidenceRefV1],
+    edges: list[ProjectedEdge],
+) -> bool:
+    """Detect a real directed cycle in the explored subgraph.
+
+    Reaching the same node by two acyclic paths is DAG convergence, not a
+    cycle. Kahn's algorithm avoids that false positive while remaining
+    iterative and bounded by the already-explored nodes/edges.
+    """
+
+    adjacency: dict[EvidenceRefV1, set[EvidenceRefV1]] = defaultdict(set)
+    indegree: dict[EvidenceRefV1, int] = {node: 0 for node in visited}
+    for edge in edges:
+        if edge.subject is None or edge.subject not in visited or edge.object not in visited:
+            continue
+        if edge.object not in adjacency[edge.subject]:
+            adjacency[edge.subject].add(edge.object)
+            indegree[edge.object] += 1
+    queue = deque(sorted((node for node, degree in indegree.items() if degree == 0), key=lambda ref: ref.canonical_bytes()))
+    processed = 0
+    while queue:
+        node = queue.popleft()
+        processed += 1
+        for target in sorted(adjacency.get(node, ()), key=lambda ref: ref.canonical_bytes()):
+            indegree[target] -= 1
+            if indegree[target] == 0:
+                queue.append(target)
+    return processed != len(indegree)

@@ -19,3 +19,17 @@ def test_partial_policy_projection_preserves_unspecified_defaults():
     assert projected.understood_extensions == frozenset({'https://example.org/ext/a'})
     assert projected.allowed_commitment_algorithms == default.allowed_commitment_algorithms
     assert projected.allowed_cryptosuites == default.allowed_cryptosuites
+
+
+def test_mixed_integer_and_text_map_keys_round_trip_without_collision():
+    original = {1: 'int-key', '1': 'text-key'}
+    encoded = encode_value(original)
+    assert encoded == {'$map': [[1, 'int-key'], ['1', 'text-key']]}
+    assert decode_value(encoded) == original
+
+
+def test_literal_wrapper_shaped_maps_round_trip_as_maps():
+    for original in ({'$bytes': 'deadbeef'}, {'$map': 'literal'}):
+        encoded = encode_value(original)
+        assert '$map' in encoded
+        assert decode_value(encoded) == original

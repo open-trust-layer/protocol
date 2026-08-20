@@ -75,3 +75,8 @@ def test_text_limit_is_enforced():
 def test_output_limit_is_enforced():
     with pytest.raises(ResourceLimitError):
         encode("abcd", limits=CborLimits(max_output_bytes=2))
+
+
+def test_map_output_limit_is_enforced_while_collecting_sort_rows():
+    with pytest.raises(ResourceLimitError):
+        encode({'a': '1234', 'b': '5678'}, limits=CborLimits(max_output_bytes=8))

@@ -134,7 +134,8 @@ def test_commitment_algorithm_policy_rejection_is_separate(sample_record, sample
     policy = VerificationPolicy(allowed_commitment_algorithms=frozenset())
     result = verify_proof(sample_record, sample_proof, resolved_method=resolved_method, policy=policy)
     assert result.commitment_algorithm_support == Status.REJECTED_BY_POLICY
-    assert result.cryptographic_validity == Status.NOT_EVALUATED
+    assert result.record_binding == Status.VALID
+    assert result.cryptographic_validity == Status.VALID
     assert ReasonCode.COMMITMENT_ALGORITHM_REJECTED_BY_POLICY in codes(result)
 
 
