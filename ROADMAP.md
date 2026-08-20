@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 19 — Evidence Bundle Core
+**Current phase:** Milestone 24 — Streaming & HTTP API Core
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -94,25 +94,82 @@ Draft v0.2 intentionally preserves the verified v1 core bytes.
 
 ### Milestone 19 — Evidence Bundle Core
 
-**Accepted.** Python 3.11–3.14 passed; Rust compiled; frozen `core-v1` remained 62/62; `bundle-v1` passed 8/8; Python↔Rust bundle interoperability passed.
+**Accepted and merged.**
+
+Python 3.11–3.14 passed; independent Rust passed; frozen `core-v1` remained 62/62; `bundle-v1` passed 8/8; Python↔Rust bundle interoperability passed.
 
 Make the deterministic reader/validation subset of Specification 0008 executable: manifest identity, root/inventory canonical sets, exact Record/Proof identity recomputation, packaged-resource digests, missing/unexpected evidence, critical extensions, self-contained no-network behavior, and explicit resource limits.
 
-`core-v1` remains frozen at 62 cases. Milestone 19 introduces the separate `bundle-v1` capability/profile with eight shared cases.
-
 ### Milestone 20 — Resolution & Discovery Core
 
-**Implementation complete; Python/Rust `resolution-v1` CI is the acceptance gate.**
+**Accepted and merged.**
 
-Implements offline-first explicit resolution, provenance-visible results, exact evidence/resource identity recomputation, explicit network policy, redirect/private-address guards, freshness/byte limits, resolver loops, and structured unavailable/not-found/policy outcomes. Conformance is isolated in the separate 16-case `resolution-v1` profile.
+Offline-first explicit resolution, provenance-visible results, exact evidence/resource identity recomputation, explicit network policy, redirect/private-address guards, freshness/byte limits, resolver loops, and structured unavailable/not-found/policy outcomes are independently executable in the separate 16-case `resolution-v1` profile.
 
 ### Milestone 21 — Identity, Authority & Lifecycle Core
 
-Planned after M20: principal relations, authority grants, lifecycle statements, and policy-separated evaluation without universal identity or authorization truth.
+**Accepted and merged.**
+
+Principal/control/role/authority separation, exact delegation-parent identity verification, explicit scope, immutable revocation/lifecycle evidence, conflict/freshness handling, and policy-separated evaluation are independently executable in the separate 18-case `identity-authority-lifecycle-v1` profile.
+
+No global Actor, trust score, mutable canonical current state, or protocol authorization boolean was introduced.
 
 ### Milestone 22 — Privacy & Disclosure Core
 
-Planned after M21: whole-object/graph-subset disclosure planning, task-scoped minimization, unresolved dependency reporting, and correlation warnings.
+**Accepted and merged.**
+
+Whole-object and graph-subset disclosure planning, task-scoped minimization, exact immutable identity/resource verification, unresolved dependency reporting, offline/privacy tradeoffs, native external-presentation policy, and correlation warnings are independently executable in the separate 18-case `privacy-disclosure-v1` profile.
+
+No native field-level redaction, zero-knowledge disclosure, global completeness proof, or universal privacy score was introduced.
+
+### Milestone 23 — Transport Encoding Core
+
+**Accepted.**
+
+The deterministic non-network subset of Specification 0012 is independently executable in the separate 22-case `transport-encoding-v1` profile.
+
+Acceptance includes:
+
+```text
+Python 3.11-3.14 transport-encoding-v1  22 / 22 PASS
+Rust 1.85 transport-encoding-v1         22 / 22 PASS
+Python <-> Rust M23 interoperability     PASS
+Earlier accepted profiles/regressions   PASS
+```
+
+Scope:
+
+- canonical textual Record/Proof/Bundle identity forms;
+- strict base64url-no-padding decoding with canonical pad-bit checks;
+- reversible OLP JSON Value Encoding v1 (`OJVE-1`);
+- byte-string, large-integer, and heterogeneous-map-key preservation;
+- strict/unsupported OJVE wrapper handling;
+- single-object `OLPTransportEnvelopeV1` processing;
+- JSON transport representation using OJVE-1;
+- exact deterministic CBOR parity for the accepted envelope/Record/Proof cases;
+- transport/object identity separation; and
+- implementation-neutral Python/Rust conformance and interoperability.
+
+The final adversarial pass strengthened the original green corpus after detecting that Rust had not actually been required to reproduce Python's deterministic CBOR output. The accepted corpus now makes those bytes explicit rather than inferring JSON/CBOR parity from JSON-only success.
+
+M23 deliberately excludes live sockets, DNS, HTTP authentication/authorization, HTTP Message Signatures, redirects, caching, content-digest handling, and streaming bundle-state semantics.
+
+See `docs/transport-encoding-core.md` and `conformance/VECTOR-INDEX-M23.md`.
+
+### Milestone 24 — Streaming & HTTP API Core
+
+**Next.**
+
+Take the network/API-sensitive remainder of Specification 0012 only after the transport encoding has been independently fixed:
+
+- JSON Text Sequence / CBOR Sequence frame processing;
+- truncation and manifest-first behavior;
+- immutable object retrieval path validation;
+- HTTP content negotiation and structured status mapping;
+- `Content-Digest` handling;
+- redirects/caching/resource limits;
+- separation of HTTP authentication/authorization from OLP proof validity; and
+- deterministic HTTP conformance fixtures with no uncontrolled ambient network dependency.
 
 ## Path toward v1.0
 

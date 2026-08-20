@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.map-keys.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"encode_ojve","input":{"value":{"$map":[[1,"integer"],["1","text"],[{"$bytes":"31"},"bytes"]]}},"expected":{"outcome":"SUCCESS","result":{"ojve":{"$olp":"map","v":[[1,"integer"],["1","text"],[{"$olp":"bytes","v":"MQ"},"bytes"]]}}}}

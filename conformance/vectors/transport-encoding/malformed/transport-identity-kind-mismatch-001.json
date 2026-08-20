@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.identity.kind-mismatch.001","capability":"olp.transport-encoding.v1","category":"malformed","operation":"decode_identity_text","input":{"text":"p1_ERERERERERERERERERERERERERERERERERERERERERE","expected_kind":"record"},"expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"IDENTITY_TEXT_KIND_MISMATCH"}}

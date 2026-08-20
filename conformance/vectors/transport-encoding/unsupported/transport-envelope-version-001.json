@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.envelope.version.001","capability":"olp.transport-encoding.v1","category":"unsupported","operation":"decode_transport_envelope","input":{"json":{"olp":2,"type":"record","payload":null}},"expected":{"outcome":"ERROR","classification":"UNSUPPORTED","reason":"UNSUPPORTED_TRANSPORT_ENVELOPE_VERSION"}}

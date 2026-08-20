@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.unknown-tag.001","capability":"olp.transport-encoding.v1","category":"unsupported","operation":"decode_ojve","input":{"ojve":{"$olp":"future","v":null}},"expected":{"outcome":"ERROR","classification":"UNSUPPORTED","reason":"UNSUPPORTED_OJVE_TAG"}}

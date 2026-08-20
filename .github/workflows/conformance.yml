@@ -58,6 +58,21 @@ jobs:
           print("Python privacy-disclosure-v1 conformance: 18/18 PASS")
           PY
 
+      - name: Run OLP transport-encoding-v1 conformance profile
+        run: olp-conformance run --profile transport-encoding-v1 --quiet --report conformance-transport-encoding-report.json
+
+      - name: Assert Milestone 23 transport encoding conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-transport-encoding-report.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 22, f"expected 22 transport-encoding-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Python transport-encoding-v1 conformance: 22/22 PASS")
+          PY
+
       - name: Upload conformance report
         if: always()
         uses: actions/upload-artifact@v6
@@ -69,6 +84,7 @@ jobs:
             conformance-resolution-report.json
             conformance-identity-authority-lifecycle-report.json
             conformance-privacy-disclosure-report.json
+            conformance-transport-encoding-report.json
           if-no-files-found: error
 
   rust-interoperability:
@@ -146,6 +162,27 @@ jobs:
             --quiet \
             --report conformance-rust-privacy-disclosure.json
 
+      - name: Run Rust implementation against transport-encoding-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile transport-encoding-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust-transport-encoding.json
+
+      - name: Assert Milestone 23 transport encoding conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust-transport-encoding.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 22, f"expected 22 transport-encoding-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust transport-encoding-v1 conformance: 22/22 PASS")
+          PY
+
       - name: Assert Milestone 22 privacy disclosure conformance count
         run: |
           python - <<'PY'
@@ -209,7 +246,10 @@ jobs:
       - name: Run bidirectional Python-Rust interoperability tests
         env:
           OLP_RUN_RUST_INTEROP: "1"
-        run: python -m pytest -q tests/interoperability/test_python_rust.py
+        run: |
+          python -m pytest -q \
+            tests/interoperability/test_python_rust.py \
+            tests/interoperability/test_transport_python_rust.py
 
       - name: Upload Rust conformance report
         if: always()
@@ -222,4 +262,5 @@ jobs:
             conformance-rust-resolution.json
             conformance-rust-identity-authority-lifecycle.json
             conformance-rust-privacy-disclosure.json
+            conformance-rust-transport-encoding.json
           if-no-files-found: error

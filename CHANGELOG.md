@@ -43,6 +43,19 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add independent Rust implementation and cross-language interoperability CI.
 - Add executable Specification 0005 Evidence Graph Core: Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, and Rust parity.
 
+### Milestone 23 transport encoding core
+
+- Add the deterministic non-network Specification 0012 transport-encoding core without making HTTP, JSON, or any server architecture part of OLP evidence identity.
+- Add canonical `r1_`, `p1_`, and `b1_` textual identity presentations with strict unpadded base64url validation, exact 32-octet length checks, typed-context checks, and rejection of non-canonical pad bits.
+- Add reversible OLP JSON Value Encoding v1 (`OJVE-1`) for bytes, safe/large integers, arrays, and generic maps.
+- Preserve heterogeneous abstract map-key types with pair-based internal representations so host-language dictionary equality cannot collapse integer, text, byte-string, or boolean keys.
+- Reject unsafe bare JSON integers, non-canonical decimal integer wrappers, duplicate abstract map keys, malformed wrapper shapes, unsupported OJVE tags, floating-point values, and excessive resource use.
+- Add single-object `OLPTransportEnvelopeV1` JSON/CBOR processing with explicit core versus absolute-URI extension message types and distinct malformed/unsupported outcomes.
+- Add executable Record and Proof transport-equivalence operations that reconstruct the real object models after OJVE decoding and recompute Record Identity/Proof Identity byte-for-byte.
+- Add `olp.transport-encoding.v1` and the separate 22-case `transport-encoding-v1` profile without changing any previously accepted profile.
+- Add an independent dependency-free Rust 1.85 implementation with canonical pad-bit checks, pair-preserving abstract values, identity recomputation, source-contract guards, and direct Python↔Rust M23 interoperability coverage.
+- Keep streaming, HTTP endpoint/status behavior, content negotiation, `Content-Digest`, HTTP Message Signatures, authentication/authorization, redirects, caching, rate limits, and live network privacy outside M23 for separate review.
+
 ### Milestone 22 privacy and disclosure core
 
 - Add the executable Specification 0010 disclosure-planning core without inventing native OLP field-level redaction, zero-knowledge disclosure, a universal privacy score, or a global completeness/minimality proof.

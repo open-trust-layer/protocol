@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.identity.proof.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"encode_identity_text","input":{"kind":"proof","digest_hex":"1111111111111111111111111111111111111111111111111111111111111111"},"expected":{"outcome":"SUCCESS","result":{"text":"p1_ERERERERERERERERERERERERERERERERERERERERERE"}}}

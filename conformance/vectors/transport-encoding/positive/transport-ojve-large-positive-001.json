@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.large-positive.001","capability":"olp.transport-encoding.v1","category":"positive","operation":"encode_ojve","input":{"value":9007199254740992},"expected":{"outcome":"SUCCESS","result":{"ojve":{"$olp":"int","v":"9007199254740992"}}}}

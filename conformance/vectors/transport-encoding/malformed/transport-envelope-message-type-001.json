@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.envelope.message-type.001","capability":"olp.transport-encoding.v1","category":"malformed","operation":"encode_transport_envelope","input":{"message_type":"customMessage","payload":null},"expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"MALFORMED_TRANSPORT_ENVELOPE"}}

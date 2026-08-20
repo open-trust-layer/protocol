@@ -1,0 +1,1 @@
+{"schema":"olp-conformance-vector-v1","id":"m23.ojve.unsafe-number.001","capability":"olp.transport-encoding.v1","category":"malformed","operation":"decode_ojve","input":{"ojve":9007199254740992},"expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"MALFORMED_OJVE"}}
