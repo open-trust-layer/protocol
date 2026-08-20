@@ -58,8 +58,6 @@ def test_rust_identity_authority_lifecycle_capability_is_wired_and_policy_separa
         '"INDETERMINATE"',
     ):
         assert token in source
-    # A test may probe for the absence of an authorization field, but production
-    # output construction must never synthesize one.
     assert 'out.insert("authorized"' not in source
 
 
@@ -83,3 +81,40 @@ def test_rust_privacy_disclosure_capability_preserves_minimization_boundaries():
         assert token in source
     assert 'out.insert("global_completeness_established".into(), Json::Bool(false))' in source
     assert 'out.insert("field_redaction_performed".into(), Json::Bool(false))' in source
+
+
+def test_rust_transport_encoding_preserves_typed_values_and_object_identity():
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8")
+    source=(RUST/"src"/"transport.rs").read_text(encoding="utf-8")
+    proof_bridge=(RUST/"src"/"transport_proof.rs").read_text(encoding="utf-8")
+    assert "olp.transport-encoding.v1" in lib
+    for operation in (
+        "encode_identity_text",
+        "decode_identity_text",
+        "encode_ojve",
+        "decode_ojve",
+        "encode_transport_envelope",
+        "decode_transport_envelope",
+        "transport_record_equivalence",
+        "transport_proof_equivalence",
+    ):
+        assert operation in lib
+    for token in (
+        '"r1_"', '"p1_"', '"b1_"',
+        "non-canonical base64url pad bits",
+        "DUPLICATE_OJVE_MAP_KEY",
+        "UNSUPPORTED_OJVE_TAG",
+        "MALFORMED_TRANSPORT_ENVELOPE",
+        "AValue::Bytes",
+        "AValue::Int",
+        "AValue::Text",
+        "AValue::Map",
+        "record::identity_digest",
+    ):
+        assert token in source
+    assert "proof_identity::proof_identity_digest_for" in proof_bridge
+    # M23 is deliberately non-network. The accepted source must not grow a
+    # transport client/server or authorization surface under this capability.
+    combined = source + "\n" + proof_bridge
+    for token in ("TcpStream", "UdpSocket", "reqwest", "hyper::", "std::net", "authorized"):
+        assert token not in combined
