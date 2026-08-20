@@ -59,10 +59,13 @@ def test_unrelated_future_profile_fragment_does_not_change_frozen_commitment(tmp
     assert after.files == before.files
 
 
-def test_standalone_profile_registry_matches_loaded_manifest_profiles():
+def test_standalone_profile_registry_exactly_matches_loaded_manifest_profiles():
     manifest = load_manifest(MANIFEST)
     profile_dir = MANIFEST.parent / "profiles"
-    for path in sorted(profile_dir.glob("*.json"), key=lambda item: item.name.encode("utf-8")):
+    paths = sorted(profile_dir.glob("*.json"), key=lambda item: item.name.encode("utf-8"))
+    assert {path.stem for path in paths} == set(manifest.profiles)
+
+    for path in paths:
         raw = load_path(path)
         assert set(raw) == {"schema", "id", "version", "status", "capabilities"}, path.name
         assert raw["schema"] == "olp-conformance-profile-v1"
