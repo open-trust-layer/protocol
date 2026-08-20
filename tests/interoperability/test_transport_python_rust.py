@@ -60,13 +60,11 @@ def _assert_subset(expected, observed, path="$"):
     assert observed == expected, f"{path}: expected {expected!r}, observed {observed!r}"
 
 
-def test_transport_encoding_matches_python_and_vectors(rust_adapter):
+def test_transport_scalar_ojve_and_envelope_match_exactly(rust_adapter):
     cases = (
         "transport-encoding/positive/transport-identity-record-001.json",
         "transport-encoding/positive/transport-ojve-map-keys-001.json",
         "transport-encoding/positive/transport-envelope-json-001.json",
-        "transport-encoding/positive/transport-record-equivalence-001.json",
-        "transport-encoding/positive/transport-proof-equivalence-001.json",
     )
     for relative in cases:
         case = _vector(relative)
@@ -74,6 +72,27 @@ def test_transport_encoding_matches_python_and_vectors(rust_adapter):
         rs = rust_adapter.execute(case["operation"], case["input"])
         assert rs == py, relative
         _assert_subset(case["expected"]["result"], rs)
+
+
+def test_record_and_proof_transport_preserve_identity_and_cbor(rust_adapter):
+    cases = (
+        "transport-encoding/positive/transport-record-equivalence-001.json",
+        "transport-encoding/positive/transport-proof-equivalence-001.json",
+    )
+    for relative in cases:
+        case = _vector(relative)
+        expected = case["expected"]["result"]
+        py = ReferenceAdapter().execute(case["operation"], case["input"])
+        rs = rust_adapter.execute(case["operation"], case["input"])
+
+        # OJVE map entry order is explicitly non-semantic, so the complete JSON
+        # convenience projection need not be byte-identical. The immutable
+        # identities and deterministic CBOR transport bytes must be identical.
+        _assert_subset(expected, py)
+        _assert_subset(expected, rs)
+        assert rs["cbor_hex"] == py["cbor_hex"] == expected["cbor_hex"], relative
+        assert rs["identity_preserved"] is True
+        assert py["identity_preserved"] is True
 
 
 def test_transport_identity_decode_matches_python(rust_adapter):
