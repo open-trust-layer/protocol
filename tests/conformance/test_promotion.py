@@ -21,6 +21,7 @@ EXPECTED_BLOCKERS = (
     "INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED",
 )
 REVIEW_TARGET_ID = "olp-v1.0-review-1"
+CHECKED_IN_REVIEW_COMMIT = "877493826d673ccf9bb94e7b6b113b35141ad220"
 FROZEN_COMMIT = "1" * 40
 OTHER_COMMIT = "2" * 40
 
@@ -43,6 +44,14 @@ def _write(path: Path, value: dict) -> None:
 
 def _check_statuses(report) -> dict[str, str]:
     return {item.id: item.status for item in report.checks}
+
+
+def _prepare(raw: dict) -> None:
+    raw["review_target"] = {
+        "id": REVIEW_TARGET_ID,
+        "status": "preparing",
+        "source_commit": None,
+    }
 
 
 def _freeze(raw: dict, commit: str = FROZEN_COMMIT) -> None:
@@ -74,8 +83,8 @@ def test_v1_candidate_is_internally_ready_but_externally_blocked():
     assert report.release_corpus_commitment == RELEASE_COMMITMENT
     assert report.core_corpus_commitment == CORE_COMMITMENT
     assert report.review_target_id == REVIEW_TARGET_ID
-    assert report.review_target_status == "preparing"
-    assert report.review_target_source_commit is None
+    assert report.review_target_status == "frozen"
+    assert report.review_target_source_commit == CHECKED_IN_REVIEW_COMMIT
     assert report.internal_readiness == "PASS"
     assert report.status == "BLOCKED"
     assert report.blockers == EXPECTED_BLOCKERS
@@ -147,6 +156,7 @@ def test_completed_external_gate_cannot_precede_review_target_freeze(tmp_path):
     root = _copy_candidate_repo(tmp_path)
     path = root / "stabilization" / "v1.0-candidate.json"
     raw = _load(path)
+    _prepare(raw)
     _complete_gate(
         raw,
         "public_technical_review",
@@ -276,8 +286,8 @@ def test_promotion_cli_reports_blocked_as_valid_diagnostic_and_require_ready_fai
     assert payload["status"] == "BLOCKED"
     assert payload["internal_readiness"] == "PASS"
     assert payload["review_target_id"] == REVIEW_TARGET_ID
-    assert payload["review_target_status"] == "preparing"
-    assert payload["review_target_source_commit"] is None
+    assert payload["review_target_status"] == "frozen"
+    assert payload["review_target_source_commit"] == CHECKED_IN_REVIEW_COMMIT
     assert payload["blockers"] == list(EXPECTED_BLOCKERS)
 
     assert main(["promotion-check", "--candidate", str(CANDIDATE), "--require-ready"]) == 1
