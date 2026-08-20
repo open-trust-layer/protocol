@@ -5,8 +5,8 @@
 > Open Layer Protocol exists to make trust portable and verifiable without making trust centrally owned.
 
 **Project status:** experimental / pre-0.1  
-**Specification-set status:** Draft v0.2  
-**Current phase:** Post-Milestone 24 integration / next milestone selection
+**Specification-set status:** Draft v0.3  
+**Current phase:** Milestone 25 — Draft v0.3 Integration & Conformance Freeze
 
 ---
 
@@ -14,7 +14,7 @@
 
 Open Layer Protocol (OLP) is an open protocol for portable, independently verifiable evidence between independent participants.
 
-OLP standardizes the evidence substrate: immutable records, cryptographic proofs, explicit evidence relationships, identity/authority evidence, lifecycle evidence, exchange bundles, resolution, privacy boundaries, conformance, and transport profiles.
+OLP standardizes an evidence substrate: immutable records, cryptographic proofs, explicit evidence relationships, identity/authority evidence, lifecycle evidence, exchange bundles, resolution, privacy boundaries, conformance, and transport/API profiles.
 
 It deliberately does **not** define a universal trust score, identity provider, authorization server, marketplace, blockchain, payment system, or central OLP authority.
 
@@ -24,54 +24,40 @@ See [`PRINCIPLES.md`](PRINCIPLES.md).
 
 ---
 
-## Draft v0.2
+## Draft v0.3
 
-Draft v0.2 is an **integration release**, not a new wire-format generation.
+Draft v0.3 is an **integration and conformance-freeze release**, not a new wire-format generation.
 
-The independently verified v1 deterministic core remains byte-compatible with Draft v0.1:
+It preserves the already accepted v1 identity-bearing constructions and capability semantics from Draft v0.2 while grouping the executable work accepted through Milestone 24 into one reproducibly committed release profile.
 
-- Record envelope version `1`;
-- `OLP-CIE-1` Record Identity encoding;
-- SHA-256 Record Commitment baseline;
-- `ProofInputV1`;
-- `eddsa-ed25519-v1`;
-- Proof Identity v1;
-- `EvidenceRefV1`; and
-- `RelationshipStatementV1`.
+The frozen deterministic `core-v1` remains the smallest OLP core and is not redefined. Draft v0.3 adds the broader release-level profile:
 
-The cross-cutting versioning, registry, extension, reason-code, migration, and stable-core rules are defined by [`specification/0013-versioning-registries-and-core-profile.md`](specification/0013-versioning-registries-and-core-profile.md).
+```text
+draft-v0.3-interoperable-v1
+```
 
-The full Milestone 18 integration rationale is documented in [`docs/draft-v0.2-integration.md`](docs/draft-v0.2-integration.md).
+That profile contains 15 capabilities and selects exactly 180 implementation-neutral cases.
+
+The exact corpus is committed by `OLP-CONFORMANCE-SUITE-COMMITMENT-V1`:
+
+```text
+SHA-256 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
+```
+
+The commitment identifies the exact test corpus. It is **not** an OLP evidence identity, implementation result, certification, security rating, or trust judgment.
+
+See [`specification/0014-release-profiles-and-conformance-suite-commitments.md`](specification/0014-release-profiles-and-conformance-suite-commitments.md), [`specification/releases/draft-v0.3.json`](specification/releases/draft-v0.3.json), and [`docs/draft-v0.3-integration.md`](docs/draft-v0.3-integration.md).
 
 ---
 
 ## Independently verified executable profiles
 
-The frozen `core-v1` interoperability profile contains eight capabilities:
+The frozen `core-v1` profile contains eight capabilities and remains 62/62 in both implementations.
+
+Higher-layer behavior is additive:
 
 ```text
-olp.record-identity.v1
-olp.record-commitment.sha256.v1
-olp.proof-input.v1
-olp.proof.eddsa-ed25519.v1
-olp.proof-verification.v1
-olp.proof-identity.v1
-olp.evidence-ref.v1
-olp.evidence-relationship.v1
-```
-
-Milestone 17 acceptance demonstrated:
-
-```text
-Python core-v1 conformance       62 / 62 PASS
-Rust core-v1 conformance         62 / 62 PASS
-Python <-> Rust interoperability PASS
-Python 3.11-3.14 CI              PASS
-```
-
-Higher-layer behavior is added through separate profiles rather than silently changing `core-v1`:
-
-```text
+core-v1                          62 / 62 PASS  (Python + Rust)
 bundle-v1                         8 / 8 PASS  (Python + Rust)
 resolution-v1                    16 / 16 PASS  (Python + Rust)
 identity-authority-lifecycle-v1  18 / 18 PASS  (Python + Rust)
@@ -80,7 +66,18 @@ transport-encoding-v1            22 / 22 PASS  (Python + Rust)
 streaming-http-v1                36 / 36 PASS  (Python + Rust)
 ```
 
-Direct Python↔Rust interoperability gates cover all accepted executable slices. Milestone 23 additionally requires exact deterministic CBOR parity for the single-envelope, Record, and Proof transport cases rather than treating JSON-only success as sufficient. Milestone 24 additionally verifies pinned JSON Text Sequence / CBOR Sequence producer bytes and keeps transport completeness, HTTP/service status, evidence validity, and OLP proof validity as separate dimensions.
+Draft v0.3 additionally requires all accepted capabilities in one run:
+
+```text
+Python 3.11 draft-v0.3-interoperable-v1  180 / 180 PASS
+Python 3.12 draft-v0.3-interoperable-v1  180 / 180 PASS
+Python 3.13 draft-v0.3-interoperable-v1  180 / 180 PASS
+Python 3.14 draft-v0.3-interoperable-v1  180 / 180 PASS
+Rust 1.85 draft-v0.3-interoperable-v1    180 / 180 PASS
+Python <-> Rust interoperability          PASS
+```
+
+Direct cross-language gates also retain exact byte comparisons where representation bytes are normative, including deterministic CBOR and pinned JSON Text Sequence / CBOR Sequence producer cases.
 
 ---
 
@@ -88,7 +85,7 @@ Direct Python↔Rust interoperability gates cover all accepted executable slices
 
 Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 
-| Spec | Document | Draft v0.2 role |
+| Spec | Document | Draft v0.3 role |
 |---|---|---|
 | 0000 | Overview and Specification Index | Non-normative entry point |
 | 0001 | Terminology | Shared vocabulary |
@@ -103,9 +100,10 @@ Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 | 0010 | Privacy, Selective Disclosure, and Data Minimization | Executable `privacy-disclosure-v1` subset |
 | 0011 | Conformance and Interoperability | Executable framework |
 | 0012 | Transport and API Profiles | Executable `transport-encoding-v1` and `streaming-http-v1` subsets |
-| 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | Cross-cutting v0.2 governance |
+| 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | General cross-cutting governance baseline |
+| 0014 | Release Profiles and Conformance Suite Commitments | Draft v0.3 aggregate profile and corpus commitment |
 
-The individual numbered documents retain their own document revisions. The **Draft v0.2** label identifies the repository-level specification-set release.
+Individual numbered documents retain their own document revisions. The **Draft v0.3** label identifies the repository-level specification-set release.
 
 ---
 
@@ -139,20 +137,25 @@ conformance / interoperability
           |
           v
 transport / API profiles
+          |
+          v
+release profile + exact corpus commitment
 ```
 
 Foundational separations include:
 
 ```text
-proof validity       != truth
-identity             != trust
-authority evidence   != authorization decision
-status evidence      != historical mutation
-resolution           != verification
-bundle integrity     != completeness
-conformance          != trustworthiness
-transport security   != OLP object proof validity
-transport encoding   != OLP evidence identity
+proof validity        != truth
+identity              != trust
+authority evidence    != authorization decision
+status evidence       != historical mutation
+resolution            != verification
+bundle integrity      != completeness
+conformance           != trustworthiness
+transport security    != OLP object proof validity
+transport encoding    != OLP evidence identity
+corpus commitment     != conformance result
+conformance result    != security certification
 ```
 
 ---
@@ -165,28 +168,29 @@ The repository contains:
 - executable conformance harness under `src/olp_conformance/` and `conformance/`;
 - independent Rust implementation under `implementations/rust/`;
 - interoperability tests under `tests/interoperability/`;
-- security regressions under `tests/security/`;
-- promoted normative-construction vectors under `vectors/`.
+- security regressions under `tests/security/`; and
+- normative/promoted construction vectors under `vectors/`.
 
-Milestones 13–17 established executable identity/proof/evidence behavior, independent implementation parity, and adversarial hardening.
+The conformance CLI can run profiles and independently compute the exact corpus commitment:
 
-Milestones 19–22 independently reproduced bundle, resolution, identity/authority/lifecycle, and privacy/disclosure higher-layer slices without changing the frozen deterministic core.
+```bash
+olp-conformance run --profile draft-v0.3-interoperable-v1
+olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json
+```
 
-Milestone 23 independently reproduced canonical textual identities, OJVE-1, and the single-object JSON/CBOR transport envelope. Its acceptance corpus explicitly verifies that transport round trips preserve Record Identity, Proof Identity, proof bytes, and deterministic CBOR output.
-
-Milestone 24 independently reproduced the deterministic streaming/HTTP semantic boundary from Specification 0012: exact producer framing, manifest-first stream processing, truncation/completeness separation, immutable identity-bearing reads, HTTP negotiation/status mapping, parsed `Content-Digest` semantics, redirect policy, cache/range/limit handling, and HTTP-auth/OLP-proof separation without ambient network I/O.
+The release manifest pins the expected commitment so CI detects accidental corpus drift.
 
 ---
 
 ## Security status
 
-OLP is still experimental and is **not** a production security certification.
+OLP remains experimental and is **not** a production security certification.
 
-Milestone 17 hardened the executable core against parser differentials, URI ambiguity, recursive/resource exhaustion, policy/cryptography conflation, graph-processing errors, and cross-language representation drift.
+Milestones 17–24 added adversarial hardening across canonicalization, proof handling, graph traversal, bundles, resolution/SSRF policy, delegation/lifecycle evidence, privacy/disclosure planning, transport encoding, streaming semantics, and modeled HTTP exchange behavior.
 
-Milestone 19 added bounded bundle ingestion. Milestone 20 added deterministic resolver SSRF/redirect/private-address policy. Milestone 21 added exact delegation identity/scope checks and immutable lifecycle conflict handling. Milestone 22 added identity-preserving disclosure minimization and correlation/privacy warnings without field-level redaction or ambient network access. Milestone 23 hardened the deterministic transport boundary against non-canonical textual identities, OJVE type loss, heterogeneous-map-key collapse, wrapper ambiguity, and unproven JSON/CBOR parity. Milestone 24 hardened deterministic streaming and HTTP exchange semantics against transport/evidence conflation, local-404 overclaiming, unsafe redirect behavior, content-digest ambiguity, cache/range misuse, and HTTP-auth/proof-validity conflation.
+Draft v0.3 makes the demonstrated surface easier to audit by binding one aggregate profile to one exact corpus. It does not certify live network operation.
 
-Live production networking remains outside the accepted interoperability surface: M24 does not certify a production HTTP server/client, DNS/TLS stack, general hostile-input RFC 7464/CBOR parser, raw RFC 8941 parser, HTTP Message Signature implementation, proxy/cache deployment, or authentication framework.
+Not certified by Draft v0.3 include production HTTP clients/servers, DNS/TLS behavior, proxy/cache deployments, raw hostile-input parser completeness beyond the tested boundaries, HTTP Message Signature deployment, application authentication/authorization frameworks, operational key management, or independent external security review.
 
 See [`SECURITY.md`](SECURITY.md), [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md), and [`docs/streaming-http-api-core.md`](docs/streaming-http-api-core.md).
 
@@ -196,7 +200,7 @@ See [`SECURITY.md`](SECURITY.md), [`docs/security-review-milestone-17.md`](docs/
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 24 is accepted and merged. No Milestone 25 scope has been declared yet; the next executable slice will be selected after post-M24 integration review, based on security risk and interoperability value rather than speculative protocol expansion.
+Milestone 25 is the Draft v0.3 integration/conformance-freeze milestone. The project is deliberately reducing release ambiguity rather than adding speculative protocol scope.
 
 ---
 

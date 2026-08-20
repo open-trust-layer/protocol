@@ -1,0 +1,25 @@
+{
+  "schema": "olp-conformance-manifest-fragment-v1",
+  "version": 1,
+  "harness_version": "0.1.0",
+  "profiles": {
+    "draft-v0.3-interoperable-v1": [
+      "olp.record-identity.v1",
+      "olp.record-commitment.sha256.v1",
+      "olp.proof-input.v1",
+      "olp.proof.eddsa-ed25519.v1",
+      "olp.proof-verification.v1",
+      "olp.proof-identity.v1",
+      "olp.evidence-ref.v1",
+      "olp.evidence-relationship.v1",
+      "olp.bundle.v1",
+      "olp.resolution.v1",
+      "olp.identity-authority-lifecycle.v1",
+      "olp.privacy-disclosure.v1",
+      "olp.transport-encoding.v1",
+      "olp.streaming-transport.v1",
+      "olp.http-api.v1"
+    ]
+  },
+  "cases": []
+}

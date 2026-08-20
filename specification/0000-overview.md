@@ -1,7 +1,7 @@
 # OLP Specification 0000 — Overview and Specification Index
 
 **Status:** Draft  
-**Specification-set release:** Draft v0.2  
+**Specification-set release:** Draft v0.3  
 **Role:** Non-normative overview and specification index  
 **Filename:** `specification/0000-overview.md`
 
@@ -38,31 +38,27 @@ bundle completeness         != policy sufficiency
 selective disclosure        != proof of nonexistence
 conformance                 != trustworthiness
 transport security          != OLP object proof validity
+corpus commitment           != conformance result
+conformance result          != security certification
 ```
 
 ---
 
-## 3. Draft v0.2 integration result
+## 3. Draft v0.3 integration result
 
-Draft v0.2 is a coordinated specification-set release produced after:
+Draft v0.3 is a coordinated integration and conformance-freeze release produced after the executable work from Milestones 13–24.
 
-- Milestone 13 — Python reference implementation;
-- Milestone 14 — executable conformance harness;
-- Milestone 15 — independent Rust implementation;
-- Milestone 16 — executable Evidence Graph Core; and
-- Milestone 17 — adversarial/security review.
+No new wire-format generation is introduced solely by this set release. The accepted v1 deterministic constructions remain unchanged, including Record envelope version `1`, `OLP-CIE-1`, SHA-256 Record Identity/commitment baseline, `OLPProof` version `1`, `ProofInputV1`, `eddsa-ed25519-v1`, Proof Identity v1, `EvidenceRefV1`, and accepted v1 capability semantics.
 
-The integration pass found no need to change the existing v1 deterministic core bytes.
+Specification 0013 continues to define general version-domain, registry, extension, reason-code, migration, and capability-governance rules.
 
-Therefore Draft v0.2 preserves Record envelope version `1`, `OLP-CIE-1`, SHA-256 Record Identity/commitment baseline, `OLPProof` version `1`, `ProofInputV1`, `eddsa-ed25519-v1`, Proof Identity v1, `EvidenceRefV1`, and `RelationshipStatementV1`.
-
-Specification 0013 defines how set releases, document revisions, object versions, canonical encodings, cryptosuites, capabilities, registries, reason codes, and migration rules remain separate.
+Specification 0014 defines Draft v0.3 release profiles and deterministic conformance-suite commitments.
 
 ---
 
 ## 4. Specification index
 
-| Spec | Title | Draft v0.2 role |
+| Spec | Title | Draft v0.3 role |
 |---|---|---|
 | 0000 | Overview and Specification Index | Non-normative entry point |
 | 0001 | Terminology | Shared vocabulary |
@@ -70,16 +66,17 @@ Specification 0013 defines how set releases, document revisions, object versions
 | 0003 | Record Representation | Independently verified core |
 | 0004 | Proofs and Verification | Independently verified core |
 | 0005 | Evidence Relationships and Graphs | Independently verified executable subset |
-| 0006 | Identity and Authority Evidence | Draft design; not yet in verified core |
-| 0007 | Status, Revocation, and Lifecycle Evidence | Draft design; not yet in verified core |
-| 0008 | Evidence Exchange and Bundles | Draft design; not yet in verified core |
-| 0009 | Resolution and Discovery Profiles | Draft design; not yet in verified core |
-| 0010 | Privacy, Selective Disclosure, and Data Minimization | Draft design; not yet in verified core |
+| 0006 | Identity and Authority Evidence | Executable `identity-authority-lifecycle-v1` subset |
+| 0007 | Status, Revocation, and Lifecycle Evidence | Executable `identity-authority-lifecycle-v1` subset |
+| 0008 | Evidence Exchange and Bundles | Executable `bundle-v1` subset |
+| 0009 | Resolution and Discovery Profiles | Executable `resolution-v1` subset |
+| 0010 | Privacy, Selective Disclosure, and Data Minimization | Executable `privacy-disclosure-v1` subset |
 | 0011 | Conformance and Interoperability | Executable framework |
-| 0012 | Transport and API Profiles | Transport/API design plus hardened JSON boundary |
-| 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | Cross-cutting governance |
+| 0012 | Transport and API Profiles | Executable `transport-encoding-v1` and `streaming-http-v1` subsets |
+| 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | General cross-cutting governance baseline |
+| 0014 | Release Profiles and Conformance Suite Commitments | Draft v0.3 aggregate profile and corpus commitment |
 
-The individual numbered specifications retain independent document revisions. Draft v0.2 identifies the set release.
+The individual numbered specifications retain independent document revisions. Draft v0.3 identifies the set release.
 
 ---
 
@@ -126,6 +123,9 @@ The individual numbered specifications retain independent document revisions. Dr
             |
             v
 0012 Transport & API Profiles
+            |
+            v
+0014 Release Profiles / Corpus Commitment
 
 0013 Versioning / Registries / Core Profile
      governs cross-cutting release, identifier,
@@ -134,9 +134,9 @@ The individual numbered specifications retain independent document revisions. Dr
 
 ---
 
-## 6. Independently verified Draft v0.2 core
+## 6. Frozen deterministic core
 
-The current repository `core-v1` profile contains:
+The `core-v1` profile remains the smallest frozen deterministic OLP core:
 
 ```text
 olp.record-identity.v1
@@ -149,96 +149,131 @@ olp.evidence-ref.v1
 olp.evidence-relationship.v1
 ```
 
-Accepted Milestone 17 evidence:
+It remains 62/62 in Python and the independent Rust implementation.
+
+Draft v0.3 does not redefine `core-v1`.
+
+---
+
+## 7. Draft v0.3 aggregate interoperability profile
+
+Draft v0.3 additionally defines:
 
 ```text
-Python core-v1                        62 / 62 PASS
-Rust core-v1                          62 / 62 PASS
-Python <-> Rust interoperability       9 / 9 PASS
-Python CI                              3.11-3.14 PASS
+draft-v0.3-interoperable-v1
 ```
 
-This is the smallest currently demonstrated interoperable OLP core. It is not a claim that OLP is production-ready or that every higher-layer specification has two independent implementations.
+It contains 15 accepted executable capabilities and selects exactly 180 existing conformance cases spanning the deterministic core plus bundles, resolution, identity/authority/lifecycle, privacy/disclosure, transport encoding, streaming, and modeled HTTP exchange semantics.
+
+Acceptance evidence:
+
+```text
+Python 3.11 aggregate profile  180 / 180 PASS
+Python 3.12 aggregate profile  180 / 180 PASS
+Python 3.13 aggregate profile  180 / 180 PASS
+Python 3.14 aggregate profile  180 / 180 PASS
+Rust 1.85 aggregate profile    180 / 180 PASS
+Python <-> Rust interop         PASS
+```
+
+The exact corpus commitment is:
+
+```text
+OLP-CONFORMANCE-SUITE-COMMITMENT-V1
+SHA-256 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
+```
+
+This commitment identifies the test corpus, not a trust judgment or security certification.
 
 ---
 
-## 7. Higher-layer status
+## 8. Higher-layer status
 
-Specifications 0006–0010 remain part of Draft v0.2 because their conceptual boundaries are important to the architecture, but they are not yet part of the independently verified core.
+Milestones 19–24 made deterministic subsets of Specifications 0006–0012 independently executable without collapsing their designed separations:
 
-Executable work remains necessary for identity/authority ecosystem parsing and delegation evaluation; lifecycle/status collection and conflict evaluation; bundle ingestion and amplification limits; resolver SSRF, redirect, recursion, and private-address policy; and disclosure planning/privacy correlation behavior.
+- bundle integrity remains distinct from completeness and policy sufficiency;
+- resolution remains distinct from verification;
+- authority evidence remains distinct from authorization decisions;
+- lifecycle evidence remains immutable rather than a silently rewritten current state;
+- disclosure minimization remains distinct from proof of global completeness/nonexistence;
+- transport encoding remains distinct from evidence identity; and
+- HTTP/service state remains distinct from OLP proof validity and authority evidence.
 
-A specification being present in the Draft v0.2 set MUST NOT be interpreted as independent implementation evidence for behavior that has not yet been executed and tested.
-
----
-
-## 8. Security lessons integrated
-
-Milestone 17 fed these lessons back into the specification set:
-
-- duplicate JSON names are rejected recursively;
-- authenticated URI identifiers are exact strings and malformed syntax is rejected;
-- parser/resource limits exist before unsafe recursive materialization;
-- technical algorithm support and local policy acceptance are separate;
-- cryptographic facts are not rewritten by local policy;
-- graph convergence is not a cycle;
-- graph traversal limits report incompleteness, not absence;
-- unknown noncritical semantics remain visible as uninterpreted where applicable;
-- unknown critical semantics fail closed; and
-- cross-language disagreement is treated as a protocol/conformance defect.
+Presence in the Draft v0.3 aggregate profile means the specified executable subset is independently reproduced against the committed corpus. It does not imply that every optional or deployment-specific behavior in a numbered specification has been implemented.
 
 ---
 
-## 9. Vector status
+## 9. Security lessons integrated
 
-Draft v0.2 retains the existing Specification 0003 and 0004 normative-construction vectors unchanged.
+The executable program has incorporated lessons including:
 
-Milestone 18 additionally promotes independently reproduced Specification 0005 vectors for Proof Identity v1 and `EvidenceRefV1` RecordRef/ProofRef encoding.
+- recursive duplicate-JSON rejection and bounded parsing;
+- exact URI and canonical byte semantics;
+- technical cryptographic support separated from local policy;
+- graph convergence separated from cycles and absence;
+- fail-closed critical semantics;
+- exact immutable identity recomputation at bundle/resolution/delegation/disclosure/transport boundaries;
+- explicit SSRF/private-address/redirect/resource policy;
+- privacy/correlation warnings and no hidden field-redaction claims;
+- strict transport type preservation and cross-language byte parity; and
+- transport completeness, HTTP status, content integrity, proof validity, authority evidence, and policy kept as independent dimensions.
 
-Normative vectors are append-only within a version except for explicitly recorded errata.
+Cross-language disagreement is treated as a protocol/conformance defect, not an implementation preference.
 
 ---
 
-## 10. Migration from Draft v0.1
+## 10. Corpus and vector status
 
-For the independently verified v1 core, no identity-bearing migration is required solely because the set release changes from Draft v0.1 to Draft v0.2.
+Existing normative-construction vectors remain append-only within a version except for explicitly recorded errata.
 
-Existing conforming records and proofs are not rewritten. Deployments upgrade parser/security behavior, policy/result separation, conformance corpus revision, extension/registry behavior, and release/version governance.
+The conformance harness uses a frozen base manifest plus additive deterministic fragments. Draft v0.3 adds an aggregate profile that selects the accepted 180 cases without rewriting their expected semantics.
+
+Specification 0014 adds a deterministic SHA-256 commitment over the exact release corpus so a release claim can identify precisely which profile, manifest/fragments, case IDs, and vector bytes were tested.
+
+---
+
+## 11. Migration from Draft v0.2
+
+No identity-bearing migration is required solely because the set release changes from Draft v0.2 to Draft v0.3.
+
+Existing conforming v1 records and proofs are not rewritten, regenerated, re-signed, or re-identified.
+
+Draft v0.3 primarily changes the demonstrated release surface and release metadata: accepted higher-layer capabilities are grouped into one committed aggregate interoperability profile.
 
 Historical evidence remains historical evidence.
 
 ---
 
-## 11. Reading guide
+## 12. Reading guide
 
 For implementers:
 
 1. Read this overview.
 2. Read Specifications 0001 and 0002.
-3. Implement 0003.
-4. Implement 0004.
-5. Add the executable 0005 evidence primitives.
-6. Read 0013 before making versioning, extension, registry, or compatibility claims.
-7. Validate against 0011 and the repository conformance corpus.
-8. Add 0006–0010 capabilities only when needed and test them explicitly.
-9. Apply 0012 transport profiles last.
+3. Implement 0003 and 0004.
+4. Add the 0005 evidence primitives.
+5. Read 0013 before making versioning, extension, registry, or compatibility claims.
+6. Add only the higher-layer capabilities required by the implementation's purpose.
+7. Validate each claimed capability against 0011 and the repository conformance corpus.
+8. Apply the 0012 transport/API profiles where required.
+9. Read 0014 before making a Draft v0.3 aggregate release-profile or corpus-identity claim.
 
 For architectural philosophy, also read `PRINCIPLES.md`.
 
 ---
 
-## 12. Promotion toward a stable release
+## 13. Promotion toward a stable release
 
-Draft v0.2 is suitable for wider technical review, but it is not OLP v1.0.
+Draft v0.3 materially reduces the distance to a stable release by providing a reproducible 15-capability/180-case aggregate interoperability claim.
 
-Before a stable release, the project should require frozen stable-core models, reproducible vectors, independent interoperable implementations, comprehensive malformed/negative/policy/resource testing, no unresolved stable-core contradictions, stable registry procedures, a versioned public conformance corpus, security review of all included boundaries, and documented migration/deprecation rules.
+It is still not OLP v1.0.
+
+Before a stable release, the project should still require explicit stable-profile promotion criteria, independent external security review of the intended stable boundary, documented operational/deployment threat assumptions, final migration/deprecation procedures, and resolution of any remaining specification contradictions discovered during wider review.
 
 ---
 
-## 13. Summary
+## 14. Summary
 
 > **Make evidence portable and independently verifiable; leave trust judgments plural, contextual, and outside central ownership.**
 
-Draft v0.2 records a major transition: OLP is no longer only a prose design. A small deterministic core has been implemented independently, tested across languages, attacked adversarially, and integrated back into the specification set.
-
-The next work should expand executable evidence only where it materially improves interoperability or reduces risk.
+Draft v0.3 records a second major transition: OLP's accepted executable slices can now be named and tested as one independently reproduced release profile, and the exact corpus behind that claim has a deterministic commitment.

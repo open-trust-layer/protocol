@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .adapter import SubprocessAdapter
 from .adapters import BrokenAdapter, ReferenceAdapter
+from .commitment import build_profile_corpus_commitment
 from .manifest import load_manifest
 from .reporting import render_console, write_json_report
 from .runner import ConformanceRunner
@@ -44,11 +45,31 @@ def build_parser() -> argparse.ArgumentParser:
     listing = sub.add_parser("list", help="list manifest cases and profiles")
     listing.add_argument("--manifest", type=Path, default=_default_manifest())
     listing.add_argument("--json", action="store_true")
+
+    commitment = sub.add_parser("commitment", help="compute a deterministic profile corpus commitment")
+    commitment.add_argument("--manifest", type=Path, default=_default_manifest())
+    commitment.add_argument("--profile", required=True)
+    commitment.add_argument("--json", action="store_true")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+
+    if args.command == "commitment":
+        commitment = build_profile_corpus_commitment(args.manifest, args.profile)
+        payload = commitment.as_dict()
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(f"profile: {commitment.profile}")
+            print(f"harness: {commitment.harness_version}")
+            print(f"capabilities: {len(commitment.capabilities)}")
+            print(f"cases: {len(commitment.case_ids)}")
+            print(f"files: {len(commitment.files)}")
+            print(f"sha-256: {commitment.digest_hex}")
+        return 0
+
     manifest = load_manifest(args.manifest)
     if args.command == "list":
         payload = {

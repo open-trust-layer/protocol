@@ -1,0 +1,70 @@
+{
+  "schema": "olp-specification-set-release-v1",
+  "release": "draft-v0.3",
+  "status": "draft",
+  "milestone": 25,
+  "input_baseline_commit": "115ac266d1a527e12bc72fce25aa78c0e68766cb",
+  "compatibility": {
+    "previous_set_release": "draft-v0.2",
+    "verified_v1_wire_compatible": true,
+    "record_identity_v1_changed": false,
+    "proof_input_v1_changed": false,
+    "eddsa_ed25519_v1_changed": false,
+    "proof_identity_v1_changed": false,
+    "evidence_ref_v1_changed": false,
+    "accepted_capability_semantics_redefined": false
+  },
+  "documents": [
+    "0000-overview.md",
+    "0001-terminology.md",
+    "0002-protocol-objects.md",
+    "0003-record-representation.md",
+    "0004-proofs-and-verification.md",
+    "0005-evidence-relationships.md",
+    "0006-identity-and-authority.md",
+    "0007-status-and-lifecycle.md",
+    "0008-evidence-exchange-and-bundles.md",
+    "0009-resolution-and-discovery-profiles.md",
+    "0010-privacy-selective-disclosure-and-data-minimization.md",
+    "0011-conformance-and-interoperability.md",
+    "0012-transport-and-api-profiles.md",
+    "0013-versioning-registries-and-core-profile.md",
+    "0014-release-profiles-and-conformance-suite-commitments.md"
+  ],
+  "interoperable_release_profile": "draft-v0.3-interoperable-v1",
+  "accepted_capabilities": [
+    "olp.record-identity.v1",
+    "olp.record-commitment.sha256.v1",
+    "olp.proof-input.v1",
+    "olp.proof.eddsa-ed25519.v1",
+    "olp.proof-verification.v1",
+    "olp.proof-identity.v1",
+    "olp.evidence-ref.v1",
+    "olp.evidence-relationship.v1",
+    "olp.bundle.v1",
+    "olp.resolution.v1",
+    "olp.identity-authority-lifecycle.v1",
+    "olp.privacy-disclosure.v1",
+    "olp.transport-encoding.v1",
+    "olp.streaming-transport.v1",
+    "olp.http-api.v1"
+  ],
+  "accepted_conformance_case_count": 180,
+  "conformance_suite_commitment": {
+    "algorithm": "sha-256",
+    "preimage": "OLP-CONFORMANCE-SUITE-COMMITMENT-V1",
+    "digest_hex": "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
+  },
+  "acceptance": {
+    "python_versions": ["3.11", "3.12", "3.13", "3.14"],
+    "python_aggregate_profile": "180/180 PASS",
+    "rust_version": "1.85.0",
+    "rust_aggregate_profile": "180/180 PASS",
+    "python_rust_interoperability": "PASS"
+  },
+  "security_scope": {
+    "external_security_audit_completed": false,
+    "production_security_certification": false,
+    "live_network_deployment_certified": false
+  }
+}

@@ -2,6 +2,7 @@
   "schema": "olp-conformance-profile-v1",
   "id": "resolution-v1",
   "version": 1,
+  "status": "draft-v0.3",
   "capabilities": [
     "olp.resolution.v1"
   ]

@@ -1,1 +1,9 @@
-{"schema":"olp-conformance-profile-v1","id":"transport-encoding-v1","version":1,"capabilities":["olp.transport-encoding.v1"]}
+{
+  "schema": "olp-conformance-profile-v1",
+  "id": "transport-encoding-v1",
+  "version": 1,
+  "status": "draft-v0.3",
+  "capabilities": [
+    "olp.transport-encoding.v1"
+  ]
+}
