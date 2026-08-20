@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:stabilization:schema:v1-promotion-report:v2",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "candidate",
+    "baseline_release",
+    "mandatory_profile",
+    "mandatory_capabilities",
+    "optional_profiles",
+    "optional_capabilities",
+    "release_profile",
+    "release_corpus_commitment",
+    "core_corpus_commitment",
+    "review_target_id",
+    "review_target_status",
+    "review_target_source_commit",
+    "internal_readiness",
+    "status",
+    "blockers",
+    "checks"
+  ],
+  "properties": {
+    "schema": {"const": "olp-v1-promotion-report-v2"},
+    "version": {"const": 2},
+    "candidate": {"type": "string", "minLength": 1},
+    "baseline_release": {"type": "string", "minLength": 1},
+    "mandatory_profile": {"type": "string", "minLength": 1},
+    "mandatory_capabilities": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "optional_profiles": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "optional_capabilities": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "release_profile": {"type": "string", "minLength": 1},
+    "release_corpus_commitment": {
+      "anyOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"type": "null"}
+      ]
+    },
+    "core_corpus_commitment": {
+      "anyOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"type": "null"}
+      ]
+    },
+    "review_target_id": {"type": "string", "minLength": 1},
+    "review_target_status": {"enum": ["preparing", "frozen"]},
+    "review_target_source_commit": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      ]
+    },
+    "internal_readiness": {"enum": ["PASS", "FAIL"]},
+    "status": {"enum": ["INVALID", "BLOCKED", "READY"]},
+    "blockers": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "detail"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["PASS", "FAIL", "BLOCKED"]},
+          "detail": {"type": "string"},
+          "blocker": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
