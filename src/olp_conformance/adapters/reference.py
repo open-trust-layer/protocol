@@ -124,7 +124,6 @@ class ReferenceAdapter:
         )
         return {"proof": proof_to_json(proof), "proof_input_hex": proof_input_bytes(proof).hex()}
 
-
     def _op_derive_proof_identity(self, payload: dict[str, Any]) -> dict[str, Any]:
         proof = proof_from_json(payload["proof"])
         encoded = proof_identity_bytes(proof)
@@ -153,10 +152,9 @@ class ReferenceAdapter:
         digest = record_identity(record)
         understood = frozenset(payload.get("understood_critical_qualifiers", ()))
         uninterpreted = sorted(set(statement.qualifiers) - set(understood), key=lambda item: item.encode("utf-8"))
-        return {
+        result = {
             "relationship_record_identity_hex": digest.hex(),
             "relation_type": statement.relation_type,
-            "uninterpreted_qualifiers": uninterpreted,
             "subject": None if statement.subject is None else {
                 "kind": int(statement.subject.kind),
                 "identity_digest_hex": statement.subject.identity_digest.hex(),
@@ -177,6 +175,9 @@ class ReferenceAdapter:
                 } for item in statement.objects
             ],
         }
+        if uninterpreted:
+            result["uninterpreted_qualifiers"] = uninterpreted
+        return result
 
     def _op_process_bundle(self, payload: dict[str, Any]) -> dict[str, Any]:
         manifest = record_from_json(payload["manifest_record"])
