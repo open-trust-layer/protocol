@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Milestone 25 — Draft v0.3 Integration & Conformance Freeze
+**Current phase:** Post-Milestone 25 stabilization / stable-profile review
 
 ---
 
@@ -200,7 +200,7 @@ See [`SECURITY.md`](SECURITY.md), [`docs/security-review-milestone-17.md`](docs/
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 25 is the Draft v0.3 integration/conformance-freeze milestone. The project is deliberately reducing release ambiguity rather than adding speculative protocol scope.
+Milestone 25 is accepted and merged. No Milestone 26 scope has been declared; the next stabilization step will be selected deliberately from the remaining path to a credible stable profile rather than by adding speculative protocol scope.
 
 ---
 
