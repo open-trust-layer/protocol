@@ -1,0 +1,40 @@
+{
+  "capability": "olp.evidence-relationship.v1",
+  "category": "malformed",
+  "description": "supersedes requires RecordRef targets.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "INVALID_RELATION_OBJECT"
+  },
+  "id": "relationship.malformed.supersedes-proof.001",
+  "input": {
+    "record": {
+      "content": [
+        "OLP-EVIDENCE-RELATIONSHIP",
+        1,
+        "supersedes",
+        [
+          0,
+          {
+            "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+          }
+        ],
+        [
+          [
+            1,
+            {
+              "$bytes": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba"
+            }
+          ]
+        ],
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "type": "evidence.relationship"
+    }
+  },
+  "operation": "process_relationship",
+  "schema": "olp-conformance-vector-v1"
+}

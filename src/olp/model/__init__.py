@@ -25,4 +25,9 @@ __all__ = [
     "VerificationIssue",
     "VerificationPolicy",
     "VerificationResult",
+    "EvidenceKind",
+    "EvidenceRefV1",
+    "RelationshipStatementV1",
 ]
+
+from .evidence import EvidenceKind, EvidenceRefV1, RelationshipStatementV1

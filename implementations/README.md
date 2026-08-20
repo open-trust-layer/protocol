@@ -6,6 +6,6 @@ Their purpose is interoperability pressure-testing: each implementation is expec
 
 Current implementations:
 
-- [`rust/`](rust/) — independent Rust implementation of the Specification 0003/0004 core introduced for Milestone 15.
+- [`rust/`](rust/) — independent Rust implementation of the Specification 0003/0004 core introduced for Milestone 15 and the deterministic Specification 0005 evidence subset added in Milestone 16.
 
 An implementation living here MUST NOT import or link against the Python reference implementation in order to satisfy conformance cases.

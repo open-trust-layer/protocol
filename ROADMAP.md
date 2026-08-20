@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 15 implementation delivered; Rust interoperability CI is the acceptance gate
+**Current phase:** Phase II — Milestone 16 Evidence Graph Core complete and independently verified; Milestone 17 adversarial/security review next
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -98,7 +98,7 @@ Turn Specification 0011 into a public, versioned test corpus containing:
 
 ### Milestone 15 — Independent Second Implementation
 
-**Implementation delivered; completion is gated on the `rust-interoperability` CI job.**
+**Completed and independently verified.**
 
 Maintain at least one implementation independent of the reference codebase. Milestone 15 introduces the Rust implementation in `implementations/rust/` and a language-neutral CI gate against the existing conformance corpus.
 
@@ -113,9 +113,30 @@ The decisive interoperability tests are:
 
 A second language is preferred because it exposes hidden assumptions more effectively than a second copy of the same code.
 
-Milestone 15 is accepted only when the Rust crate compiles/tests, the Rust adapter passes the complete current `core-v1` corpus, and bidirectional Python↔Rust interoperability tests pass.
+Milestone 15 was accepted after the Rust crate compiled and tested in CI, the Rust adapter passed the complete then-current `core-v1` corpus, and bidirectional Python↔Rust interoperability tests passed.
 
-### Milestone 16 — Adversarial & Security Review
+### Milestone 16 — Evidence Graph Core
+
+**Completed and independently verified.**
+
+Make the deterministic and graph-processing core of Specification 0005 executable without turning graph edges into protocol truth.
+
+The executable slice includes:
+
+- deterministic Proof Identity from exact ProofInput bytes and `proofValue`;
+- typed `EvidenceRefV1` values for records and proofs;
+- immutable relationship statements carried inside ordinary OLP records;
+- the core relationship vocabulary (`references`, `derivesFrom`, `supersedes`, `corrects`, `disputes`, `anchors`, and `countersigns`);
+- fail-closed critical qualifiers and explicit unsupported extension handling;
+- provenance-preserving graph projection;
+- dangling-reference and cycle-safe processing;
+- deterministic traversal with explicit resource-limit incompleteness;
+- implementation-neutral `evidence-v1` vectors; and
+- Python/Rust parity for Proof Identity, EvidenceRef, and relationship processing.
+
+Milestone 16 was accepted after both implementations passed the expanded 57-case `core-v1` corpus and all nine bidirectional Python↔Rust interoperability checks passed in CI.
+
+### Milestone 17 — Adversarial & Security Review
 
 Attack the executable design rather than reviewing prose alone.
 
@@ -137,7 +158,7 @@ At minimum test:
 
 Security or interoperability defects discovered here must feed back into the specifications, not only into implementation patches.
 
-### Milestone 17 — Draft v0.2 Integration Pass
+### Milestone 18 — Draft v0.2 Integration Pass
 
 Revise the complete specification set using implementation, conformance, interoperability, and security findings.
 

@@ -11,8 +11,8 @@ MANIFEST = load_manifest(Path('conformance/manifest.json'))
 
 def test_reference_adapter_passes_full_core_profile():
     report = ConformanceRunner(MANIFEST, ReferenceAdapter()).run(profile='core-v1')
-    assert report.total == 41
-    assert report.passed == 41
+    assert report.total == 57
+    assert report.passed == 57
     assert report.failed == 0
     assert report.unsupported == 0
     assert report.errors == 0

@@ -1,0 +1,89 @@
+{
+  "capability": "olp.evidence-relationship.v1",
+  "category": "positive",
+  "description": "Core references relation projects provenance-preserving edges from an ordinary relationship record.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "critical": [],
+      "objects": [
+        {
+          "identity_digest_hex": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e",
+          "kind": 0
+        },
+        {
+          "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+          "kind": 1
+        }
+      ],
+      "projected_edges": [
+        {
+          "object": {
+            "identity_digest_hex": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e",
+            "kind": 0
+          },
+          "relation_type": "references",
+          "relationship_record_identity_hex": "f30909ea60b7744977a4307370f2dcfbb319a93282d6031eb7e4ce8c4295de8c",
+          "subject": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        },
+        {
+          "object": {
+            "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+            "kind": 1
+          },
+          "relation_type": "references",
+          "relationship_record_identity_hex": "f30909ea60b7744977a4307370f2dcfbb319a93282d6031eb7e4ce8c4295de8c",
+          "subject": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        }
+      ],
+      "relation_type": "references",
+      "relationship_record_identity_hex": "f30909ea60b7744977a4307370f2dcfbb319a93282d6031eb7e4ce8c4295de8c",
+      "subject": {
+        "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+        "kind": 0
+      }
+    }
+  },
+  "id": "relationship.references.001",
+  "input": {
+    "record": {
+      "content": [
+        "OLP-EVIDENCE-RELATIONSHIP",
+        1,
+        "references",
+        [
+          0,
+          {
+            "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+          }
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e"
+            }
+          ],
+          [
+            1,
+            {
+              "$bytes": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba"
+            }
+          ]
+        ],
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "type": "evidence.relationship"
+    }
+  },
+  "operation": "process_relationship",
+  "schema": "olp-conformance-vector-v1"
+}

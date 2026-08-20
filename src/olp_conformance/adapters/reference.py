@@ -9,7 +9,10 @@ from olp.constants import MANDATORY_CRYPTOSUITE
 from olp.crypto.commitments import record_commitment
 from olp.crypto.proof import create_proof, verify_proof
 from olp.encoding.proof_input import build_proof_input, encode_proof_input, proof_input_bytes
+from olp.encoding.proof_identity import proof_identity, proof_identity_bytes
 from olp.encoding.record_identity import record_identity, record_identity_bytes, record_identity_text
+from olp.evidence import parse_relationship_record
+from olp.model.evidence import EvidenceRefV1
 from olp.errors import ConformanceError, KeyMaterialError, UnsupportedFeatureError
 from olp.model.proof import RecordCommitment
 from olp.model.verification import MethodStatus
@@ -33,6 +36,9 @@ CAPABILITIES = frozenset(
         "olp.proof-input.v1",
         "olp.proof.eddsa-ed25519.v1",
         "olp.proof-verification.v1",
+        "olp.proof-identity.v1",
+        "olp.evidence-ref.v1",
+        "olp.evidence-relationship.v1",
     }
 )
 
@@ -114,6 +120,57 @@ class ReferenceAdapter:
             critical=cfg.get("critical", ()),
         )
         return {"proof": proof_to_json(proof), "proof_input_hex": proof_input_bytes(proof).hex()}
+
+
+    def _op_derive_proof_identity(self, payload: dict[str, Any]) -> dict[str, Any]:
+        proof = proof_from_json(payload["proof"])
+        encoded = proof_identity_bytes(proof)
+        digest = proof_identity(proof)
+        return {
+            "proof_identity_bytes_hex": encoded.hex(),
+            "proof_identity_bytes_length": len(encoded),
+            "proof_identity_digest_hex": digest.hex(),
+        }
+
+    def _op_encode_evidence_ref(self, payload: dict[str, Any]) -> dict[str, Any]:
+        ref = EvidenceRefV1(payload["kind"], bytes.fromhex(payload["identity_digest_hex"]))
+        encoded = ref.canonical_bytes()
+        return {
+            "evidence_ref_hex": encoded.hex(),
+            "evidence_ref_length": len(encoded),
+        }
+
+    def _op_process_relationship(self, payload: dict[str, Any]) -> dict[str, Any]:
+        record = record_from_json(payload["record"])
+        statement = parse_relationship_record(
+            record,
+            understood_critical_qualifiers=frozenset(payload.get("understood_critical_qualifiers", ())),
+            allow_unknown_relation=bool(payload.get("allow_unknown_relation", False)),
+        )
+        digest = record_identity(record)
+        return {
+            "relationship_record_identity_hex": digest.hex(),
+            "relation_type": statement.relation_type,
+            "subject": None if statement.subject is None else {
+                "kind": int(statement.subject.kind),
+                "identity_digest_hex": statement.subject.identity_digest.hex(),
+            },
+            "objects": [
+                {"kind": int(item.kind), "identity_digest_hex": item.identity_digest.hex()} for item in statement.objects
+            ],
+            "critical": list(statement.critical),
+            "projected_edges": [
+                {
+                    "subject": None if statement.subject is None else {
+                        "kind": int(statement.subject.kind),
+                        "identity_digest_hex": statement.subject.identity_digest.hex(),
+                    },
+                    "relation_type": statement.relation_type,
+                    "object": {"kind": int(item.kind), "identity_digest_hex": item.identity_digest.hex()},
+                    "relationship_record_identity_hex": digest.hex(),
+                } for item in statement.objects
+            ],
+        }
 
     def _op_verify_proof(self, payload: dict[str, Any]) -> dict[str, Any]:
         record = record_from_json(payload["record"])

@@ -16,4 +16,9 @@ __all__ = [
     "record_identity",
     "record_identity_bytes",
     "record_identity_text",
+    "proof_identity",
+    "proof_identity_bytes",
+    "proof_identity_preimage",
 ]
+
+from .proof_identity import proof_identity, proof_identity_bytes, proof_identity_preimage

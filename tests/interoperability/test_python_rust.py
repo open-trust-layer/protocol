@@ -95,3 +95,34 @@ def test_rust_created_proof_verifies_in_python(rust_adapter: SubprocessAdapter) 
     result = ReferenceAdapter().execute("verify_proof", payload)
     assert result["cryptographic_validity"] == "VALID"
     assert result["record_binding"] == "VALID"
+
+
+def test_proof_identity_matches_python_and_spec(rust_adapter: SubprocessAdapter) -> None:
+    case = _vector("proof_identity/positive/proof-identity-spec5-001.json")
+    payload = case["input"]
+    py = ReferenceAdapter().execute("derive_proof_identity", payload)
+    rs = rust_adapter.execute("derive_proof_identity", payload)
+    assert rs == py
+    assert rs == case["expected"]["result"]
+
+
+def test_evidence_refs_match_python_and_spec(rust_adapter: SubprocessAdapter) -> None:
+    for relative in (
+        "evidence_ref/positive/evidence-ref-record-001.json",
+        "evidence_ref/positive/evidence-ref-proof-001.json",
+    ):
+        case = _vector(relative)
+        py = ReferenceAdapter().execute("encode_evidence_ref", case["input"])
+        rs = rust_adapter.execute("encode_evidence_ref", case["input"])
+        assert rs == py == case["expected"]["result"]
+
+
+def test_relationship_processing_matches_python_and_spec(rust_adapter: SubprocessAdapter) -> None:
+    for relative in (
+        "evidence_relationship/positive/relationship-references-001.json",
+        "evidence_relationship/positive/relationship-countersigns-001.json",
+    ):
+        case = _vector(relative)
+        py = ReferenceAdapter().execute("process_relationship", case["input"])
+        rs = rust_adapter.execute("process_relationship", case["input"])
+        assert rs == py == case["expected"]["result"]

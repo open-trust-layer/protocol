@@ -1,13 +1,8 @@
 {
   "schema": "olp-conformance-profile-v1",
-  "id": "core-v1",
+  "id": "evidence-v1",
   "status": "draft-v0.1",
   "capabilities": [
-    "olp.record-identity.v1",
-    "olp.record-commitment.sha256.v1",
-    "olp.proof-input.v1",
-    "olp.proof.eddsa-ed25519.v1",
-    "olp.proof-verification.v1",
     "olp.proof-identity.v1",
     "olp.evidence-ref.v1",
     "olp.evidence-relationship.v1"

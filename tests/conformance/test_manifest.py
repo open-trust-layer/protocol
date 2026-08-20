@@ -12,8 +12,8 @@ def test_manifest_loads_all_cases():
     manifest = load_manifest(MANIFEST)
     assert manifest.version == 1
     assert manifest.harness_version == '0.1.0'
-    assert len(manifest.cases) == 41
-    assert len({case.id for case in manifest.cases}) == 41
+    assert len(manifest.cases) == 57
+    assert len({case.id for case in manifest.cases}) == 57
 
 
 def test_core_profile_contains_expected_capabilities():
@@ -24,6 +24,9 @@ def test_core_profile_contains_expected_capabilities():
         'olp.proof-input.v1',
         'olp.proof.eddsa-ed25519.v1',
         'olp.proof-verification.v1',
+        'olp.proof-identity.v1',
+        'olp.evidence-ref.v1',
+        'olp.evidence-relationship.v1',
     }
 
 

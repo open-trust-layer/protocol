@@ -2,7 +2,7 @@
 
 Harness version: `0.1.0`
 
-Total cases: **41**
+Total cases: **57**
 
 | Case | Category | Capability | Operation |
 |---|---|---|---|
@@ -47,10 +47,37 @@ Total cases: **41**
 | `proof.verify.malformed.critical-duplicate.001` | malformed | `olp.proof-verification.v1` | `verify_proof` |
 | `proof.verify.malformed.critical-absent.001` | malformed | `olp.proof-verification.v1` | `verify_proof` |
 | `proof.verify.malformed.public-key-length.001` | malformed | `olp.proof-verification.v1` | `verify_proof` |
+| `proof.identity.spec5.001` | positive | `olp.proof-identity.v1` | `derive_proof_identity` |
+| `proof.identity.invalid-proof-artifact.001` | positive | `olp.proof-identity.v1` | `derive_proof_identity` |
+| `proof.identity.malformed.input.001` | malformed | `olp.proof-identity.v1` | `derive_proof_identity` |
+| `evidence.ref.record.001` | positive | `olp.evidence-ref.v1` | `encode_evidence_ref` |
+| `evidence.ref.proof.001` | positive | `olp.evidence-ref.v1` | `encode_evidence_ref` |
+| `evidence.ref.malformed.digest.001` | malformed | `olp.evidence-ref.v1` | `encode_evidence_ref` |
+| `evidence.ref.malformed.kind.001` | malformed | `olp.evidence-ref.v1` | `encode_evidence_ref` |
+| `relationship.references.001` | positive | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.countersigns.001` | positive | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.noncritical-qualifier.001` | positive | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.malformed.duplicate-object.001` | malformed | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.malformed.object-order.001` | malformed | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.malformed.supersedes-proof.001` | malformed | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.unsupported.version.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.unsupported.relation-type.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
+| `relationship.unsupported.critical-qualifier.001` | unsupported | `olp.evidence-relationship.v1` | `process_relationship` |
 
 ## Category totals
 
-- positive: 12
+- positive: 19
 - negative: 9
-- malformed: 13
-- unsupported: 7
+- malformed: 19
+- unsupported: 10
+
+## Capability totals
+
+- `olp.record-identity.v1`: 8
+- `olp.record-commitment.sha256.v1`: 2
+- `olp.proof-input.v1`: 3
+- `olp.proof.eddsa-ed25519.v1`: 8
+- `olp.proof-verification.v1`: 20
+- `olp.proof-identity.v1`: 3
+- `olp.evidence-ref.v1`: 4
+- `olp.evidence-relationship.v1`: 9

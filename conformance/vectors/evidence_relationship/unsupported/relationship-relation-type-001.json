@@ -1,0 +1,40 @@
+{
+  "capability": "olp.evidence-relationship.v1",
+  "category": "unsupported",
+  "description": "Unknown extension relation type is unsupported, not malformed.",
+  "expected": {
+    "classification": "UNSUPPORTED",
+    "outcome": "ERROR",
+    "reason": "UNSUPPORTED_RELATION_TYPE"
+  },
+  "id": "relationship.unsupported.relation-type.001",
+  "input": {
+    "record": {
+      "content": [
+        "OLP-EVIDENCE-RELATIONSHIP",
+        1,
+        "https://example.org/relations/notarizes",
+        [
+          0,
+          {
+            "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+          }
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "d1c23ba516ca2f7d27e4f0a4f715908a3e37c059f15fad4a9f07255862a9638e"
+            }
+          ]
+        ],
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "type": "evidence.relationship"
+    }
+  },
+  "operation": "process_relationship",
+  "schema": "olp-conformance-vector-v1"
+}

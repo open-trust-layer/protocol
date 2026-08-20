@@ -1,4 +1,4 @@
-use olp_rust::{json,record,proof,openssl_ed25519,util::hex_encode};
+use olp_rust::{json,record,proof,proof_identity,openssl_ed25519,util::hex_encode};
 
 #[test]
 fn specification_0003_record_identity_vector() {
@@ -25,4 +25,19 @@ fn specification_0004_ed25519_vector() {
     let public=openssl_ed25519::public_from_seed(&seed).unwrap();
     assert_eq!(hex_encode(&public),"d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a");
     assert!(openssl_ed25519::verify(&public,&sig,&msg).unwrap());
+}
+
+#[test]
+fn specification_0005_proof_identity_vector() {
+    let input=json::parse(r#"{"proof":{"type":"OLPProof","version":1,"cryptosuite":"eddsa-ed25519-v1","proofPurpose":"assertion","verificationMethod":"urn:example:olp:test-key-1","recordCommitment":{"algorithm":-16,"digest_hex":"c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"},"proofValue_hex":"a53978e0f7ff28583dd1d08d4f69da6684675765d299371e034f7db2f056d768c4be9bcee26e5be6b53d534f61034f3a16ea97fac421c03d96ccc7742e5ef805","critical":[],"extensions":{}}}"#).unwrap();
+    let out=proof_identity::proof_identity_operation(&input).unwrap();
+    assert_eq!(out.get("proof_identity_digest_hex").unwrap().as_str().unwrap(),"02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba");
+    assert_eq!(out.get("proof_identity_bytes_length").unwrap().as_i64().unwrap(),189);
+}
+
+#[test]
+fn specification_0005_record_evidence_ref_vector() {
+    let input=json::parse(r#"{"kind":0,"identity_digest_hex":"c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"}"#).unwrap();
+    let out=olp_rust::evidence::encode_ref_operation(&input).unwrap();
+    assert_eq!(out.get("evidence_ref_hex").unwrap().as_str().unwrap(),"82005820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4");
 }
