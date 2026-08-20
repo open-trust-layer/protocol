@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:conformance:schema:suite-commitment:v1",
+  "type": "object",
+  "required": ["schema", "version", "profile", "harness_version", "capabilities", "case_ids", "files", "commitment"],
+  "properties": {
+    "schema": {"const": "olp-conformance-suite-commitment-v1"},
+    "version": {"const": 1},
+    "profile": {"type": "string", "minLength": 1},
+    "harness_version": {"type": "string", "minLength": 1},
+    "capabilities": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "case_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "commitment": {
+      "type": "object",
+      "required": ["algorithm", "preimage", "digest_hex"],
+      "properties": {
+        "algorithm": {"const": "sha-256"},
+        "preimage": {"const": "OLP-CONFORMANCE-SUITE-COMMITMENT-V1"},
+        "digest_hex": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
