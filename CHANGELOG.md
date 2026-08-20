@@ -43,6 +43,19 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add independent Rust implementation and cross-language interoperability CI.
 - Add executable Specification 0005 Evidence Graph Core: Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, and Rust parity.
 
+### Milestone 21 identity, authority, and lifecycle core
+
+- Add the executable Specifications 0006/0007 core without introducing a global Actor, trust score, authorization boolean, or mutable canonical current state.
+- Preserve principal identity, verification-method control, roles, authority, cryptographic validity, lifecycle evidence, and application policy as separate dimensions.
+- Add deterministic Principal Relation, Authority Grant, Authority Status, delegation, and Lifecycle Status processing.
+- Recompute the exact parent grant Record Identity before any delegation scope evaluation and preserve identity mismatch separately from delegation prohibition or scope mismatch.
+- Keep action, resource, context, validity interval, constraints, and delegation provenance explicit; URI hierarchy never creates implicit authority scope.
+- Treat every authority constraint as security-critical and fail closed on unsupported constraint semantics.
+- Preserve revocation and lifecycle events as immutable additive evidence; absence of lifecycle evidence never implies active status.
+- Preserve effective-time, freshness, evidence-completeness, named status-authority, and same-sequence conflict signals without selecting a universal current state.
+- Add `olp.identity-authority-lifecycle.v1` and the separate 18-case `identity-authority-lifecycle-v1` profile without changing frozen `core-v1`, `bundle-v1`, or `resolution-v1`.
+- Add an independent dependency-free Rust 1.85 implementation, source-contract guards, and direct Python↔Rust M21 interoperability coverage.
+
 ### Milestone 20 resolution and discovery core
 
 - Add `ResolutionRequestV1` and deterministic offline-first resolver processing for Specification 0009.
