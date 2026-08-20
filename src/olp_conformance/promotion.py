@@ -104,8 +104,8 @@ class PromotionReport:
     release_profile: str
     release_corpus_commitment: str | None
     core_corpus_commitment: str | None
-    review_target_id: str
-    review_target_status: str
+    review_target_id: str | None
+    review_target_status: str | None
     review_target_source_commit: str | None
     internal_readiness: str
     status: str
@@ -301,18 +301,18 @@ def _review_register_check(
     return True, "internal review register has no unresolved normative contradiction or release blocker"
 
 
-def _review_target_check(raw: Any) -> tuple[bool, str, str, str | None, str]:
+def _review_target_check(raw: Any) -> tuple[bool, str | None, str | None, str | None, str]:
     if not isinstance(raw, dict) or set(raw) != {"id", "status", "source_commit"}:
-        return False, "", "", None, "review_target metadata malformed"
+        return False, None, None, None, "review_target metadata malformed"
 
     target_id = raw.get("id")
     status = raw.get("status")
     source_commit = raw.get("source_commit")
 
     if not isinstance(target_id, str) or not target_id:
-        return False, "", "", None, "review_target id must be non-empty"
+        return False, None, status if status in {"preparing", "frozen"} else None, None, "review_target id must be non-empty"
     if status not in {"preparing", "frozen"}:
-        return False, target_id, "", None, "review_target status must be preparing or frozen"
+        return False, target_id, None, None, "review_target status must be preparing or frozen"
     if status == "preparing":
         if source_commit is not None:
             return False, target_id, status, None, "preparing review_target must not declare source_commit"
@@ -341,18 +341,15 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     mandatory_profile = raw["mandatory_profile"]
     release_profile = raw["accepted_release_profile"]
 
-    # Load the executable conformance model first; malformed global manifest
-    # composition is an internal failure even if one selected profile is valid.
     try:
         manifest_path = _safe_path(root, raw["conformance_manifest"], field="conformance_manifest")
         manifest = load_manifest(manifest_path)
         checks.append(PromotionCheck("CONFORMANCE_MANIFEST", "PASS", "global conformance manifest and fragments load cleanly"))
-    except Exception as exc:  # noqa: BLE001 - report release-validation failures uniformly
+    except Exception as exc:  # noqa: BLE001
         manifest = None
         manifest_path = None
         checks.append(PromotionCheck("CONFORMANCE_MANIFEST", "FAIL", f"conformance manifest invalid: {exc}"))
 
-    # Baseline release + exact Draft v0.3 corpus commitment.
     release: dict[str, Any] | None = None
     release_commitment: str | None = None
     try:
@@ -422,7 +419,6 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     else:
         checks.append(PromotionCheck("MANDATORY_CORE_BOUNDARY", "FAIL", "mandatory core cannot be checked without manifest"))
 
-    # Exact normative boundary declared by Specification 0015.
     mandatory_specs = tuple(raw.get("mandatory_specifications", ()))
     specs_ok = mandatory_specs == V1_MANDATORY_SPECIFICATIONS and all((root / item).is_file() for item in mandatory_specs)
     _check(
@@ -497,8 +493,6 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
         checks.append(PromotionCheck("CANDIDATE_CAPABILITY_COVERAGE", "FAIL", "candidate coverage cannot be checked"))
         checks.append(PromotionCheck("PROFILE_REGISTRY", "FAIL", "candidate profile registry cannot be checked"))
 
-    # Required pinned stabilization artifacts. JSON object member order is not
-    # semantic, so validate the exact key set and iterate in specification order.
     artifacts = raw.get("required_artifacts")
     artifact_paths: dict[str, Path | None] = {}
     if not isinstance(artifacts, dict) or set(artifacts) != set(_REQUIRED_ARTIFACT_KEYS):
@@ -521,9 +515,6 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     )
     checks.append(PromotionCheck("REVIEW_TARGET", "PASS" if review_target_ok else "FAIL", review_target_detail))
 
-    # External gates are deliberately not self-satisfiable. A pending gate must
-    # not carry stale review evidence. A completed gate is accepted only when it
-    # cites durable references and names the exact frozen review-target commit.
     external = raw.get("external_gates")
     expected_external_names = {name for name, _ in _EXTERNAL_GATES}
     if not isinstance(external, dict) or set(external) != expected_external_names:
