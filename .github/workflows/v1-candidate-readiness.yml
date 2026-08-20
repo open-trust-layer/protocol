@@ -8,8 +8,12 @@ permissions:
   contents: read
 
 jobs:
-  bootstrap-candidate-measurements:
+  promotion-readiness:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Check out repository
@@ -18,39 +22,75 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: ${{ matrix.python-version }}
           cache: pip
 
       - name: Install package and test dependencies
         run: python -m pip install -e '.[test]'
 
-      - name: Run repository tests
-        run: python -m pytest -q
-
-      - name: Measure pinned stabilization artifacts
+      - name: Run promotion and corpus regression tests
         run: |
-          sha256sum \
-            docs/v1-threat-model.md \
-            stabilization/v1-review-register.json \
-            docs/v1-release-process.md | tee m26-artifact-digests.txt
+          python -m pytest -q \
+            tests/conformance/test_promotion.py \
+            tests/conformance/test_commitment.py \
+            tests/conformance/test_draft_v03_release.py
 
-      - name: Measure mandatory core corpus commitment
+      - name: Evaluate v1 candidate promotion gates
         run: |
-          olp-conformance commitment --profile core-v1 --json > v1-core-candidate-commitment.json
+          olp-conformance promotion-check \
+            --candidate stabilization/v1.0-candidate.json \
+            --json > v1-promotion-report.json
           python - <<'PY'
           import json
-          value = json.load(open("v1-core-candidate-commitment.json", encoding="utf-8"))
-          print("core-v1 corpus SHA-256:", value["commitment"]["digest_hex"])
-          print("core-v1 cases:", len(value["case_ids"]))
-          print("core-v1 capabilities:", len(value["capabilities"]))
+          value = json.load(open("v1-promotion-report.json", encoding="utf-8"))
+          assert value["schema"] == "olp-v1-promotion-report-v1"
+          assert value["candidate"] == "olp-v1.0"
+          assert value["mandatory_profile"] == "core-v1"
+          assert len(value["mandatory_capabilities"]) == 8
+          assert len(value["optional_profiles"]) == 6
+          assert len(value["optional_capabilities"]) == 7
+          assert value["internal_readiness"] == "PASS"
+          assert value["status"] == "BLOCKED"
+          assert value["blockers"] == [
+              "PUBLIC_TECHNICAL_REVIEW_REQUIRED",
+              "INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED",
+          ]
+          assert value["release_corpus_commitment"] == "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
+          assert value["core_corpus_commitment"] == "8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e"
+          assert not [item for item in value["checks"] if item["status"] == "FAIL"]
+          print("M26 internal readiness: PASS")
+          print("M26 stable promotion: BLOCKED (expected)")
           PY
 
-      - name: Upload bootstrap evidence
+      - name: Prove stable promotion cannot pass while reviews are pending
+        run: |
+          if olp-conformance promotion-check \
+            --candidate stabilization/v1.0-candidate.json \
+            --require-ready; then
+            echo "promotion unexpectedly reported READY" >&2
+            exit 1
+          fi
+
+      - name: Verify pinned stabilization artifact hashes
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          candidate = json.load(open("stabilization/v1.0-candidate.json", encoding="utf-8"))
+          for name, item in candidate["required_artifacts"].items():
+              observed = hashlib.sha256(open(item["path"], "rb").read()).hexdigest()
+              assert observed == item["sha256"], (name, observed, item["sha256"])
+              print(f"{name}: {observed}")
+          PY
+
+      - name: Write candidate core commitment evidence
+        run: olp-conformance commitment --profile core-v1 --json > v1-core-candidate-commitment.json
+
+      - name: Upload M26 readiness evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: m26-bootstrap-candidate-measurements
+          name: m26-v1-candidate-readiness-python-${{ matrix.python-version }}
           path: |
-            m26-artifact-digests.txt
+            v1-promotion-report.json
             v1-core-candidate-commitment.json
           if-no-files-found: error
