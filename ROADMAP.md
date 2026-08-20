@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Milestone 25 — Draft v0.3 Integration & Conformance Freeze
+**Current phase:** Post-Milestone 25 stabilization / stable-profile review
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -90,11 +90,11 @@ See `docs/streaming-http-api-core.md` and `conformance/VECTOR-INDEX-M24.md`.
 
 ### Milestone 25 — Draft v0.3 Integration & Conformance Freeze
 
-**In acceptance.**
+**Accepted and merged.**
 
-M25 adds no new evidence or wire semantics. It turns the independently accepted Milestones 17–24 into one precise release-level interoperability claim.
+M25 added no new evidence or wire semantics. It turns the independently accepted Milestones 17–24 into one precise release-level interoperability claim.
 
-Acceptance target and current candidate evidence:
+Acceptance evidence:
 
 ```text
 draft-v0.3-interoperable-v1 capabilities   15
@@ -121,12 +121,19 @@ M25 outputs:
 - `specification/releases/draft-v0.3.json`;
 - normalized standalone conformance-profile metadata/schema;
 - Python/Rust aggregate CI that recomputes and verifies the pinned corpus commitment;
-- Draft v0.3 overview/security/conformance documentation; and
-- explicit Draft v0.2 → Draft v0.3 migration with no identity-bearing rewrite.
+- Draft v0.3 overview/security/conformance documentation;
+- explicit Draft v0.2 → Draft v0.3 migration with no identity-bearing rewrite; and
+- a regression proving unrelated future profile growth does not perturb a frozen Draft v0.3 corpus commitment.
 
 M25 deliberately does **not** claim production network security, TLS correctness, operational security, or completion of an independent external security audit.
 
 See `docs/draft-v0.3-integration.md` and `specification/0014-release-profiles-and-conformance-suite-commitments.md`.
+
+### Next milestone selection
+
+No Milestone 26 scope has been declared.
+
+The next step should be selected from the remaining stabilization path toward a credible stable profile: explicit stable-boundary promotion criteria, contradiction/errata review, independent external security review, deployment/threat assumptions, and final migration/deprecation policy. New protocol features should not be invented merely to continue the milestone sequence.
 
 ## Path toward v1.0
 
