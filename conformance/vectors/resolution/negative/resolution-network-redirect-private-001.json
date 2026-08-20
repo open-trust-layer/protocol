@@ -1,0 +1,44 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [
+        "RESOLUTION_POLICY_BLOCKED"
+      ],
+      "freshness": "NOT_APPLICABLE",
+      "matches": [],
+      "network_requests": 0,
+      "provenance": [],
+      "redirects": [
+        "http://127.0.0.1/admin"
+      ],
+      "status": "POLICY_BLOCKED",
+      "warnings": []
+    }
+  },
+  "id": "resolution.network.redirect-private.001",
+  "input": {
+    "request": {
+      "options": {
+        "allow_redirects": true,
+        "offline_only": false
+      },
+      "target": "https://example.org/a",
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "redirects": [
+          "http://127.0.0.1/admin"
+        ],
+        "source_class": "network",
+        "source_identifier": "urn:resolver:https",
+        "status": "resolved"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

@@ -12,8 +12,8 @@ def test_manifest_loads_all_cases():
     manifest = load_manifest(MANIFEST)
     assert manifest.version == 1
     assert manifest.harness_version == '0.1.0'
-    assert len(manifest.cases) == 70
-    assert len({case.id for case in manifest.cases}) == 70
+    assert len(manifest.cases) == 86
+    assert len({case.id for case in manifest.cases}) == 86
 
 
 def test_core_profile_contains_expected_capabilities():
@@ -54,3 +54,9 @@ def test_vector_path_cannot_escape_manifest_root(tmp_path):
     manifest = load_manifest(manifest_path)
     with pytest.raises(ValueError, match='escapes manifest root'):
         load_vector(manifest, manifest.cases[0])
+
+
+def test_resolution_profile_is_separate_from_frozen_core():
+    manifest = load_manifest(MANIFEST)
+    assert set(manifest.profiles['resolution-v1']) == {'olp.resolution.v1'}
+    assert 'olp.resolution.v1' not in set(manifest.profiles['core-v1'])

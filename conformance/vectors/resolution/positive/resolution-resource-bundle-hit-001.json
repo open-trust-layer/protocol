@@ -1,0 +1,70 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "positive",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [],
+      "freshness": "FRESH",
+      "matches": [
+        {
+          "digest_hex": "5de95319f17467ed6dc58e4e0b16c1193a13b35d60dc48bcf06bf6b7beebbe6c",
+          "resource_id": "https://example.org/r",
+          "source_class": "bundle",
+          "source_identifier": "urn:bundle:resource"
+        }
+      ],
+      "network_requests": 0,
+      "provenance": [
+        {
+          "source_class": "bundle",
+          "source_identifier": "urn:bundle:resource",
+          "source_index": 0
+        }
+      ],
+      "redirects": [],
+      "status": "RESOLVED",
+      "warnings": []
+    }
+  },
+  "id": "resolution.resource.bundle-hit.001",
+  "input": {
+    "request": {
+      "accept": [
+        "application/octet-stream"
+      ],
+      "options": {
+        "offline_only": true
+      },
+      "target": {
+        "resource_ref": {
+          "digest_hex": "5de95319f17467ed6dc58e4e0b16c1193a13b35d60dc48bcf06bf6b7beebbe6c",
+          "hash_algorithm": -16,
+          "media_type": "application/octet-stream",
+          "resource_id": "https://example.org/r"
+        }
+      },
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "freshness": "FRESH",
+        "resources": [
+          {
+            "content_hex": "7265736f75726365",
+            "resource_ref": {
+              "digest_hex": "5de95319f17467ed6dc58e4e0b16c1193a13b35d60dc48bcf06bf6b7beebbe6c",
+              "hash_algorithm": -16,
+              "media_type": "application/octet-stream",
+              "resource_id": "https://example.org/r"
+            }
+          }
+        ],
+        "source_class": "bundle",
+        "source_identifier": "urn:bundle:resource"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

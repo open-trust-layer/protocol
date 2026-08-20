@@ -94,7 +94,7 @@ Draft v0.2 intentionally preserves the verified v1 core bytes.
 
 ### Milestone 19 — Evidence Bundle Core
 
-**Implementation complete; Python/Rust `bundle-v1` CI is the acceptance gate.**
+**Accepted.** Python 3.11–3.14 passed; Rust compiled; frozen `core-v1` remained 62/62; `bundle-v1` passed 8/8; Python↔Rust bundle interoperability passed.
 
 Make the deterministic reader/validation subset of Specification 0008 executable: manifest identity, root/inventory canonical sets, exact Record/Proof identity recomputation, packaged-resource digests, missing/unexpected evidence, critical extensions, self-contained no-network behavior, and explicit resource limits.
 
@@ -102,7 +102,9 @@ Make the deterministic reader/validation subset of Specification 0008 executable
 
 ### Milestone 20 — Resolution & Discovery Core
 
-Planned next: offline-first explicit resolution, provenance-visible results, identity recomputation, policy-blocked network behavior, redirect/private-address guards, and resolver-loop/resource boundaries.
+**Implementation complete; Python/Rust `resolution-v1` CI is the acceptance gate.**
+
+Implements offline-first explicit resolution, provenance-visible results, exact evidence/resource identity recomputation, explicit network policy, redirect/private-address guards, freshness/byte limits, resolver loops, and structured unavailable/not-found/policy outcomes. Conformance is isolated in the separate 16-case `resolution-v1` profile.
 
 ### Milestone 21 — Identity, Authority & Lifecycle Core
 

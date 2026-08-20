@@ -1,0 +1,57 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "positive",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [],
+      "freshness": "FRESH",
+      "matches": [
+        {
+          "resource_id": "https://example.org/b",
+          "source_class": "network",
+          "source_identifier": "urn:resolver:https"
+        }
+      ],
+      "network_requests": 1,
+      "provenance": [
+        {
+          "source_class": "network",
+          "source_identifier": "urn:resolver:https",
+          "source_index": 0
+        }
+      ],
+      "redirects": [
+        "https://example.org/b"
+      ],
+      "status": "RESOLVED",
+      "warnings": []
+    }
+  },
+  "id": "resolution.network.redirect-resolved.001",
+  "input": {
+    "request": {
+      "options": {
+        "allow_redirects": true,
+        "offline_only": false
+      },
+      "target": "https://example.org/a",
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "freshness": "FRESH",
+        "redirects": [
+          "https://example.org/b"
+        ],
+        "resolved_id": "https://example.org/b",
+        "response_bytes": 128,
+        "source_class": "network",
+        "source_identifier": "urn:resolver:https",
+        "status": "resolved"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

@@ -46,7 +46,13 @@ __all__ = [
     "PackagedResourceV1",
     "parse_bundle_manifest",
     "process_bundle",
+    "ResolutionRequestV1",
+    "ResolutionLimits",
+    "resolve_request",
 ]
 
 from .bundle import BundleLimits, PackagedResourceV1, parse_bundle_manifest, process_bundle
 from .model.bundle import BundleManifestStatementV1, ResourceRefV1
+
+from .model.resolution import ResolutionRequestV1
+from .resolution import ResolutionLimits, resolve_request

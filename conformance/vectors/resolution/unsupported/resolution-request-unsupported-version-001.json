@@ -1,0 +1,22 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "unsupported",
+  "expected": {
+    "classification": "UNSUPPORTED",
+    "outcome": "ERROR",
+    "reason": "UNSUPPORTED_RESOLUTION_REQUEST_VERSION"
+  },
+  "id": "resolution.request.unsupported-version.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true
+      },
+      "target": "https://example.org/a",
+      "target_class": "externalResource",
+      "version": 2
+    },
+    "sources": []
+  },
+  "operation": "resolve"
+}

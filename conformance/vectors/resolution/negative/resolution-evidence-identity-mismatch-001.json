@@ -1,0 +1,68 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [
+        {
+          "actual": {
+            "identity_digest_hex": "742b5650cb057918c26540421e793d99a40eeb14fcd0c7572417cd0297bd7889",
+            "kind": 0
+          },
+          "requested": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          },
+          "source_index": 0
+        }
+      ],
+      "errors": [
+        "RESOLVED_IDENTITY_MISMATCH"
+      ],
+      "freshness": "NOT_APPLICABLE",
+      "matches": [],
+      "network_requests": 0,
+      "provenance": [],
+      "redirects": [],
+      "status": "IDENTITY_MISMATCH",
+      "warnings": []
+    }
+  },
+  "id": "resolution.evidence.identity-mismatch.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true
+      },
+      "target": {
+        "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+        "kind": 0
+      },
+      "target_class": "evidence"
+    },
+    "sources": [
+      {
+        "candidates": [
+          {
+            "lookup_ref": {
+              "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+              "kind": 0
+            },
+            "record": {
+              "content": {
+                "statement": "wrong",
+                "subject": "urn:example:subject:1"
+              },
+              "envelope_version": 1,
+              "type": "claim"
+            }
+          }
+        ],
+        "source_class": "localStore",
+        "source_identifier": "urn:store:test"
+      }
+    ]
+  },
+  "operation": "resolve"
+}
