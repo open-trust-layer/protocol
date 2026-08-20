@@ -1,0 +1,29 @@
+{
+  "id": "OLP-0005-TV-2",
+  "source_specification": "specification/0005-evidence-relationships.md",
+  "construction": "EvidenceRefV1",
+  "cases": [
+    {
+      "name": "RecordRef",
+      "input": {
+        "kind": 0,
+        "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+      },
+      "expected": {
+        "evidence_ref_hex": "82005820c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+        "evidence_ref_length": 36
+      }
+    },
+    {
+      "name": "ProofRef",
+      "input": {
+        "kind": 1,
+        "identity_digest_hex": "02f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba"
+      },
+      "expected": {
+        "evidence_ref_hex": "8201582002f4942b2bb0e5e4e3ae448015a17368237f7452801d0a6eaffa4efaadc853ba",
+        "evidence_ref_length": 36
+      }
+    }
+  ]
+}
