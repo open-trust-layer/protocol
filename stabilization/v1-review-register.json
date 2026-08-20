@@ -1,0 +1,118 @@
+{
+  "schema": "olp-v1-review-register-v1",
+  "version": 1,
+  "baseline_release": "draft-v0.3",
+  "baseline_commit": "5acc4b8934305a5215379c480db32bd0fd22f3ae",
+  "review_scope": {
+    "specifications": [
+      "0000",
+      "0001",
+      "0002",
+      "0003",
+      "0004",
+      "0005",
+      "0006",
+      "0007",
+      "0008",
+      "0009",
+      "0010",
+      "0011",
+      "0012",
+      "0013",
+      "0014"
+    ],
+    "cross_cutting": [
+      "versioning-and-capability-stability",
+      "identity-and-proof-separation",
+      "authority-and-lifecycle-separation",
+      "bundle-completeness",
+      "resolution-and-network-permission",
+      "privacy-and-disclosure",
+      "transport-and-object-identity",
+      "conformance-and-certification",
+      "release-corpus-identity"
+    ]
+  },
+  "findings": [
+    {
+      "id": "M26-R001",
+      "class": "release-status-ambiguity",
+      "severity": "medium",
+      "status": "resolved",
+      "summary": "Draft v0.3 proved a 15-capability aggregate profile but did not define which capabilities would be mandatory in a future stable release.",
+      "resolution": "Specification 0015 designates existing core-v1 as the mandatory v1.0 candidate core and keeps higher-layer profiles optional candidates."
+    },
+    {
+      "id": "M26-R002",
+      "class": "historical-status-overlap",
+      "severity": "low",
+      "status": "resolved",
+      "summary": "Specification 0013 contains Draft v0.2 statements that higher layers were not yet independently executed.",
+      "resolution": "Specification 0014 already scopes those statements as historically accurate for Draft v0.2 and supersedes only their current repository-status meaning; no normative semantic contradiction exists."
+    },
+    {
+      "id": "M26-R003",
+      "class": "security-boundary-gap",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Security assumptions existed across specifications and SECURITY.md but there was no single candidate-stable threat model enumerating assets, attacker capabilities, trust boundaries, deployment exclusions, and residual review targets.",
+      "resolution": "Milestone 26 adds docs/v1-threat-model.md and makes its exact bytes a required candidate artifact."
+    },
+    {
+      "id": "M26-R004",
+      "class": "release-governance-gap",
+      "severity": "medium",
+      "status": "resolved",
+      "summary": "Draft migration rules existed, but a stable release publication, deprecation, errata, immutable-tag, and rollback process was not consolidated.",
+      "resolution": "Milestone 26 adds docs/v1-release-process.md and makes it a required candidate artifact."
+    },
+    {
+      "id": "M26-R005",
+      "class": "conformance-certification-separation",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "A future automation path needed to prevent Draft v0.3 conformance success from being treated as sufficient evidence for stable promotion.",
+      "resolution": "The Milestone 26 promotion evaluator has distinct INVALID, BLOCKED, and READY states; pending independent external security review and public review produce BLOCKED even when all internal conformance gates pass."
+    },
+    {
+      "id": "M26-R006",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Authorization-related proof purpose could be misread as authority sufficiency if Specifications 0004 and 0006 were considered independently.",
+      "resolution": "The existing specifications explicitly preserve proof-purpose versus authority separation; Specification 0015 makes that separation a stable-promotion invariant. No semantic change is required."
+    },
+    {
+      "id": "M26-R007",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Lifecycle/status evidence could be misread as rewriting historical cryptographic validity.",
+      "resolution": "Specifications 0004, 0006, and 0007 already require cryptographic validity, status evidence, authority, freshness, and policy to remain separate. No semantic change is required."
+    },
+    {
+      "id": "M26-R008",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Bundle omission or disclosure minimization could be misread as proof that undisclosed evidence does not exist.",
+      "resolution": "Specifications 0008 and 0010 already distinguish bundle completeness, task-scoped disclosure, withholding, and global nonexistence. No semantic change is required."
+    },
+    {
+      "id": "M26-R009",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Resolution or HTTP success could be misread as evidence verification or global existence/nonexistence.",
+      "resolution": "Specifications 0009 and 0012 explicitly separate resolution/HTTP results from cryptographic verification and define HTTP 404 as local. No semantic change is required."
+    },
+    {
+      "id": "M26-R010",
+      "class": "normative-contradiction",
+      "severity": "high",
+      "status": "resolved",
+      "summary": "Transport security, HTTP authentication, or representation could be misread as OLP object proof validity or evidence identity.",
+      "resolution": "Specification 0012 explicitly separates transport security/authentication and transport representation from OLP proof validity and evidence identity. No semantic change is required."
+    }
+  ]
+}
