@@ -19,7 +19,7 @@ The harness tests observable protocol behavior. Official vectors do not import o
 | `olp.evidence-ref.v1` | typed canonical EvidenceRefV1 encoding |
 | `olp.evidence-relationship.v1` | relationship statement validation and projection |
 
-`core-v1` requires all eight capabilities. `evidence-v1` scopes the three Specification 0005 evidence capabilities.
+`core-v1` remains the frozen Draft v0.2 eight-capability core. `evidence-v1` scopes the three Specification 0005 evidence capabilities. `bundle-v1` is the independent Specification 0008 bundle-processing capability added after Draft v0.2 integration.
 
 Milestone 17 hardens the adapter boundary: JSON inputs use unique object names, finite size/depth limits, and reversible `$map` projection for abstract maps whose keys cannot be represented safely as an ordinary JSON object.
 

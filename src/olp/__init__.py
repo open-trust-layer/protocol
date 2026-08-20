@@ -40,4 +40,13 @@ __all__ = [
     "verify_evidence_ref",
     "relationship_record",
     "parse_relationship_record",
+    "BundleManifestStatementV1",
+    "ResourceRefV1",
+    "BundleLimits",
+    "PackagedResourceV1",
+    "parse_bundle_manifest",
+    "process_bundle",
 ]
+
+from .bundle import BundleLimits, PackagedResourceV1, parse_bundle_manifest, process_bundle
+from .model.bundle import BundleManifestStatementV1, ResourceRefV1

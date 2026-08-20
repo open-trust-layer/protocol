@@ -2,7 +2,7 @@
 
 Harness version: `0.1.0`
 
-Total cases: **62**
+Total cases: **70**
 
 | Case | Category | Capability | Operation |
 |---|---|---|---|
@@ -68,16 +68,25 @@ Total cases: **62**
 | `proof.verify.negative.cryptosuite-policy.001` | negative | `olp.proof-verification.v1` | `verify_proof` |
 | `proof.verify.negative.commitment-policy.001` | negative | `olp.proof-verification.v1` | `verify_proof` |
 | `proof.verify.malformed.verification-method-uri.001` | malformed | `olp.proof-verification.v1` | `verify_proof` |
+| `bundle.portable.valid.001` | positive | `olp.bundle.v1` | `process_bundle` |
+| `bundle.self-contained.valid.001` | positive | `olp.bundle.v1` | `process_bundle` |
+| `bundle.partial.missing.001` | negative | `olp.bundle.v1` | `process_bundle` |
+| `bundle.partial.unexpected.001` | negative | `olp.bundle.v1` | `process_bundle` |
+| `bundle.resource.valid.001` | positive | `olp.bundle.v1` | `process_bundle` |
+| `bundle.resource.digest-mismatch.001` | negative | `olp.bundle.v1` | `process_bundle` |
+| `bundle.malformed.inventory-order.001` | malformed | `olp.bundle.v1` | `process_bundle` |
+| `bundle.unsupported.critical-extension.001` | unsupported | `olp.bundle.v1` | `process_bundle` |
 
 ## Category totals
 
-- positive: 21
-- negative: 11
-- malformed: 20
-- unsupported: 10
+- malformed: 21
+- negative: 14
+- positive: 24
+- unsupported: 11
 
 ## Capability totals
 
+- `olp.bundle.v1`: 8
 - `olp.evidence-ref.v1`: 4
 - `olp.evidence-relationship.v1`: 9
 - `olp.proof-identity.v1`: 3

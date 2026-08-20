@@ -1,0 +1,8 @@
+{
+  "schema": "olp-conformance-profile-v1",
+  "id": "bundle-v1",
+  "status": "draft-v0.2",
+  "capabilities": [
+    "olp.bundle.v1"
+  ]
+}

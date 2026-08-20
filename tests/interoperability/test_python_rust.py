@@ -126,3 +126,15 @@ def test_relationship_processing_matches_python_and_spec(rust_adapter: Subproces
         py = ReferenceAdapter().execute("process_relationship", case["input"])
         rs = rust_adapter.execute("process_relationship", case["input"])
         assert rs == py == case["expected"]["result"]
+
+
+def test_bundle_processing_matches_python_and_spec(rust_adapter: SubprocessAdapter) -> None:
+    for relative in (
+        "bundle/positive/bundle-portable-valid-001.json",
+        "bundle/positive/bundle-resource-valid-001.json",
+        "bundle/negative/bundle-partial-missing-001.json",
+    ):
+        case = _vector(relative)
+        py = ReferenceAdapter().execute("process_bundle", case["input"])
+        rs = rust_adapter.execute("process_bundle", case["input"])
+        assert rs == py == case["expected"]["result"]

@@ -42,3 +42,10 @@ def test_rust_adapter_declares_all_core_v1_capabilities():
 def test_rust_build_output_is_ignored():
     gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
     assert "implementations/rust/target/" in gitignore
+
+def test_rust_bundle_capability_is_wired():
+    lib = (RUST / "src" / "lib.rs").read_text(encoding="utf-8")
+    bundle = (RUST / "src" / "bundle.rs").read_text(encoding="utf-8")
+    assert "olp.bundle.v1" in lib
+    assert '"process_bundle"=>bundle::process_bundle_operation' in lib
+    assert "OLP-EVIDENCE-BUNDLE-MANIFEST" in bundle

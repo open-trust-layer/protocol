@@ -25,9 +25,13 @@ __all__ = [
     "VerificationIssue",
     "VerificationPolicy",
     "VerificationResult",
+    "BundleManifestStatementV1",
+    "ResourceRefV1",
     "EvidenceKind",
     "EvidenceRefV1",
     "RelationshipStatementV1",
 ]
 
 from .evidence import EvidenceKind, EvidenceRefV1, RelationshipStatementV1
+
+from .bundle import BundleManifestStatementV1, ResourceRefV1

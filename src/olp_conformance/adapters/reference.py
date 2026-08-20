@@ -12,6 +12,8 @@ from olp.encoding.proof_input import build_proof_input, encode_proof_input, proo
 from olp.encoding.proof_identity import proof_identity, proof_identity_bytes
 from olp.encoding.record_identity import record_identity, record_identity_bytes, record_identity_text
 from olp.evidence import parse_relationship_record
+from olp.bundle import PackagedResourceV1, process_bundle
+from olp.model.bundle import ResourceRefV1
 from olp.model.evidence import EvidenceRefV1
 from olp.errors import ConformanceError, KeyMaterialError, UnsupportedFeatureError
 from olp.model.proof import RecordCommitment
@@ -39,6 +41,7 @@ CAPABILITIES = frozenset(
         "olp.proof-identity.v1",
         "olp.evidence-ref.v1",
         "olp.evidence-relationship.v1",
+        "olp.bundle.v1",
     }
 )
 
@@ -175,6 +178,28 @@ class ReferenceAdapter:
         if uninterpreted:
             result["uninterpreted_qualifiers"] = uninterpreted
         return result
+
+    def _op_process_bundle(self, payload: dict[str, Any]) -> dict[str, Any]:
+        manifest = record_from_json(payload["manifest_record"])
+        records = [record_from_json(item) for item in payload.get("records", ())]
+        proofs = [proof_from_json(item) for item in payload.get("proofs", ())]
+        resources = []
+        for item in payload.get("resources", ()):
+            raw = item["resource_ref"]
+            ref = ResourceRefV1(
+                raw.get("resource_id"),
+                raw["media_type"],
+                raw.get("hash_algorithm", -16),
+                bytes.fromhex(raw["digest_hex"]),
+            )
+            resources.append(PackagedResourceV1(ref, bytes.fromhex(item["content_hex"])))
+        return process_bundle(
+            manifest,
+            records=records,
+            proofs=proofs,
+            resources=resources,
+            understood_critical_extensions=frozenset(payload.get("understood_critical_extensions", ())),
+        )
 
     def _op_verify_proof(self, payload: dict[str, Any]) -> dict[str, Any]:
         record = record_from_json(payload["record"])

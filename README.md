@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 18 — Draft v0.2 integration and wider technical review
+**Current phase:** Milestone 19 — executable Evidence Bundle Core; Python/Rust bundle conformance is the acceptance gate
 
 ---
 
@@ -39,9 +39,9 @@ The independently verified v1 deterministic core remains byte-compatible with Dr
 - `EvidenceRefV1`; and
 - `RelationshipStatementV1`.
 
-Cross-cutting versioning, registry, extension, reason-code, migration, and stable-core rules are defined by [`specification/0013-versioning-registries-and-core-profile.md`](specification/0013-versioning-registries-and-core-profile.md).
+The cross-cutting versioning, registry, extension, reason-code, migration, and stable-core rules are defined by [`specification/0013-versioning-registries-and-core-profile.md`](specification/0013-versioning-registries-and-core-profile.md).
 
-The integration rationale is documented in [`docs/draft-v0.2-integration.md`](docs/draft-v0.2-integration.md).
+The full Milestone 18 integration rationale is documented in [`docs/draft-v0.2-integration.md`](docs/draft-v0.2-integration.md).
 
 ---
 
@@ -63,13 +63,15 @@ olp.evidence-relationship.v1
 Milestone 17 acceptance demonstrated:
 
 ```text
-Python core-v1 conformance        62 / 62 PASS
-Rust core-v1 conformance          62 / 62 PASS
-Python <-> Rust interoperability   9 / 9 PASS
-Python 3.11-3.14 CI                PASS
+Python core-v1 conformance      62 / 62 PASS
+Rust core-v1 conformance        62 / 62 PASS
+Python <-> Rust interoperability 9 / 9 PASS
+Python 3.11-3.14 CI             PASS
 ```
 
 This does **not** imply that every higher-layer behavior in Specifications 0006–0010 has been independently implemented and security-tested.
+
+Milestone 19 adds a separate, non-core `bundle-v1` profile for Specification 0008. `core-v1` remains frozen at the Draft v0.2 eight-capability / 62-case contract; higher-layer capabilities are added in separate profiles rather than silently changing `core-v1`.
 
 ---
 

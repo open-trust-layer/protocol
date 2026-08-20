@@ -1,0 +1,82 @@
+{
+  "capability": "olp.bundle.v1",
+  "category": "positive",
+  "description": "Portable bundle with one root/inventory record resolves exactly.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "bundle_id_hex": "5ec1ad5428434ec9495b277d303c2dcb7b4d8a351e705fb7eaecc063b02dfa87",
+      "closure_status": "COMPLETE",
+      "duplicate_supplied_identity_hex": [],
+      "missing_items": [],
+      "missing_resources": [],
+      "network_fallback_allowed": true,
+      "profile": "portable",
+      "resource_errors": [],
+      "root_results": [
+        {
+          "present": true,
+          "ref": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        }
+      ],
+      "status": "VALID",
+      "unexpected_items": [],
+      "unexpected_resources": []
+    }
+  },
+  "id": "bundle.portable.valid.001",
+  "input": {
+    "manifest_record": {
+      "content": [
+        "OLP-EVIDENCE-BUNDLE-MANIFEST",
+        1,
+        "portable",
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [],
+        {},
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "extensions": {},
+      "profiles": [],
+      "relationships": [],
+      "semantic_bindings": {},
+      "type": "bundle-manifest"
+    },
+    "records": [
+      {
+        "content": {
+          "statement": "example",
+          "subject": "urn:example:subject:1"
+        },
+        "envelope_version": 1,
+        "extensions": {},
+        "profiles": [],
+        "relationships": [],
+        "semantic_bindings": {},
+        "type": "claim"
+      }
+    ]
+  },
+  "operation": "process_bundle",
+  "schema": "olp-conformance-vector-v1"
+}

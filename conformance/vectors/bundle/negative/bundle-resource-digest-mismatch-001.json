@@ -1,0 +1,107 @@
+{
+  "capability": "olp.bundle.v1",
+  "category": "negative",
+  "description": "Resource substitution is a structured invalid bundle result.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "bundle_id_hex": "115f2431b4105da2dd4c95ab90d87b6b7005c7abe7139552b991d3f88c9c6cc4",
+      "closure_status": "INCOMPLETE",
+      "duplicate_supplied_identity_hex": [],
+      "missing_items": [],
+      "missing_resources": [],
+      "network_fallback_allowed": true,
+      "profile": "portable",
+      "resource_errors": [
+        {
+          "reason": "RESOURCE_DIGEST_MISMATCH",
+          "resource_digest_hex": "9267da77fbeb954917ac3b9b76a8ddccf63d8776f5e87032ddfe32cfe80325f7"
+        }
+      ],
+      "root_results": [
+        {
+          "present": true,
+          "ref": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        }
+      ],
+      "status": "INVALID",
+      "unexpected_items": [],
+      "unexpected_resources": []
+    }
+  },
+  "id": "bundle.resource.digest-mismatch.001",
+  "input": {
+    "manifest_record": {
+      "content": [
+        "OLP-EVIDENCE-BUNDLE-MANIFEST",
+        1,
+        "portable",
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [
+          [
+            "https://example.org/resources/1",
+            "application/octet-stream",
+            -16,
+            {
+              "$bytes": "9267da77fbeb954917ac3b9b76a8ddccf63d8776f5e87032ddfe32cfe80325f7"
+            }
+          ]
+        ],
+        {},
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "extensions": {},
+      "profiles": [],
+      "relationships": [],
+      "semantic_bindings": {},
+      "type": "bundle-manifest"
+    },
+    "records": [
+      {
+        "content": {
+          "statement": "example",
+          "subject": "urn:example:subject:1"
+        },
+        "envelope_version": 1,
+        "extensions": {},
+        "profiles": [],
+        "relationships": [],
+        "semantic_bindings": {},
+        "type": "claim"
+      }
+    ],
+    "resources": [
+      {
+        "content_hex": "6576696c",
+        "resource_ref": {
+          "digest_hex": "9267da77fbeb954917ac3b9b76a8ddccf63d8776f5e87032ddfe32cfe80325f7",
+          "hash_algorithm": -16,
+          "media_type": "application/octet-stream",
+          "resource_id": "https://example.org/resources/1"
+        }
+      }
+    ]
+  },
+  "operation": "process_bundle",
+  "schema": "olp-conformance-vector-v1"
+}
