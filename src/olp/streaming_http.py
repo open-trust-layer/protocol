@@ -1,6 +1,6 @@
 """Specification 0012 Milestone 24 deterministic streaming/HTTP semantics.
 
-This module deliberately performs no ambient network I/O.  It models the
+This module deliberately performs no ambient network I/O. It models the
 security-sensitive semantics of OLP sequence transport and HTTP exchange from
 caller-supplied frames, objects, bytes, and policy state so conformance remains
 fully reproducible.
@@ -30,16 +30,9 @@ from .encoding.deterministic_cbor import encode as encode_deterministic_cbor
 from .encoding.proof_identity import proof_identity
 from .encoding.record_identity import record_identity
 from .errors import ConformanceError, ResourceLimitError, UnsupportedFeatureError
-from .model.bundle import ResourceRefV1
 from .model.proof import OLPProof
 from .model.record import RecordV1
-from .transport import (
-    OJVEMap,
-    decode_identity_text,
-    encode_ojve,
-    materialize_map,
-    project_abstract,
-)
+from .transport import decode_identity_text, encode_ojve, materialize_map, project_abstract
 from .values import is_absolute_uri
 
 STREAM_FRAME_TYPES = frozenset({"manifest", "record", "proof", "resource", "result", "end"})
@@ -66,7 +59,10 @@ def _canonical_json_bytes(value: object) -> bytes:
         text = json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
         return text.encode("utf-8", "strict")
     except (TypeError, ValueError, UnicodeEncodeError) as exc:
-        raise _malformed("transport JSON value is not serializable scalar Unicode JSON", code="MALFORMED_STREAM_FRAME") from exc
+        raise _malformed(
+            "transport JSON value is not serializable scalar Unicode JSON",
+            code="MALFORMED_STREAM_FRAME",
+        ) from exc
 
 
 @dataclass(frozen=True, slots=True)
@@ -82,11 +78,17 @@ class TransportFrameV1:
         if isinstance(self.version, bool) or not isinstance(self.version, int):
             raise _malformed("streaming frame version must be integer", code="MALFORMED_STREAM_FRAME")
         if self.version != 1:
-            raise UnsupportedFeatureError("unsupported streaming frame version", code="UNSUPPORTED_STREAM_FRAME_VERSION")
+            raise UnsupportedFeatureError(
+                "unsupported streaming frame version",
+                code="UNSUPPORTED_STREAM_FRAME_VERSION",
+            )
         if not isinstance(self.frame_type, str) or not self.frame_type:
             raise _malformed("streaming frame type must be non-empty text", code="MALFORMED_STREAM_FRAME")
         if self.frame_type not in STREAM_FRAME_TYPES:
-            raise UnsupportedFeatureError("unsupported streaming frame type", code="UNSUPPORTED_STREAM_FRAME_TYPE")
+            raise UnsupportedFeatureError(
+                "unsupported streaming frame type",
+                code="UNSUPPORTED_STREAM_FRAME_TYPE",
+            )
 
     def to_abstract(self) -> tuple[Any, ...]:
         self.validate()
@@ -134,8 +136,8 @@ def process_manifested_stream(
 ) -> dict[str, object]:
     """Process a parsed manifested bundle stream without assigning semantics to order.
 
-    The first frame must be ``manifest``.  Record/proof/resource ordering after
-    that is deliberately ignored.  A caller that detected transport truncation
+    The first frame must be ``manifest``. Record/proof/resource ordering after
+    that is deliberately ignored. A caller that detected transport truncation
     sets ``truncated=True``; already present objects still undergo their normal
     identity validation, but stream completeness can never become COMPLETE.
     """
@@ -148,11 +150,17 @@ def process_manifested_stream(
     for frame in frames:
         frame.validate()
     if frames[0].frame_type != "manifest":
-        raise _malformed("first manifested-bundle frame must be manifest", code="STREAM_MANIFEST_NOT_FIRST")
+        raise _malformed(
+            "first manifested-bundle frame must be manifest",
+            code="STREAM_MANIFEST_NOT_FIRST",
+        )
 
     manifest_payload = frames[0].payload
     if not isinstance(manifest_payload, RecordV1):
-        raise _malformed("manifest frame payload must be RecordV1", code="MALFORMED_STREAM_MANIFEST")
+        raise _malformed(
+            "manifest frame payload must be RecordV1",
+            code="MALFORMED_STREAM_MANIFEST",
+        )
 
     records: list[RecordV1] = []
     proofs: list[OLPProof] = []
@@ -169,15 +177,24 @@ def process_manifested_stream(
             continue
         if frame.frame_type == "record":
             if not isinstance(frame.payload, RecordV1):
-                raise _malformed("record frame payload must be RecordV1", code="MALFORMED_STREAM_RECORD")
+                raise _malformed(
+                    "record frame payload must be RecordV1",
+                    code="MALFORMED_STREAM_RECORD",
+                )
             records.append(frame.payload)
         elif frame.frame_type == "proof":
             if not isinstance(frame.payload, OLPProof):
-                raise _malformed("proof frame payload must be OLPProof", code="MALFORMED_STREAM_PROOF")
+                raise _malformed(
+                    "proof frame payload must be OLPProof",
+                    code="MALFORMED_STREAM_PROOF",
+                )
             proofs.append(frame.payload)
         elif frame.frame_type == "resource":
             if not isinstance(frame.payload, PackagedResourceV1):
-                raise _malformed("resource frame payload must be PackagedResourceV1", code="MALFORMED_STREAM_RESOURCE")
+                raise _malformed(
+                    "resource frame payload must be PackagedResourceV1",
+                    code="MALFORMED_STREAM_RESOURCE",
+                )
             resources.append(frame.payload)
         elif frame.frame_type == "result":
             result_frames += 1
@@ -187,7 +204,10 @@ def process_manifested_stream(
                 raise _malformed("end frame must be the final semantic frame", code="STREAM_FRAME_AFTER_END")
 
     if manifest_count != 1:
-        raise _malformed("manifested stream must contain exactly one manifest frame", code="DUPLICATE_STREAM_MANIFEST")
+        raise _malformed(
+            "manifested stream must contain exactly one manifest frame",
+            code="DUPLICATE_STREAM_MANIFEST",
+        )
 
     bundle = process_bundle(
         manifest_payload,
@@ -201,10 +221,11 @@ def process_manifested_stream(
     present_proof_ids = sorted(proof_identity(item).hex() for item in proofs)
     present_resource_ids = sorted(item.ref.digest.hex() for item in resources)
 
+    # Completeness is a transport/closure dimension. A complete stream may
+    # contain invalid evidence or a resource-digest failure; those remain in
+    # the bundle result instead of rewriting transport completeness.
     complete = not truncated and bundle["closure_status"] == "COMPLETE"
     transport_status = "COMPLETE" if complete else "INCOMPLETE"
-    if bundle["status"] == "INVALID":
-        transport_status = "INVALID"
 
     return {
         "transport_status": transport_status,
@@ -224,7 +245,7 @@ def negotiate_media_type(accept: Iterable[str], offered: Iterable[str]) -> str |
     """Deterministically negotiate already-parsed media ranges.
 
     The fixture boundary represents the HTTP ``Accept`` field as an ordered
-    sequence of media ranges after ordinary HTTP field parsing.  This function
+    sequence of media ranges after ordinary HTTP field parsing. This function
     handles exact ranges plus ``type/*`` and ``*/*`` without inventing an OLP
     media type or overriding explicit caller exclusions.
     """
@@ -233,7 +254,10 @@ def negotiate_media_type(accept: Iterable[str], offered: Iterable[str]) -> str |
     offered = tuple(offered)
     for media_range in accept:
         if not isinstance(media_range, str) or ";" in media_range:
-            raise _malformed("Accept fixture values must be parsed media ranges without parameters", code="MALFORMED_HTTP_ACCEPT")
+            raise _malformed(
+                "Accept fixture values must be parsed media ranges without parameters",
+                code="MALFORMED_HTTP_ACCEPT",
+            )
         if media_range == "*/*":
             return offered[0] if offered else None
         if media_range.endswith("/*"):
@@ -246,7 +270,12 @@ def negotiate_media_type(accept: Iterable[str], offered: Iterable[str]) -> str |
     return None
 
 
-def validate_content_digest(header_value: str | None, content: bytes, *, required: bool = False) -> dict[str, object]:
+def validate_content_digest(
+    header_value: str | None,
+    content: bytes,
+    *,
+    required: bool = False,
+) -> dict[str, object]:
     """Validate RFC 9530 Content-Digest ``sha-256`` over HTTP content bytes."""
 
     if not isinstance(content, bytes):
@@ -256,25 +285,44 @@ def validate_content_digest(header_value: str | None, content: bytes, *, require
     if header_value is None:
         return {"status": "MISSING" if required else "NOT_PRESENT", "algorithm": None}
     if not isinstance(header_value, str) or not header_value.strip():
-        raise _malformed("Content-Digest must be non-empty text", code="MALFORMED_CONTENT_DIGEST")
+        raise _malformed(
+            "Content-Digest must be non-empty text",
+            code="MALFORMED_CONTENT_DIGEST",
+        )
 
     members: dict[str, bytes] = {}
     for raw_member in header_value.split(","):
         member = raw_member.strip()
         match = _CONTENT_DIGEST_MEMBER_RE.fullmatch(member)
         if not match:
-            raise _malformed("unsupported or malformed Content-Digest dictionary member", code="MALFORMED_CONTENT_DIGEST")
+            raise _malformed(
+                "unsupported or malformed Content-Digest dictionary member",
+                code="MALFORMED_CONTENT_DIGEST",
+            )
         algorithm = match.group("algorithm")
         if algorithm in members:
-            raise _malformed("duplicate Content-Digest algorithm", code="MALFORMED_CONTENT_DIGEST")
+            raise _malformed(
+                "duplicate Content-Digest algorithm",
+                code="MALFORMED_CONTENT_DIGEST",
+            )
         encoded = match.group("value")
         try:
             decoded = base64.b64decode(encoded, validate=True)
         except (ValueError, base64.binascii.Error) as exc:
-            raise _malformed("Content-Digest byte sequence is invalid base64", code="MALFORMED_CONTENT_DIGEST") from exc
-        # Structured Fields byte sequences have a canonical base64 serialization.
+            raise _malformed(
+                "Content-Digest byte sequence is invalid base64",
+                code="MALFORMED_CONTENT_DIGEST",
+            ) from exc
         if base64.b64encode(decoded).decode("ascii") != encoded:
-            raise _malformed("Content-Digest byte sequence is not canonical base64", code="MALFORMED_CONTENT_DIGEST")
+            raise _malformed(
+                "Content-Digest byte sequence is not canonical base64",
+                code="MALFORMED_CONTENT_DIGEST",
+            )
+        if algorithm == "sha-256" and len(decoded) != 32:
+            raise _malformed(
+                "sha-256 Content-Digest must contain exactly 32 octets",
+                code="MALFORMED_CONTENT_DIGEST",
+            )
         members[algorithm] = decoded
 
     if "sha-256" not in members:
@@ -316,7 +364,10 @@ def evaluate_immutable_http_read(
     """Evaluate deterministic server semantics for identity-bearing GET reads."""
 
     if kind not in {"record", "proof", "bundle"}:
-        raise UnsupportedFeatureError("unsupported immutable HTTP read kind", code="UNSUPPORTED_HTTP_READ_KIND")
+        raise UnsupportedFeatureError(
+            "unsupported immutable HTTP read kind",
+            code="UNSUPPORTED_HTTP_READ_KIND",
+        )
     auth_status, auth_reason = _authorization_gate(authentication, authorization)
     if auth_status is not None:
         return {
@@ -347,12 +398,18 @@ def evaluate_immutable_http_read(
 
     if kind in {"record", "bundle"}:
         if not isinstance(candidate, RecordV1):
-            raise _malformed("record/bundle read candidate must be RecordV1 manifest", code="MALFORMED_HTTP_CANDIDATE")
+            raise _malformed(
+                "record/bundle read candidate must be RecordV1 manifest",
+                code="MALFORMED_HTTP_CANDIDATE",
+            )
         candidate_digest = record_identity(candidate)
         message_type = "record" if kind == "record" else "bundle"
     else:
         if not isinstance(candidate, OLPProof):
-            raise _malformed("proof read candidate must be OLPProof", code="MALFORMED_HTTP_CANDIDATE")
+            raise _malformed(
+                "proof read candidate must be OLPProof",
+                code="MALFORMED_HTTP_CANDIDATE",
+            )
         candidate_digest = proof_identity(candidate)
         message_type = "proof"
 
@@ -392,7 +449,10 @@ def evaluate_http_operation(
     """Evaluate modeled POST operation status without replacing OLP semantics."""
 
     if operation not in {"resolution", "disclosure", "bundleQuery"}:
-        raise UnsupportedFeatureError("unsupported modeled HTTP operation", code="UNSUPPORTED_HTTP_OPERATION")
+        raise UnsupportedFeatureError(
+            "unsupported modeled HTTP operation",
+            code="UNSUPPORTED_HTTP_OPERATION",
+        )
     auth_status, auth_reason = _authorization_gate(authentication, authorization)
     if auth_status is not None:
         return {
@@ -442,6 +502,14 @@ def evaluate_http_operation(
     }
 
 
+def _origin(parts) -> tuple[str, str | None, int]:
+    try:
+        port = parts.port or (443 if parts.scheme.lower() == "https" else 80)
+    except ValueError as exc:
+        raise _malformed("redirect URI contains invalid port", code="MALFORMED_HTTP_REDIRECT") from exc
+    return parts.scheme.lower(), parts.hostname, port
+
+
 def evaluate_redirect(
     *,
     method: str,
@@ -456,29 +524,40 @@ def evaluate_redirect(
 
     if not is_absolute_uri(original_uri) or not is_absolute_uri(location):
         raise _malformed("redirect URIs must be absolute", code="MALFORMED_HTTP_REDIRECT")
-    original = urlsplit(original_uri)
-    target = urlsplit(location)
+    try:
+        original = urlsplit(original_uri)
+        target = urlsplit(location)
+        original_origin = _origin(original)
+        target_origin = _origin(target)
+    except ValueError as exc:
+        raise _malformed("redirect URI could not be parsed safely", code="MALFORMED_HTTP_REDIRECT") from exc
+
     if original.scheme.lower() == "https" and target.scheme.lower() == "http":
         return {"status": "BLOCKED", "reason": "HTTPS_DOWNGRADE", "forward_credentials": False}
     if method.upper() not in {"GET", "HEAD"} and not allow_sensitive_post_redirect:
-        return {"status": "BLOCKED", "reason": "SENSITIVE_METHOD_REDIRECT_BLOCKED", "forward_credentials": False}
+        return {
+            "status": "BLOCKED",
+            "reason": "SENSITIVE_METHOD_REDIRECT_BLOCKED",
+            "forward_credentials": False,
+        }
     if requested_identity_text is not None:
         if not isinstance(requested_identity_text, str) or not requested_identity_text:
-            raise _malformed("requested identity text must be non-empty", code="MALFORMED_HTTP_REDIRECT")
+            raise _malformed(
+                "requested identity text must be non-empty",
+                code="MALFORMED_HTTP_REDIRECT",
+            )
         target_last = target.path.rstrip("/").rsplit("/", 1)[-1]
         if target_last != requested_identity_text:
-            return {"status": "BLOCKED", "reason": "REDIRECT_IDENTITY_CHANGED", "forward_credentials": False}
+            return {
+                "status": "BLOCKED",
+                "reason": "REDIRECT_IDENTITY_CHANGED",
+                "forward_credentials": False,
+            }
 
-    same_origin = (
-        original.scheme.lower(),
-        original.hostname,
-        original.port or (443 if original.scheme.lower() == "https" else 80),
-    ) == (
-        target.scheme.lower(),
-        target.hostname,
-        target.port or (443 if target.scheme.lower() == "https" else 80),
+    same_origin = original_origin == target_origin
+    forward_credentials = bool(
+        credentials_present and (same_origin or allow_cross_origin_credentials)
     )
-    forward_credentials = bool(credentials_present and (same_origin or allow_cross_origin_credentials))
     return {
         "status": "ALLOWED",
         "reason": None,
@@ -497,8 +576,14 @@ def separate_http_auth_from_olp(
     """Return authentication/authorization/proof dimensions without conflation."""
 
     _authorization_gate(http_authentication, service_authorization)
-    _validate_semantic_identifier(olp_cryptographic_validity, code="MALFORMED_OLP_STATUS")
-    _validate_semantic_identifier(olp_authority_evidence, code="MALFORMED_OLP_STATUS")
+    _validate_semantic_identifier(
+        olp_cryptographic_validity,
+        code="MALFORMED_OLP_STATUS",
+    )
+    _validate_semantic_identifier(
+        olp_authority_evidence,
+        code="MALFORMED_OLP_STATUS",
+    )
     return {
         "http_authentication": http_authentication,
         "service_authorization": service_authorization,
