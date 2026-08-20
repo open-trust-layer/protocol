@@ -1,0 +1,66 @@
+{
+  "capability": "olp.bundle.v1",
+  "category": "unsupported",
+  "description": "Unknown critical bundle extensions fail closed.",
+  "expected": {
+    "classification": "UNSUPPORTED",
+    "outcome": "ERROR",
+    "reason": "UNSUPPORTED_CRITICAL_BUNDLE_EXTENSION"
+  },
+  "id": "bundle.unsupported.critical-extension.001",
+  "input": {
+    "manifest_record": {
+      "content": [
+        "OLP-EVIDENCE-BUNDLE-MANIFEST",
+        1,
+        "portable",
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [],
+        {},
+        {
+          "https://example.org/bundle/critical": true
+        },
+        [
+          "https://example.org/bundle/critical"
+        ]
+      ],
+      "envelope_version": 1,
+      "extensions": {},
+      "profiles": [],
+      "relationships": [],
+      "semantic_bindings": {},
+      "type": "bundle-manifest"
+    },
+    "records": [
+      {
+        "content": {
+          "statement": "example",
+          "subject": "urn:example:subject:1"
+        },
+        "envelope_version": 1,
+        "extensions": {},
+        "profiles": [],
+        "relationships": [],
+        "semantic_bindings": {},
+        "type": "claim"
+      }
+    ]
+  },
+  "operation": "process_bundle",
+  "schema": "olp-conformance-vector-v1"
+}

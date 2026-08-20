@@ -1,0 +1,48 @@
+{
+  "capability": "olp.bundle.v1",
+  "category": "malformed",
+  "description": "Reversed inventory is non-canonical.",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "NON_CANONICAL_BUNDLE_INVENTORY_ORDER"
+  },
+  "id": "bundle.malformed.inventory-order.001",
+  "input": {
+    "manifest_record": {
+      "content": [
+        "OLP-EVIDENCE-BUNDLE-MANIFEST",
+        1,
+        "portable",
+        [],
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ],
+          [
+            0,
+            {
+              "$bytes": "4d09bf64ef3b0b4aa474fc83722dc458cbe2a8f84afbd9f519182ca46f5b892f"
+            }
+          ]
+        ],
+        [],
+        {},
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "extensions": {},
+      "profiles": [],
+      "relationships": [],
+      "semantic_bindings": {},
+      "type": "bundle-manifest"
+    },
+    "records": []
+  },
+  "operation": "process_bundle",
+  "schema": "olp-conformance-vector-v1"
+}

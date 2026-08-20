@@ -62,3 +62,10 @@ def test_missing_capability_reports_unsupported_not_fail():
     assert report.failed == 0
     assert report.unsupported == report.total
     assert report.overall == 'PARTIAL'
+
+
+def test_bundle_profile_is_separate_from_frozen_core():
+    report = ConformanceRunner(MANIFEST, ReferenceAdapter()).run(profile='bundle-v1')
+    assert report.total == 8
+    assert report.passed == 8
+    assert report.overall == 'PASS'

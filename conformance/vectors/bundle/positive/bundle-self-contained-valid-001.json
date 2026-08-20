@@ -1,0 +1,82 @@
+{
+  "capability": "olp.bundle.v1",
+  "category": "positive",
+  "description": "Self-contained profile remains complete without network fallback.",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "bundle_id_hex": "6089773fb41912e9b0698fab71e6c85c290b0943ae377a2a1a1f252fd8301c7b",
+      "closure_status": "COMPLETE",
+      "duplicate_supplied_identity_hex": [],
+      "missing_items": [],
+      "missing_resources": [],
+      "network_fallback_allowed": false,
+      "profile": "selfContainedVerification",
+      "resource_errors": [],
+      "root_results": [
+        {
+          "present": true,
+          "ref": {
+            "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+            "kind": 0
+          }
+        }
+      ],
+      "status": "VALID",
+      "unexpected_items": [],
+      "unexpected_resources": []
+    }
+  },
+  "id": "bundle.self-contained.valid.001",
+  "input": {
+    "manifest_record": {
+      "content": [
+        "OLP-EVIDENCE-BUNDLE-MANIFEST",
+        1,
+        "selfContainedVerification",
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [
+          [
+            0,
+            {
+              "$bytes": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4"
+            }
+          ]
+        ],
+        [],
+        {},
+        {},
+        []
+      ],
+      "envelope_version": 1,
+      "extensions": {},
+      "profiles": [],
+      "relationships": [],
+      "semantic_bindings": {},
+      "type": "bundle-manifest"
+    },
+    "records": [
+      {
+        "content": {
+          "statement": "example",
+          "subject": "urn:example:subject:1"
+        },
+        "envelope_version": 1,
+        "extensions": {},
+        "profiles": [],
+        "relationships": [],
+        "semantic_bindings": {},
+        "type": "claim"
+      }
+    ]
+  },
+  "operation": "process_bundle",
+  "schema": "olp-conformance-vector-v1"
+}

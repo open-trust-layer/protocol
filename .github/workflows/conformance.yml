@@ -34,12 +34,17 @@ jobs:
       - name: Run OLP core conformance profile
         run: olp-conformance run --profile core-v1 --quiet --report conformance-report.json
 
+      - name: Run OLP bundle-v1 conformance profile
+        run: olp-conformance run --profile bundle-v1 --quiet --report conformance-bundle-report.json
+
       - name: Upload conformance report
         if: always()
         uses: actions/upload-artifact@v6
         with:
           name: conformance-python-${{ matrix.python-version }}
-          path: conformance-report.json
+          path: |
+            conformance-report.json
+            conformance-bundle-report.json
           if-no-files-found: error
 
   rust-interoperability:
@@ -81,6 +86,27 @@ jobs:
             --quiet \
             --report conformance-rust.json
 
+      - name: Run Rust implementation against bundle-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile bundle-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust-bundle.json
+
+      - name: Assert Milestone 19 bundle conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust-bundle.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 8, f"expected 8 bundle-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust bundle-v1 conformance: 8/8 PASS")
+          PY
+
       - name: Assert Milestone 17 conformance count
         run: |
           python - <<'PY'
@@ -103,5 +129,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: conformance-rust-1.85.0
-          path: conformance-rust.json
+          path: |
+            conformance-rust.json
+            conformance-rust-bundle.json
           if-no-files-found: error
