@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from olp.identity_authority_lifecycle import evaluate_authority_lifecycle
+from olp.identity_authority_lifecycle_v1 import evaluate_authority_lifecycle
 
 from ..codec import decode_value
 from .reference import ReferenceAdapter as CoreReferenceAdapter
