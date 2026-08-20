@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"negative",
+  "id":"m21.delegation.non-delegable.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"delegation","child":["OLP-AUTHORITY-GRANT",1,"did:example:alice","did:example:bob","urn:example:action:write",[0,"urn:example:resource:account-1"],"urn:example:context:payments","2026-02-01T00:00:00Z","2026-12-01T00:00:00Z",false,[0,{"$bytes":"66f84c48a4688313e30b9dbaa89b03af056e2b1e5bdc8ea8eef40140597bf5d2"}],{},{}],"parent_record":{"envelope_version":1,"type":"authority.grant","content":["OLP-AUTHORITY-GRANT",1,"did:example:root","did:example:alice","urn:example:action:write",[0,"urn:example:resource:account-1"],"urn:example:context:payments","2026-01-01T00:00:00Z","2027-01-01T00:00:00Z",false,null,{},{}]}},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"delegation","delegation_status":"NOT_SUPPORTED","reasons":["PARENT_GRANT_NOT_DELEGABLE"],"scope":"WITHIN_PARENT_EXACT_BASELINE","parent_identity":"VERIFIED","policy_decision":"NOT_EVALUATED"}}
+}

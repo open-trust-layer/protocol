@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"negative",
+  "id":"m21.lifecycle.absence.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["principal","did:example:alice"],"statuses":[]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"lifecycle","events":[],"conflicts":[],"completeness":"UNKNOWN","source_authority":"NOT_EVALUATED","operational_state":"INDETERMINATE","absence_is_active":false}}
+}

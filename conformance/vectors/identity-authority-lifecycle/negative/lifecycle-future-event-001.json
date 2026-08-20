@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"negative",
+  "id":"m21.lifecycle.future-event.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["principal","did:example:alice"],"evaluation_time":"2026-06-01T00:00:00Z","statuses":[["OLP-LIFECYCLE-STATUS",1,["principal","did:example:alice"],"suspend","urn:example:authority:status","2026-07-01T00:00:00Z",2,null,null,null,{},[]]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"lifecycle","events":[{"event":"suspend","effective":"STATUS_EVENT_NOT_YET_EFFECTIVE"}],"completeness":"UNKNOWN","operational_state":"INDETERMINATE","absence_is_active":false}}
+}

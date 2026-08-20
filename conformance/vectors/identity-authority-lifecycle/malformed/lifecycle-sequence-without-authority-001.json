@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"malformed",
+  "id":"m21.lifecycle.sequence-without-authority.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["principal","did:example:alice"],"statuses":[["OLP-LIFECYCLE-STATUS",1,["principal","did:example:alice"],"suspend",null,"2026-05-01T00:00:00Z",1,null,null,null,{},[]]]},
+  "expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"MALFORMED_LIFECYCLE_STATUS"}
+}

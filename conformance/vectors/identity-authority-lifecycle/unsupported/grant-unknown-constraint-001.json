@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"unsupported",
+  "id":"m21.grant.unknown-constraint.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"authority_grant","statement":["OLP-AUTHORITY-GRANT",1,"did:example:root","did:example:alice","urn:example:action:write",[0,"urn:example:resource:account-1"],"urn:example:context:payments","2026-01-01T00:00:00Z","2027-01-01T00:00:00Z",false,null,{"urn:example:constraint:unknown":true},{}]},
+  "expected":{"outcome":"ERROR","classification":"UNSUPPORTED","reason":"UNSUPPORTED_AUTHORITY_CONSTRAINT"}
+}
