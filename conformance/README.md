@@ -50,11 +50,13 @@ SHA-256 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 Specification 0014 defines the exact binary preimage. The commitment covers:
 
 - the base manifest;
-- every additive manifest fragment in the repository snapshot;
+- additive manifest fragments that define the selected profile or contain selected-capability cases;
 - the standalone selected profile declaration;
 - the ordered profile capability list;
 - the ordered selected case IDs; and
 - the exact bytes of every vector referenced by those cases.
+
+Unrelated future profile fragments are intentionally excluded so append-only repository growth does not change an already-frozen release commitment.
 
 Each committed file is SHA-256 hashed over exact bytes. File paths are sorted by UTF-8 bytes. The outer commitment uses explicit uint32 big-endian length/count framing, not JSON serialization.
 
@@ -90,7 +92,7 @@ This normalization fixed a release-metadata inconsistency where older profile fi
 
 The original `conformance/manifest.json` remains the base corpus. Later capability milestones add lexically ordered `manifests/*.json` fragments. A fragment MUST match the base manifest and harness versions, MUST NOT redefine an existing profile incompatibly, and MUST NOT duplicate a case ID.
 
-Historical checksum files remain historical snapshots; Draft v0.3 does not rewrite them. The release-level suite commitment in Specification 0014 provides a new exact commitment over the aggregate profile corpus.
+Historical checksum files remain historical snapshots; Draft v0.3 does not rewrite them. The release-level suite commitment in Specification 0014 commits only fragments that contribute to the selected profile/case set, making a frozen release stable under unrelated future profile growth.
 
 ## Independent Rust adapter
 
