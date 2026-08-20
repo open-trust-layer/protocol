@@ -6,6 +6,23 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ## [Unreleased]
 
+### Milestone 26 — v1.0 candidate boundary and promotion gates
+
+- Select the existing eight-capability `core-v1` profile as the mandatory v1.0 candidate core without renaming or redefining it.
+- Keep `bundle-v1`, `resolution-v1`, `identity-authority-lifecycle-v1`, `privacy-disclosure-v1`, `transport-encoding-v1`, and `streaming-http-v1` as optional candidate profiles rather than silently expanding the mandatory core.
+- Add Specification 0015 for stable-profile promotion, candidate/release-candidate/stable terminology, contradiction gates, threat-model requirements, external review, public review, migration/deprecation/errata, and publication rules.
+- Add `stabilization/v1.0-candidate.json` and strict candidate/review/report schemas.
+- Add `olp-conformance promotion-check` with distinct `INVALID`, `BLOCKED`, and `READY` states plus `--require-ready` for release automation.
+- Pin the mandatory `core-v1` 62-case candidate corpus to SHA-256 `8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e`.
+- Preserve and independently recompute the Draft v0.3 180-case corpus commitment `62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc`.
+- Add a pinned candidate threat model, machine-readable cross-specification review register, and stable release/migration/deprecation/errata process.
+- Record that the highest-risk cross-specification boundaries already preserve proof-purpose/authority, lifecycle/cryptographic-validity, bundle/disclosure completeness, resolution/verification, HTTP/OLP-status, and transport-security/proof-validity distinctions; no accepted protocol semantic version change was required by the internal stabilization review.
+- Add adversarial promotion tests for mandatory-core widening, optional-profile omission, corpus/artifact drift, unresolved contradictions, fake completed review without references, and JSON object-order independence.
+- Require Python 3.11–3.14 readiness CI to prove internal readiness `PASS` while stable promotion remains deliberately `BLOCKED` by `PUBLIC_TECHNICAL_REVIEW_REQUIRED` and `INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED`.
+- Explicitly prevent project-internal conformance or adversarial review from self-satisfying the independent external security-review gate.
+- Add `docs/v1-threat-model.md`, `docs/v1-release-process.md`, and `docs/v1-candidate-readiness.md`.
+- Preserve all existing accepted conformance vectors, expected results, Draft v0.3 release metadata, and v1 identity-bearing protocol constructions unchanged.
+
 ### Draft v0.3 — Milestone 25 integration and conformance freeze
 
 - Define Draft v0.3 as a specification-set integration/conformance-freeze release rather than a new wire-format generation.
@@ -140,7 +157,7 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 Draft v0.3 contains Specifications 0000–0014.
 
-Specifications 0001–0012 originated in the Draft v0.1 design stack. Specification 0013 was added by the Draft v0.2 integration pass. Specification 0014 was added by the Draft v0.3 integration/conformance-freeze pass.
+Specifications 0001–0012 originated in the Draft v0.1 design stack. Specification 0013 was added by the Draft v0.2 integration pass. Specification 0014 was added by the Draft v0.3 integration/conformance-freeze pass. Specification 0015 is post-Draft-v0.3 candidate-stabilization governance and does not silently rewrite the historical Draft v0.3 release manifest.
 
 ## Release history
 
