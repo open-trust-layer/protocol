@@ -1,14 +1,16 @@
 # OLP v1 Public Technical Review Guide
 
-**Status:** review guide; review target not yet frozen  
+**Status:** open-review guide  
 **Candidate:** `olp-v1.0`  
+**Review target:** `olp-v1.0-review-1`  
+**Frozen source commit:** `877493826d673ccf9bb94e7b6b113b35141ad220`  
 **Current mandatory candidate core:** `core-v1`
 
 ## Review goal
 
 The public technical review is intended to challenge the proposed OLP v1.0 candidate boundary before stable promotion. It is not a vote on branding or project direction and it is not a substitute for independent security review.
 
-The exact source commit will be inserted into the machine-readable candidate metadata only after the review-binding hardening itself is merged and verified. Reviewers should not treat an unfrozen branch tip as the review target.
+Reviewers must inspect the exact frozen source commit above. A branch tip or later commit is not the review target.
 
 ## Primary questions
 
@@ -55,7 +57,13 @@ Optional profiles are not silently required for a mandatory-core conformance cla
 
 ## Reproduction
 
-From the eventual frozen review commit, reviewers can run:
+Check out exactly:
+
+```text
+877493826d673ccf9bb94e7b6b113b35141ad220
+```
+
+Then run:
 
 ```bash
 python -m pip install -e '.[test]'
@@ -77,13 +85,13 @@ draft-v0.3-interoperable-v1
 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 ```
 
-The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for the same frozen review target.
+The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
 
 ## Finding format
 
 A useful public review finding should identify:
 
-1. the frozen source commit;
+1. frozen source commit `877493826d673ccf9bb94e7b6b113b35141ad220`;
 2. affected specification section(s) or implementation file(s);
 3. finding class (`ambiguity`, `interoperability`, `security`, `privacy`, `governance`, `editorial`, or other clearly described class);
 4. severity or likely impact;
@@ -94,6 +102,6 @@ Security-sensitive exploit details should follow `SECURITY.md` rather than being
 
 ## Review completion
 
-Public review is not complete merely because an issue exists or a period of time has elapsed.
+Public review is not complete merely because a tracker issue exists or a period of time has elapsed.
 
-Completion requires durable references to the exact frozen source commit and disposition of material findings. If a material source change results, a new review target must be frozen and review evidence for the older commit cannot satisfy the new target automatically.
+Completion requires durable references that identify this exact frozen source commit and disposition of material findings. If a material source change results, a new review target must be frozen and review evidence for `olp-v1.0-review-1` cannot satisfy the new target automatically.
