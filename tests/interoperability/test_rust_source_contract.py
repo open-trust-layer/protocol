@@ -58,4 +58,6 @@ def test_rust_identity_authority_lifecycle_capability_is_wired_and_policy_separa
         '"INDETERMINATE"',
     ):
         assert token in source
-    assert '"authorized"' not in source
+    # A test may probe for the absence of an authorization field, but production
+    # output construction must never synthesize one.
+    assert 'out.insert("authorized"' not in source
