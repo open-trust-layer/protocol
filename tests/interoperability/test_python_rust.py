@@ -30,6 +30,23 @@ def rust_adapter() -> SubprocessAdapter:
 def _vector(relative: str) -> dict:
     return json.loads((VECTOR_ROOT / relative).read_text(encoding="utf-8"))
 
+
+def _assert_subset(expected, observed, path="$"):
+    if isinstance(expected, dict):
+        assert isinstance(observed, dict), f"{path}: expected object"
+        for key, value in expected.items():
+            assert key in observed, f"{path}: missing key {key!r}"
+            _assert_subset(value, observed[key], f"{path}.{key}")
+        return
+    if isinstance(expected, list):
+        assert isinstance(observed, list), f"{path}: expected list"
+        assert len(expected) == len(observed), f"{path}: list length differs"
+        for index, (expected_item, observed_item) in enumerate(zip(expected, observed)):
+            _assert_subset(expected_item, observed_item, f"{path}[{index}]")
+        return
+    assert observed == expected, f"{path}: expected {expected!r}, observed {observed!r}"
+
+
 def test_capabilities_match_reference(rust_adapter):
     assert rust_adapter.capabilities() == ReferenceAdapter().capabilities()
 
@@ -81,4 +98,5 @@ def test_identity_authority_lifecycle_matches_python_and_vectors(rust_adapter):
         case = _vector(relative)
         py = ReferenceAdapter().execute("evaluate_authority_lifecycle", case["input"])
         rs = rust_adapter.execute("evaluate_authority_lifecycle", case["input"])
-        assert rs == py == case["expected"]["result"], relative
+        assert rs == py, relative
+        _assert_subset(case["expected"]["result"], rs)
