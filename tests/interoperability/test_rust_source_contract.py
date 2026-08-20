@@ -61,3 +61,25 @@ def test_rust_identity_authority_lifecycle_capability_is_wired_and_policy_separa
     # A test may probe for the absence of an authorization field, but production
     # output construction must never synthesize one.
     assert 'out.insert("authorized"' not in source
+
+
+def test_rust_privacy_disclosure_capability_preserves_minimization_boundaries():
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8")
+    source=(RUST/"src"/"disclosure.rs").read_text(encoding="utf-8")
+    assert "olp.privacy-disclosure.v1" in lib
+    assert '"plan_disclosure"=>disclosure::plan_operation' in lib
+    for token in (
+        "OLP-DISCLOSURE-REQUEST",
+        "TASK_SCOPED_MINIMIZED_DISCLOSURE",
+        "GLOBAL_COMPLETENESS_NOT_ESTABLISHED",
+        "SELF_CONTAINED_OVERDISCLOSURE",
+        "NETWORK_RESOLUTION_LEAKAGE",
+        "EXTERNAL_PRESENTATION_UNLINKABILITY_UNKNOWN",
+        "EVIDENCE_IDENTITY_MISMATCH",
+        "RESOURCE_DIGEST_MISMATCH",
+        "record::identity_digest",
+        "proof_identity",
+    ):
+        assert token in source
+    assert 'out.insert("global_completeness_established".into(), Json::Bool(false))' in source
+    assert 'out.insert("field_redaction_performed".into(), Json::Bool(false))' in source
