@@ -20,6 +20,9 @@ EXPECTED_BLOCKERS = (
     "PUBLIC_TECHNICAL_REVIEW_REQUIRED",
     "INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED",
 )
+REVIEW_TARGET_ID = "olp-v1.0-review-1"
+FROZEN_COMMIT = "1" * 40
+OTHER_COMMIT = "2" * 40
 
 
 def _copy_candidate_repo(tmp_path: Path) -> Path:
@@ -42,6 +45,22 @@ def _check_statuses(report) -> dict[str, str]:
     return {item.id: item.status for item in report.checks}
 
 
+def _freeze(raw: dict, commit: str = FROZEN_COMMIT) -> None:
+    raw["review_target"] = {
+        "id": REVIEW_TARGET_ID,
+        "status": "frozen",
+        "source_commit": commit,
+    }
+
+
+def _complete_gate(raw: dict, name: str, *, commit: str = FROZEN_COMMIT, reference: str) -> None:
+    raw["external_gates"][name] = {
+        "status": "completed",
+        "reviewed_commit": commit,
+        "references": [reference],
+    }
+
+
 def test_v1_candidate_is_internally_ready_but_externally_blocked():
     report = evaluate_v1_promotion(CANDIDATE)
 
@@ -54,10 +73,14 @@ def test_v1_candidate_is_internally_ready_but_externally_blocked():
     assert len(report.mandatory_capabilities + report.optional_capabilities) == 15
     assert report.release_corpus_commitment == RELEASE_COMMITMENT
     assert report.core_corpus_commitment == CORE_COMMITMENT
+    assert report.review_target_id == REVIEW_TARGET_ID
+    assert report.review_target_status == "preparing"
+    assert report.review_target_source_commit is None
     assert report.internal_readiness == "PASS"
     assert report.status == "BLOCKED"
     assert report.blockers == EXPECTED_BLOCKERS
     assert "FAIL" not in _check_statuses(report).values()
+    assert _check_statuses(report)["REVIEW_TARGET"] == "PASS"
     assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "BLOCKED"
     assert _check_statuses(report)["INDEPENDENT_EXTERNAL_SECURITY_REVIEW"] == "BLOCKED"
 
@@ -67,6 +90,7 @@ def test_json_object_member_order_does_not_change_promotion_semantics(tmp_path):
     path = root / "stabilization" / "v1.0-candidate.json"
     raw = _load(path)
     raw["required_artifacts"] = dict(reversed(list(raw["required_artifacts"].items())))
+    raw["review_target"] = dict(reversed(list(raw["review_target"].items())))
     raw["external_gates"] = dict(reversed(list(raw["external_gates"].items())))
     _write(path, raw)
 
@@ -76,21 +100,26 @@ def test_json_object_member_order_does_not_change_promotion_semantics(tmp_path):
     assert report.blockers == EXPECTED_BLOCKERS
 
 
-def test_completed_external_gates_with_references_make_copy_ready(tmp_path):
+def test_completed_external_gates_for_exact_frozen_commit_make_copy_ready(tmp_path):
     root = _copy_candidate_repo(tmp_path)
     path = root / "stabilization" / "v1.0-candidate.json"
     raw = _load(path)
-    raw["external_gates"]["public_technical_review"] = {
-        "status": "completed",
-        "references": ["https://example.org/olp/public-review"],
-    }
-    raw["external_gates"]["independent_external_security_review"] = {
-        "status": "completed",
-        "references": ["https://example.org/olp/security-review"],
-    }
+    _freeze(raw)
+    _complete_gate(
+        raw,
+        "public_technical_review",
+        reference="https://example.org/olp/public-review",
+    )
+    _complete_gate(
+        raw,
+        "independent_external_security_review",
+        reference="https://example.org/olp/security-review",
+    )
     _write(path, raw)
 
     report = evaluate_v1_promotion(path)
+    assert report.review_target_status == "frozen"
+    assert report.review_target_source_commit == FROZEN_COMMIT
     assert report.internal_readiness == "PASS"
     assert report.status == "READY"
     assert report.blockers == ()
@@ -100,8 +129,10 @@ def test_completed_external_gate_without_reference_is_invalid(tmp_path):
     root = _copy_candidate_repo(tmp_path)
     path = root / "stabilization" / "v1.0-candidate.json"
     raw = _load(path)
+    _freeze(raw)
     raw["external_gates"]["public_technical_review"] = {
         "status": "completed",
+        "reviewed_commit": FROZEN_COMMIT,
         "references": [],
     }
     _write(path, raw)
@@ -110,6 +141,77 @@ def test_completed_external_gate_without_reference_is_invalid(tmp_path):
     assert report.status == "INVALID"
     assert report.internal_readiness == "FAIL"
     assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "FAIL"
+
+
+def test_completed_external_gate_cannot_precede_review_target_freeze(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    path = root / "stabilization" / "v1.0-candidate.json"
+    raw = _load(path)
+    _complete_gate(
+        raw,
+        "public_technical_review",
+        reference="https://example.org/olp/public-review",
+    )
+    _write(path, raw)
+
+    report = evaluate_v1_promotion(path)
+    assert report.status == "INVALID"
+    assert report.internal_readiness == "FAIL"
+    assert _check_statuses(report)["REVIEW_TARGET"] == "PASS"
+    assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "FAIL"
+
+
+def test_completed_external_gate_must_match_frozen_review_commit(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    path = root / "stabilization" / "v1.0-candidate.json"
+    raw = _load(path)
+    _freeze(raw)
+    _complete_gate(
+        raw,
+        "public_technical_review",
+        commit=OTHER_COMMIT,
+        reference="https://example.org/olp/public-review",
+    )
+    _write(path, raw)
+
+    report = evaluate_v1_promotion(path)
+    assert report.status == "INVALID"
+    assert report.internal_readiness == "FAIL"
+    assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "FAIL"
+
+
+def test_pending_external_gate_must_not_carry_stale_review_evidence(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    path = root / "stabilization" / "v1.0-candidate.json"
+    raw = _load(path)
+    raw["external_gates"]["public_technical_review"] = {
+        "status": "pending",
+        "reviewed_commit": OTHER_COMMIT,
+        "references": ["https://example.org/olp/stale-review"],
+    }
+    _write(path, raw)
+
+    report = evaluate_v1_promotion(path)
+    assert report.status == "INVALID"
+    assert report.internal_readiness == "FAIL"
+    assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "FAIL"
+
+
+def test_frozen_review_target_requires_canonical_commit_id(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    path = root / "stabilization" / "v1.0-candidate.json"
+    raw = _load(path)
+    raw["review_target"] = {
+        "id": REVIEW_TARGET_ID,
+        "status": "frozen",
+        "source_commit": "ABC",
+    }
+    _write(path, raw)
+
+    report = evaluate_v1_promotion(path)
+    assert report.status == "INVALID"
+    assert report.internal_readiness == "FAIL"
+    assert _check_statuses(report)["REVIEW_TARGET"] == "FAIL"
 
 
 def test_mandatory_core_cannot_be_widened_or_swapped(tmp_path):
@@ -170,8 +272,12 @@ def test_unresolved_normative_contradiction_blocks_internal_readiness_even_when_
 def test_promotion_cli_reports_blocked_as_valid_diagnostic_and_require_ready_fails(capsys):
     assert main(["promotion-check", "--candidate", str(CANDIDATE), "--json"]) == 0
     payload = json.loads(capsys.readouterr().out)
+    assert payload["schema"] == "olp-v1-promotion-report-v2"
     assert payload["status"] == "BLOCKED"
     assert payload["internal_readiness"] == "PASS"
+    assert payload["review_target_id"] == REVIEW_TARGET_ID
+    assert payload["review_target_status"] == "preparing"
+    assert payload["review_target_source_commit"] is None
     assert payload["blockers"] == list(EXPECTED_BLOCKERS)
 
     assert main(["promotion-check", "--candidate", str(CANDIDATE), "--require-ready"]) == 1
