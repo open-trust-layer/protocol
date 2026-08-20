@@ -83,11 +83,14 @@ def test_rust_privacy_disclosure_capability_preserves_minimization_boundaries():
     assert 'out.insert("field_redaction_performed".into(), Json::Bool(false))' in source
 
 
-def test_rust_transport_encoding_preserves_typed_values_and_object_identity():
+def test_rust_transport_encoding_preserves_typed_values_identity_and_cbor():
     lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8")
     source=(RUST/"src"/"transport.rs").read_text(encoding="utf-8")
+    cbor_bridge=(RUST/"src"/"transport_cbor.rs").read_text(encoding="utf-8")
     proof_bridge=(RUST/"src"/"transport_proof.rs").read_text(encoding="utf-8")
     assert "olp.transport-encoding.v1" in lib
+    assert "transport_cbor::encode_envelope" in lib
+    assert "transport_cbor::record_equivalence" in lib
     for operation in (
         "encode_identity_text",
         "decode_identity_text",
@@ -112,9 +115,18 @@ def test_rust_transport_encoding_preserves_typed_values_and_object_identity():
         "record::identity_digest",
     ):
         assert token in source
+    for token in (
+        "OLP-TRANSPORT",
+        "cbor::from_adapter_json",
+        "cbor::encode",
+        "UNSUPPORTED_TRANSPORT_CBOR_VALUE",
+        '"cbor_hex"',
+    ):
+        assert token in cbor_bridge
     assert "proof_identity::proof_identity_digest_for" in proof_bridge
+    assert "transport_cbor::encode_envelope" in proof_bridge
     # M23 is deliberately non-network. The accepted source must not grow a
     # transport client/server or authorization surface under this capability.
-    combined = source + "\n" + proof_bridge
+    combined = source + "\n" + cbor_bridge + "\n" + proof_bridge
     for token in ("TcpStream", "UdpSocket", "reqwest", "hyper::", "std::net", "authorized"):
         assert token not in combined
