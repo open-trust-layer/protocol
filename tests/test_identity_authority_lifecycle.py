@@ -69,7 +69,7 @@ def lifecycle(
 
 
 def parent_record(statement) -> RecordV1:
-    return RecordV1(envelope_version=1, type="authorityGrant", content=statement)
+    return RecordV1(envelope_version=1, type="authority.grant", content=statement)
 
 
 def test_principal_role_is_not_authority_or_trust():
