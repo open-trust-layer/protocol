@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
-import json
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +12,7 @@ from .manifest import load_manifest
 
 COMMITMENT_SCHEMA = "olp-conformance-suite-commitment-v1"
 COMMITMENT_VERSION = 1
+COMMITMENT_DOMAIN = b"OLP-CONFORMANCE-SUITE-COMMITMENT-V1\x00"
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,6 +44,7 @@ class ProfileCorpusCommitment:
             ],
             "commitment": {
                 "algorithm": "sha-256",
+                "preimage": "OLP-CONFORMANCE-SUITE-COMMITMENT-V1",
                 "digest_hex": self.digest_hex,
             },
         }
@@ -59,7 +60,18 @@ def _safe_relative(root: Path, path: Path) -> str:
     return relative.as_posix()
 
 
-def _canonical_payload(
+def _u32(value: int) -> bytes:
+    if not 0 <= value <= 0xFFFFFFFF:
+        raise ValueError("conformance commitment length/count exceeds uint32")
+    return value.to_bytes(4, "big")
+
+
+def _text(value: str) -> bytes:
+    encoded = value.encode("utf-8")
+    return _u32(len(encoded)) + encoded
+
+
+def _commitment_preimage(
     *,
     profile: str,
     harness_version: str,
@@ -67,24 +79,23 @@ def _canonical_payload(
     case_ids: tuple[str, ...],
     files: tuple[CorpusFileDigest, ...],
 ) -> bytes:
-    payload = {
-        "schema": COMMITMENT_SCHEMA,
-        "version": COMMITMENT_VERSION,
-        "profile": profile,
-        "harness_version": harness_version,
-        "capabilities": list(capabilities),
-        "case_ids": list(case_ids),
-        "files": [
-            {"path": item.path, "sha256": item.sha256}
-            for item in files
-        ],
-    }
-    return json.dumps(
-        payload,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
+    out = bytearray(COMMITMENT_DOMAIN)
+    out.extend(_text(profile))
+    out.extend(_text(harness_version))
+    out.extend(_u32(len(capabilities)))
+    for capability in capabilities:
+        out.extend(_text(capability))
+    out.extend(_u32(len(case_ids)))
+    for case_id in case_ids:
+        out.extend(_text(case_id))
+    out.extend(_u32(len(files)))
+    for item in files:
+        out.extend(_text(item.path))
+        digest = bytes.fromhex(item.sha256)
+        if len(digest) != 32:
+            raise ValueError(f"invalid SHA-256 file digest length: {item.path}")
+        out.extend(digest)
+    return bytes(out)
 
 
 def build_profile_corpus_commitment(
@@ -95,9 +106,9 @@ def build_profile_corpus_commitment(
 
     The commitment covers the base manifest, every additive manifest fragment,
     the standalone profile declaration, and each vector referenced by a case
-    selected by the profile.  The canonical commitment payload also contains
-    the ordered capability list and ordered selected case IDs, so selection
-    semantics cannot change without changing the commitment.
+    selected by the profile. The preimage also contains the ordered capability
+    list and ordered selected case IDs, so selection semantics cannot change
+    without changing the commitment.
     """
 
     manifest = load_manifest(manifest_path)
@@ -134,7 +145,6 @@ def build_profile_corpus_commitment(
         for fragment in sorted(fragments_dir.glob("*.json"), key=lambda p: p.name.encode("utf-8")):
             add_path(fragment)
     add_path(profile_path)
-
     for case in cases:
         add_path(root / case.vector)
 
@@ -146,14 +156,14 @@ def build_profile_corpus_commitment(
         for relative in sorted(corpus_paths, key=lambda value: value.encode("utf-8"))
     )
     case_ids = tuple(case.id for case in cases)
-    canonical = _canonical_payload(
+    preimage = _commitment_preimage(
         profile=profile,
         harness_version=manifest.harness_version,
         capabilities=capabilities,
         case_ids=case_ids,
         files=file_digests,
     )
-    digest_hex = hashlib.sha256(canonical).hexdigest()
+    digest_hex = hashlib.sha256(preimage).hexdigest()
     return ProfileCorpusCommitment(
         profile=profile,
         harness_version=manifest.harness_version,
