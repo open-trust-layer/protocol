@@ -1,7 +1,7 @@
 # OLP Specification 0000 — Overview and Specification Index
 
 **Status:** Draft  
-**Version:** v0.1  
+**Specification-set release:** Draft v0.2  
 **Role:** Non-normative overview and specification index  
 **Filename:** `specification/0000-overview.md`
 
@@ -9,132 +9,19 @@
 
 ## 1. Purpose
 
-This document is the entry point to the Open Layer Protocol (OLP) specification set.
-
-It explains:
-
-- what OLP is intended to achieve;
-- the architectural model shared across the specification set;
-- how the individual specifications relate to one another;
-- which documents define normative protocol behavior;
-- the current maturity of the project; and
-- the intended path from Draft v0.1 specifications to interoperable implementations.
-
-This document is **non-normative**.
-
-If this overview conflicts with a numbered normative specification, the normative specification controls.
-
----
-
-## 2. Project Thesis
+This document is the non-normative entry point to the Open Layer Protocol (OLP) specification set.
 
 Open Layer Protocol exists to make trust portable and verifiable without making trust centrally owned.
 
-OLP provides common structures and processing rules for exchanging independently verifiable evidence between humans, organizations, software agents, services, devices, marketplaces, institutions, and other participants.
+OLP standardizes portable evidence and provenance. It does not standardize universal trust judgments.
 
-OLP does not attempt to define one universal answer to the question:
-
-> Who should be trusted?
-
-Instead, it aims to make the evidence used to answer that question portable, attributable, inspectable, and independently verifiable.
-
-Applications remain free to apply different policies, algorithms, risk models, jurisdictional rules, and contextual interpretations to the same evidence.
-
-The protocol therefore separates:
-
-```text
-facts / claims / events
-        |
-        v
-immutable records
-        |
-        v
-cryptographic proofs
-        |
-        v
-evidence relationships and provenance
-        |
-        v
-identity / authority / lifecycle evidence
-        |
-        v
-resolution / disclosure / exchange
-        |
-        v
-application-specific interpretation and policy
-```
-
-OLP standardizes the evidence substrate.
-
-It does not standardize universal trust judgments.
+If this overview conflicts with a numbered normative specification, the numbered specification controls.
 
 ---
 
-## 3. Core Architectural Principles
+## 2. Fundamental separations
 
-The specification set is built around the following principles.
-
-### 3.1 Evidence over reputation
-
-OLP transports verifiable evidence and provenance rather than defining a universal reputation score.
-
-### 3.2 Facts over judgments
-
-The protocol distinguishes what was asserted or observed from an application's judgment about whether it should be believed or acted upon.
-
-### 3.3 Participant-owned history
-
-Evidence should remain portable across platforms and should not depend on one intermediary continuing to operate.
-
-### 3.4 Contextual trust
-
-The same evidence may legitimately lead to different decisions in different contexts.
-
-### 3.5 No universal trust score
-
-OLP does not define a global participant score, ranking, or binary trusted/untrusted status.
-
-### 3.6 Algorithm plurality
-
-Cryptographic, policy, ranking, and trust-evaluation algorithms may evolve independently where interoperability requirements permit.
-
-### 3.7 Privacy by architecture
-
-Data minimization, selective disclosure, explicit resolution, and avoidance of unnecessary global identifiers are architectural concerns rather than optional presentation features.
-
-### 3.8 Identity is not trust
-
-An identifier, identity claim, verification method, role, authority grant, and trust decision are distinct concepts.
-
-### 3.9 Actor neutrality
-
-Humans, organizations, software agents, services, and other actors are not assigned protocol-level privilege merely because of actor type.
-
-### 3.10 No silent history rewriting
-
-Corrections, disputes, supersession, revocation, compromise, and lifecycle changes are represented by additive evidence rather than destructive mutation of historical objects.
-
-### 3.11 Blockchain neutrality
-
-A blockchain may be used as evidence infrastructure, but no blockchain, token, cryptocurrency, or distributed ledger is required by OLP.
-
-### 3.12 Jurisdiction neutrality
-
-OLP can carry evidence relevant to legal or regulatory decisions without defining one global jurisdiction or legal interpretation.
-
-### 3.13 Interoperability before invention
-
-Where an existing open standard already solves a problem adequately, OLP should interoperate with it rather than create a competing mechanism without strong reason.
-
-### 3.14 Independent verifiability
-
-Core evidence processing should be reproducible by independent implementations and should not require contacting a central OLP authority.
-
----
-
-## 4. Fundamental Separations
-
-The protocol deliberately preserves the following distinctions:
+OLP preserves these distinctions:
 
 ```text
 record identity             != transport serialization
@@ -142,7 +29,7 @@ proof validity              != truth
 key control                 != identity
 identity                    != authority
 proof purpose               != authority sufficiency
-authority grant             != final authorization decision
+authority grant             != authorization decision
 status evidence             != cryptographic validity
 revocation                  != historical mutation
 resolution success          != verification
@@ -153,35 +40,50 @@ conformance                 != trustworthiness
 transport security          != OLP object proof validity
 ```
 
-These separations are foundational to the design.
+---
+
+## 3. Draft v0.2 integration result
+
+Draft v0.2 is a coordinated specification-set release produced after:
+
+- Milestone 13 — Python reference implementation;
+- Milestone 14 — executable conformance harness;
+- Milestone 15 — independent Rust implementation;
+- Milestone 16 — executable Evidence Graph Core; and
+- Milestone 17 — adversarial/security review.
+
+The integration pass found no need to change the existing v1 deterministic core bytes.
+
+Therefore Draft v0.2 preserves Record envelope version `1`, `OLP-CIE-1`, SHA-256 Record Identity/commitment baseline, `OLPProof` version `1`, `ProofInputV1`, `eddsa-ed25519-v1`, Proof Identity v1, `EvidenceRefV1`, and `RelationshipStatementV1`.
+
+Specification 0013 defines how set releases, document revisions, object versions, canonical encodings, cryptosuites, capabilities, registries, reason codes, and migration rules remain separate.
 
 ---
 
-## 5. Specification Structure
+## 4. Specification index
 
-The current Draft v0.1 specification set is organized as follows.
+| Spec | Title | Draft v0.2 role |
+|---|---|---|
+| 0000 | Overview and Specification Index | Non-normative entry point |
+| 0001 | Terminology | Shared vocabulary |
+| 0002 | Protocol Objects | Foundational object model |
+| 0003 | Record Representation | Independently verified core |
+| 0004 | Proofs and Verification | Independently verified core |
+| 0005 | Evidence Relationships and Graphs | Independently verified executable subset |
+| 0006 | Identity and Authority Evidence | Draft design; not yet in verified core |
+| 0007 | Status, Revocation, and Lifecycle Evidence | Draft design; not yet in verified core |
+| 0008 | Evidence Exchange and Bundles | Draft design; not yet in verified core |
+| 0009 | Resolution and Discovery Profiles | Draft design; not yet in verified core |
+| 0010 | Privacy, Selective Disclosure, and Data Minimization | Draft design; not yet in verified core |
+| 0011 | Conformance and Interoperability | Executable framework |
+| 0012 | Transport and API Profiles | Transport/API design plus hardened JSON boundary |
+| 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | Cross-cutting governance |
 
-| Spec | Title | Role | Status |
-|---|---|---|---|
-| 0000 | Overview and Specification Index | Non-normative entry point and roadmap | Draft v0.1 |
-| 0001 | Terminology | Shared vocabulary and conceptual definitions | Draft v0.1 |
-| 0002 | Protocol Objects | Foundational object model | Draft v0.1 |
-| 0003 | Record Representation | Immutable records, canonical identity representation, Record Identity | Draft v0.1 |
-| 0004 | Proofs and Verification | Detached proofs, ProofInputV1, Ed25519 baseline, verification semantics | Draft v0.1 |
-| 0005 | Evidence Relationships and Graphs | Proof Identity, EvidenceRef, relationship records, evidence graphs | Draft v0.1 |
-| 0006 | Identity and Authority Evidence | Principal identifiers, bindings, roles, grants, delegation | Draft v0.1 |
-| 0007 | Status, Revocation, and Lifecycle Evidence | Additive lifecycle evidence and historical/current-status evaluation | Draft v0.1 |
-| 0008 | Evidence Exchange and Bundles | Portable evidence packages, manifests, offline/self-contained bundles | Draft v0.1 |
-| 0009 | Resolution and Discovery Profiles | Explicit, provenance-visible resolution and discovery | Draft v0.1 |
-| 0010 | Privacy, Selective Disclosure, and Data Minimization | Whole-object and graph-subset disclosure; privacy rules | Draft v0.1 |
-| 0011 | Conformance and Interoperability | Capability-scoped conformance and cross-implementation testing | Draft v0.1 |
-| 0012 | Transport and API Profiles | JSON/CBOR transport, streaming, and HTTP API profiles | Draft v0.1 |
-
-The numbered specifications are intended to be read approximately in order because later layers build on earlier invariants.
+The individual numbered specifications retain independent document revisions. Draft v0.2 identifies the set release.
 
 ---
 
-## 6. Specification Dependency Map
+## 5. Dependency map
 
 ```text
 0001 Terminology
@@ -215,310 +117,128 @@ The numbered specifications are intended to be read approximately in order becau
        |         |          |
        v         v          v
 0009 Resolution 0010 Privacy
-       \         /          |
-        \       /           |
-         +-----+------------+
-               |
-               v
+       \         /
+        \       /
+         +-----+
+            |
+            v
 0011 Conformance & Interoperability
-               |
-               v
+            |
+            v
 0012 Transport & API Profiles
+
+0013 Versioning / Registries / Core Profile
+     governs cross-cutting release, identifier,
+     capability, reason-code, and migration rules.
 ```
 
-This diagram is explanatory rather than a substitute for each specification's normative dependency declarations.
-
 ---
 
-## 7. Architectural Layers
+## 6. Independently verified Draft v0.2 core
 
-### 7.1 Foundation — Specifications 0001–0003
-
-The foundation defines common terminology, protocol objects, immutable record representation, deterministic identity processing, and Record Identity.
-
-At the end of this layer OLP can answer:
-
-> What exact immutable record are we talking about?
-
-### 7.2 Cryptographic verification — Specification 0004
-
-The proof layer defines detached proofs, deterministic Proof Input construction, record commitments, the mandatory Ed25519 verification baseline, proof purposes, critical extensions, verification-method resolution boundaries, and structured verification results.
-
-At the end of this layer OLP can answer:
-
-> Does this cryptographic proof bind this verification method to exactly this record under the authenticated purpose and context?
-
-It does not answer whether the record is true or trustworthy.
-
-### 7.3 Evidence composition — Specification 0005
-
-The graph layer defines stable Proof Identity, typed evidence references, immutable relationship records, countersignature relationships, anchoring relationships, graph traversal, partial graphs, disputes, corrections, and supersession.
-
-At the end of this layer OLP can represent:
-
-> How are these independent pieces of evidence explicitly related?
-
-### 7.4 Identity and authority — Specification 0006
-
-This layer represents evidence about principals, verification-method control, same-subject claims, roles, membership, authority grants, delegation, constraints, and authority status without turning OLP into an identity provider or authorization server.
-
-### 7.5 Lifecycle — Specification 0007
-
-This layer represents suspension, resumption, retirement, revocation, compromise, deprecation, and related lifecycle events as additive immutable evidence.
-
-Historical cryptographic validity and current policy reliance remain separate dimensions.
-
-### 7.6 Exchange — Specification 0008
-
-Evidence bundles make finite evidence selections portable while preserving the identity and meaning of the objects they contain.
-
-Self-contained profiles support offline verification without making a bundle a universal completeness claim.
-
-### 7.7 Resolution — Specification 0009
-
-Resolution is explicit, replaceable, provenance-visible, and policy-controlled.
-
-Network activity is not hidden inside cryptographic verification.
-
-### 7.8 Privacy — Specification 0010
-
-Native OLP v1 selective disclosure operates primarily by selecting complete immutable objects and graph branches.
-
-Signed/content-addressed records are not silently field-redacted.
-
-External cryptographic selective-disclosure systems retain their native semantics.
-
-### 7.9 Conformance — Specification 0011
-
-OLP conformance is modular and capability-scoped.
-
-Byte-level canonical behavior must be reproducible across independent implementations where a specification defines deterministic encodings.
-
-### 7.10 Transport — Specification 0012
-
-Transport profiles move abstract OLP objects through JSON, CBOR, streams, and HTTP without allowing transport representation to redefine evidence identity.
-
----
-
-## 8. Core Evidence Model
-
-A simplified OLP evidence graph can be visualized as:
+The current repository `core-v1` profile contains:
 
 ```text
-                         Record R
-                            ^
-                            |
-                 +----------+----------+
-                 |                     |
-              Proof A               Proof B
-                 ^                     ^
-                 |                     |
-         Relationship Record      Lifecycle Record
-                 ^                     ^
-                  \                   /
-                   \                 /
-                    +---------------+
-                            |
-                     Evidence Bundle
-                            |
-                explicit resolution resources
-                            |
-                   verifier / policy engine
+olp.record-identity.v1
+olp.record-commitment.sha256.v1
+olp.proof-input.v1
+olp.proof.eddsa-ed25519.v1
+olp.proof-verification.v1
+olp.proof-identity.v1
+olp.evidence-ref.v1
+olp.evidence-relationship.v1
 ```
 
-Every arrow that carries evidentiary meaning must itself be represented through defined OLP semantics rather than inferred merely from storage position, array order, or transport packaging.
-
----
-
-## 9. What OLP Does Not Define
-
-OLP intentionally does not define:
-
-- a universal reputation score;
-- a universal trust algorithm;
-- a global identity provider;
-- a global certificate authority;
-- a global authorization server;
-- a global revocation authority;
-- a global clock;
-- a mandatory blockchain;
-- a cryptocurrency or token;
-- a payment system;
-- a marketplace;
-- a universal legal interpretation;
-- a universal evidence-weighting algorithm;
-- a universal graph-ranking algorithm;
-- a global resolver;
-- a global object registry;
-- a central OLP verification service; or
-- a requirement that one organization mediate OLP interactions.
-
-Applications and profiles may use such systems where appropriate, but they are not intrinsic protocol authorities.
-
----
-
-## 10. Current Project Status
-
-The protocol is **experimental and pre-0.1**.
-
-Specifications 0001 through 0012 currently form the Draft v0.1 semantic and exchange stack.
-
-Draft v0.1 is intended to be implementation-tested rather than treated as stable production standard text.
-
-The next project phase is reference implementation and executable conformance work.
-
-The purpose of that phase is to find:
-
-- ambiguous normative language;
-- cross-specification contradictions;
-- canonicalization disagreements;
-- byte-level interoperability failures;
-- incomplete error semantics;
-- unsafe parser behavior;
-- resolver and network-boundary defects; and
-- implementation assumptions not captured by the specifications.
-
-Discovered defects should be corrected in the specifications rather than hidden solely inside the reference implementation.
-
----
-
-## 11. Implementation Roadmap
-
-### Phase II — Reference Implementation Core
-
-The initial implementation should prioritize the deterministic core:
+Accepted Milestone 17 evidence:
 
 ```text
-Record
-  -> canonical identity representation
-  -> Record Identity
-
-Record + proof configuration
-  -> ProofInputV1
-  -> deterministic CBOR
-  -> Ed25519 proof creation / verification
-  -> structured VerificationResult
+Python core-v1                        62 / 62 PASS
+Rust core-v1                          62 / 62 PASS
+Python <-> Rust interoperability       9 / 9 PASS
+Python CI                              3.11-3.14 PASS
 ```
 
-The first executable vertical slice should therefore concentrate on Specifications 0003 and 0004.
-
-### Executable conformance
-
-Specification 0011 should then be turned into a versioned test corpus containing:
-
-- positive vectors;
-- negative vectors;
-- malformed inputs;
-- unsupported-version cases;
-- critical-extension cases;
-- exact canonical-byte vectors;
-- security-boundary tests; and
-- cross-implementation producer/verifier tests.
-
-### Independent implementation
-
-At least one implementation independent from the reference codebase should reproduce canonical bytes, identities, proof verification, and structured results before the protocol is considered interoperable.
-
-### Security review
-
-The implementation should be attacked with malformed encodings, substitution attempts, downgrade attempts, replay cases, backdating, resolver abuse, SSRF, graph amplification, resource exhaustion, bundle bombs, disclosure ambiguity, and status-conflict cases.
-
-### Draft v0.2
-
-Implementation and security findings should feed a coordinated specification integration pass producing Draft v0.2.
+This is the smallest currently demonstrated interoperable OLP core. It is not a claim that OLP is production-ready or that every higher-layer specification has two independent implementations.
 
 ---
 
-## 12. Promotion Toward v1.0
+## 7. Higher-layer status
 
-Before a stable OLP v1.0 specification set, the project should require at minimum:
+Specifications 0006–0010 remain part of Draft v0.2 because their conceptual boundaries are important to the architecture, but they are not yet part of the independently verified core.
 
-1. frozen core normative data models;
-2. reproducible canonical test vectors;
-3. at least two independent interoperable implementations of the core;
-4. cross-language proof production and verification;
-5. comprehensive negative and malformed-input tests;
-6. no known unresolved contradictions in core specifications;
-7. stable extension and registry governance rules;
-8. a public executable conformance corpus;
-9. security review of cryptographic and network boundaries; and
-10. documented migration/versioning rules.
+Executable work remains necessary for identity/authority ecosystem parsing and delegation evaluation; lifecycle/status collection and conflict evaluation; bundle ingestion and amplification limits; resolver SSRF, redirect, recursion, and private-address policy; and disclosure planning/privacy correlation behavior.
 
-Specification 0011 contains the normative conformance framework and more detailed promotion criteria.
+A specification being present in the Draft v0.2 set MUST NOT be interpreted as independent implementation evidence for behavior that has not yet been executed and tested.
 
 ---
 
-## 13. Reading Guide
+## 8. Security lessons integrated
 
-For a new implementer:
+Milestone 17 fed these lessons back into the specification set:
 
-1. Read `0000-overview.md` for architecture and scope.
-2. Read `0001-terminology.md` and `0002-protocol-objects.md` for foundational vocabulary and objects.
-3. Implement `0003-record-representation.md` first.
-4. Implement `0004-proofs-and-verification.md` second.
-5. Add graph semantics from `0005-evidence-relationships.md`.
-6. Add identity/authority and lifecycle evaluation only if required by the implementation's declared capabilities.
-7. Add bundle and resolution support for portable/offline processing.
-8. Apply privacy requirements before exposing exchange interfaces.
-9. Validate behavior against `0011-conformance-and-interoperability.md`.
-10. Implement transport/API profiles from `0012-transport-and-api-profiles.md` last.
-
-For reviewers interested primarily in OLP's philosophy and boundaries, this overview plus `PRINCIPLES.md` and the Core Invariants sections of the numbered specifications provide the shortest path through the design.
+- duplicate JSON names are rejected recursively;
+- authenticated URI identifiers are exact strings and malformed syntax is rejected;
+- parser/resource limits exist before unsafe recursive materialization;
+- technical algorithm support and local policy acceptance are separate;
+- cryptographic facts are not rewritten by local policy;
+- graph convergence is not a cycle;
+- graph traversal limits report incompleteness, not absence;
+- unknown noncritical semantics remain visible as uninterpreted where applicable;
+- unknown critical semantics fail closed; and
+- cross-language disagreement is treated as a protocol/conformance defect.
 
 ---
 
-## 14. Versioning of This Overview
+## 9. Vector status
 
-Because Specification 0000 is non-normative, updates to its explanatory diagrams, roadmap, or index do not by themselves change OLP protocol semantics.
+Draft v0.2 retains the existing Specification 0003 and 0004 normative-construction vectors unchanged.
 
-If a normative rule changes, the applicable numbered normative specification must be revised and versioned accordingly.
+Milestone 18 additionally promotes independently reproduced Specification 0005 vectors for Proof Identity v1 and `EvidenceRefV1` RecordRef/ProofRef encoding.
 
-This overview should be updated whenever:
-
-- a specification is added, removed, renamed, or materially changes scope;
-- a specification changes maturity status;
-- the implementation phase changes materially; or
-- the recommended reading/dependency order changes.
+Normative vectors are append-only within a version except for explicitly recorded errata.
 
 ---
 
-## 15. Summary
+## 10. Migration from Draft v0.1
 
-Open Layer Protocol is designed around a simple proposition:
+For the independently verified v1 core, no identity-bearing migration is required solely because the set release changes from Draft v0.1 to Draft v0.2.
+
+Existing conforming records and proofs are not rewritten. Deployments upgrade parser/security behavior, policy/result separation, conformance corpus revision, extension/registry behavior, and release/version governance.
+
+Historical evidence remains historical evidence.
+
+---
+
+## 11. Reading guide
+
+For implementers:
+
+1. Read this overview.
+2. Read Specifications 0001 and 0002.
+3. Implement 0003.
+4. Implement 0004.
+5. Add the executable 0005 evidence primitives.
+6. Read 0013 before making versioning, extension, registry, or compatibility claims.
+7. Validate against 0011 and the repository conformance corpus.
+8. Add 0006–0010 capabilities only when needed and test them explicitly.
+9. Apply 0012 transport profiles last.
+
+For architectural philosophy, also read `PRINCIPLES.md`.
+
+---
+
+## 12. Promotion toward a stable release
+
+Draft v0.2 is suitable for wider technical review, but it is not OLP v1.0.
+
+Before a stable release, the project should require frozen stable-core models, reproducible vectors, independent interoperable implementations, comprehensive malformed/negative/policy/resource testing, no unresolved stable-core contradictions, stable registry procedures, a versioned public conformance corpus, security review of all included boundaries, and documented migration/deprecation rules.
+
+---
+
+## 13. Summary
 
 > **Make evidence portable and independently verifiable; leave trust judgments plural, contextual, and outside central ownership.**
 
-The current Draft v0.1 specification stack establishes:
+Draft v0.2 records a major transition: OLP is no longer only a prose design. A small deterministic core has been implemented independently, tested across languages, attacked adversarially, and integrated back into the specification set.
 
-```text
-shared vocabulary
-      -> protocol objects
-      -> immutable records
-      -> cryptographic proofs
-      -> evidence graphs
-      -> identity / authority evidence
-      -> lifecycle evidence
-      -> portable bundles
-      -> explicit resolution
-      -> privacy-aware disclosure
-      -> conformance
-      -> transport/API profiles
-```
-
-The next phase is not another major semantic layer.
-
-It is implementation, interoperability, testing, and refinement.
-
----
-
-## Repository baseline note
-
-The repository baseline accompanying this overview includes project-level `PRINCIPLES.md`, `ROADMAP.md`, `CHANGELOG.md`, and `SECURITY.md` documents in addition to the numbered specification set.
-
-These project documents do not override normative specification requirements.
-
-The next development phase is the reference implementation and executable conformance work described in `ROADMAP.md`.
-
----
-
-**End of OLP Specification 0000 — Overview and Specification Index — Draft v0.1**
+The next work should expand executable evidence only where it materially improves interoperability or reduces risk.

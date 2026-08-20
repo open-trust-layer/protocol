@@ -1,199 +1,93 @@
 # Open Layer Protocol — Roadmap
 
 **Project status:** experimental / pre-0.1  
-**Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 17 adversarial/security review implemented; cross-language CI is the acceptance gate
+**Specification-set status:** Draft v0.2  
+**Current phase:** wider technical review after Milestone 18 integration
 
-This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
+Milestone numbers are project milestones, not protocol version numbers.
 
 ## Phase I — Specification foundation
 
-Completed.
+Milestones 1–12 are complete at the specification-design level:
 
-- [x] **Milestone 1 — Terminology**  
-  Shared vocabulary, semantic boundaries, and foundational invariants.
-
-- [x] **Milestone 2 — Protocol Objects**  
-  Core object taxonomy, universal record envelope, and separation of first-class versus derived concepts.
-
-- [x] **Milestone 3 — Record Representation**  
-  Immutable records, OLP-CIE-1 deterministic encoding, OLP-CI-1 Record Identity, references, semantic bindings, and base conformance rules.
-
-- [x] **Milestone 4 — Proofs & Verification**  
-  Detached proofs, ProofInputV1, deterministic CBOR, algorithm-agile commitments, Ed25519 baseline, verification semantics, extensions, and structured results.
-
-- [x] **Milestone 5 — Evidence Relationships & Graphs**  
-  Proof Identity, EvidenceRef, immutable relationship records, graph semantics, countersignatures, and anchoring relationships.
-
-- [x] **Milestone 6 — Identity & Authority Evidence**  
-  Principal identifiers, verification-method bindings, roles, memberships, grants, delegation, and authority evaluation boundaries.
-
-- [x] **Milestone 7 — Status, Revocation & Lifecycle Evidence**  
-  Additive lifecycle evidence, revocation/suspension/compromise/retirement semantics, current and historical evaluation.
-
-- [x] **Milestone 8 — Evidence Exchange & Bundles**  
-  Portable manifested bundles, offline/self-contained verification packages, merge/extraction semantics, and bundle integrity boundaries.
-
-- [x] **Milestone 9 — Resolution & Discovery Profiles**  
-  Explicit caller-planned resolution, provenance-visible discovery, resolver security boundaries, and offline behavior.
-
-- [x] **Milestone 10 — Privacy, Selective Disclosure & Data Minimization**  
-  Whole-object and graph-subset disclosure, correlation risks, disclosure planning, and external selective-disclosure interoperability.
-
-- [x] **Milestone 11 — Conformance & Interoperability**  
-  Capability-scoped conformance, positive/negative/malformed vectors, cross-implementation testing, and conformance evidence.
-
-- [x] **Milestone 12 — Transport & API Profiles**  
-  JSON/CBOR transport mappings, streaming envelopes, HTTP API profiles, capability advertisement, and transport security boundaries.
+- [x] 1 — Terminology
+- [x] 2 — Protocol Objects
+- [x] 3 — Record Representation
+- [x] 4 — Proofs & Verification
+- [x] 5 — Evidence Relationships & Graphs
+- [x] 6 — Identity & Authority Evidence
+- [x] 7 — Status, Revocation & Lifecycle Evidence
+- [x] 8 — Evidence Exchange & Bundles
+- [x] 9 — Resolution & Discovery Profiles
+- [x] 10 — Privacy, Selective Disclosure & Data Minimization
+- [x] 11 — Conformance & Interoperability
+- [x] 12 — Transport & API Profiles
 
 ## Phase II — Make the specification executable
 
 ### Milestone 13 — Reference Implementation Core
 
-**Completed.**
-
-Build the smallest rigorous executable vertical slice from Specifications 0003 and 0004:
-
-```text
-Record
-  -> OLP-CI-1 identity preimage
-  -> OLP-CIE-1 deterministic bytes
-  -> Record Identity
-
-Record + proof configuration
-  -> ProofInputV1
-  -> deterministic CBOR
-  -> Pure Ed25519 proof creation
-  -> proof verification
-  -> structured VerificationResult
-```
-
-Initial implementation goals:
-
-- deterministic data models;
-- exact canonical-byte reproduction;
-- SHA-256 Record Identity;
-- record commitments;
-- mandatory `eddsa-ed25519-v1` suite;
-- local verification-method resolution;
-- strict malformed/unsupported/invalid distinctions;
-- no implicit network access; and
-- unit tests built directly from specification vectors.
+**Completed.** Python implementation of Record Identity, commitments, ProofInputV1, Ed25519 create/verify, deterministic CBOR, and structured verification results.
 
 ### Milestone 14 — Executable Conformance Harness
 
-**Completed.**
-
-Turn Specification 0011 into a public, versioned test corpus containing:
-
-- positive vectors;
-- exact-byte vectors;
-- negative vectors;
-- malformed inputs;
-- unsupported-version/suite cases;
-- critical-extension cases;
-- parser-differential tests;
-- resource-boundary tests; and
-- machine-readable conformance reports.
+**Completed.** Implementation-neutral vectors, subprocess adapter contract, CLI, reports, and CI.
 
 ### Milestone 15 — Independent Second Implementation
 
-**Completed and independently verified.**
-
-Maintain at least one implementation independent of the reference codebase. Milestone 15 introduces the Rust implementation in `implementations/rust/` and a language-neutral CI gate against the existing conformance corpus.
-
-The decisive interoperability tests are:
-
-- identical Record Identity digests;
-- identical canonical record bytes;
-- identical ProofInputV1 bytes;
-- proofs produced by implementation A verify in implementation B;
-- proofs produced by implementation B verify in implementation A; and
-- structured failure classifications agree for required vectors.
-
-A second language is preferred because it exposes hidden assumptions more effectively than a second copy of the same code.
-
-Milestone 15 was accepted after the Rust crate compiled and tested in CI, the Rust adapter passed the complete then-current `core-v1` corpus, and bidirectional Python↔Rust interoperability tests passed.
+**Completed and independently verified.** Independent Rust implementation reproduces the shared deterministic core and cross-verifies with Python.
 
 ### Milestone 16 — Evidence Graph Core
 
-**Completed and independently verified.**
-
-Make the deterministic and graph-processing core of Specification 0005 executable without turning graph edges into protocol truth.
-
-The executable slice includes:
-
-- deterministic Proof Identity from exact ProofInput bytes and `proofValue`;
-- typed `EvidenceRefV1` values for records and proofs;
-- immutable relationship statements carried inside ordinary OLP records;
-- the core relationship vocabulary (`references`, `derivesFrom`, `supersedes`, `corrects`, `disputes`, `anchors`, and `countersigns`);
-- fail-closed critical qualifiers and explicit unsupported extension handling;
-- provenance-preserving graph projection;
-- dangling-reference and cycle-safe processing;
-- deterministic traversal with explicit resource-limit incompleteness;
-- implementation-neutral `evidence-v1` vectors; and
-- Python/Rust parity for Proof Identity, EvidenceRef, and relationship processing.
-
-Milestone 16 was accepted after both implementations passed the expanded 57-case `core-v1` corpus and all nine bidirectional Python↔Rust interoperability checks passed in CI.
+**Completed and independently verified.** Adds Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, dangling references, cycle safety, and resource-bound behavior.
 
 ### Milestone 17 — Adversarial & Security Review
 
-**Implementation complete; acceptance is gated on the hardened shared Python/Rust conformance CI.**
+**Completed, fixed, independently verified, and merged.**
 
-Attack the executable design rather than reviewing prose alone.
+Acceptance:
 
-At minimum test:
+```text
+Python core-v1             62 / 62 PASS
+Rust core-v1               62 / 62 PASS
+Python <-> Rust interop      9 / 9 PASS
+Python 3.11-3.14 CI          PASS
+```
 
-- duplicate/ambiguous encodings;
-- non-deterministic CBOR;
-- algorithm and key-type confusion;
-- record, verification-method, and proof-purpose substitution;
-- unknown critical extensions;
-- replay and backdating;
-- resolver SSRF and redirect abuse;
-- compromised/rotated verification methods;
-- graph cycles and amplification;
-- bundle bombs and decompression/resource exhaustion;
-- status conflicts and stale evidence;
-- disclosure/completeness ambiguity; and
-- downgrade behavior.
-
-Security or interoperability defects discovered here must feed back into the specifications, not only into implementation patches.
-
-Milestone 17 acceptance requires the 62-case `core-v1` corpus to pass in both Python and Rust, the repository security regressions to pass, and the existing bidirectional interoperability suite to remain green.
+See `docs/security-review-milestone-17.md`.
 
 ### Milestone 18 — Draft v0.2 Integration Pass
 
-Revise the complete specification set using implementation, conformance, interoperability, and security findings.
+**Integration output complete; repository PR/CI is the acceptance gate.**
 
-Goals include:
+Outputs:
 
-- remove ambiguities exposed by code;
-- reconcile cross-spec terminology and reason codes;
-- freeze additional test vectors;
-- clarify registries and extension governance;
-- document migration/versioning rules; and
-- identify the smallest stable core suitable for wider review.
+- Specification 0013;
+- Draft v0.2 release manifest;
+- Draft v0.2 integration report;
+- promoted Proof Identity and EvidenceRef vectors;
+- updated repository status/index documents.
+
+Draft v0.2 intentionally preserves the verified v1 core bytes while formalizing release/version domains, registry and extension governance, reason-code distinctions, migration rules, capability stability, and the independently verified core boundary.
+
+## Phase III — Wider review and executable higher layers
+
+The next milestone should be selected after Draft v0.2 acceptance and review feedback.
+
+Priority should go to the highest-risk or highest-interoperability-value executable slice rather than adding speculative protocol scope.
+
+Strong candidates include:
+
+1. **Resolver security profile execution** — explicit network fixtures, SSRF/private-address policy, redirects, recursion, provenance, and offline behavior.
+2. **Bundle ingestion execution** — manifested bundle parsing, streaming/resource limits, amplification resistance, integrity/completeness separation.
+3. **Identity/authority execution** — principal/method bindings, grants, delegation, status interaction, and policy separation.
+4. **Lifecycle/status execution** — conflicting sources, freshness/completeness, rollback/equivocation, historical/current evaluation.
+5. **Disclosure/privacy execution** — object/graph minimization, disclosure closure, correlation warnings, external selective-disclosure boundaries.
 
 ## Path toward v1.0
 
-A stable OLP v1.0 should not be declared solely because the prose specifications look complete.
-
-Before v1.0, the project should require at minimum:
-
-1. frozen core normative data models;
-2. reproducible canonical vectors;
-3. at least two independent interoperable implementations of the core;
-4. cross-language proof production and verification;
-5. comprehensive malformed and negative testing;
-6. no known unresolved contradictions in the core specifications;
-7. stable extension and registry governance;
-8. a public executable conformance corpus;
-9. security review of cryptographic, resolver, graph, bundle, and transport boundaries; and
-10. documented migration and compatibility rules.
+A stable OLP v1.0 should require frozen stable-core models, reproducible canonical vectors, independent interoperable implementations, cross-language proof production and verification, comprehensive malformed/negative/resource testing, no unresolved core contradictions, stable extension/registry governance, a public versioned conformance corpus, security review of all included boundaries, and documented migration/deprecation rules.
 
 ## Deliberately not on the immediate roadmap
 
-The project should not prioritize a marketplace, token, blockchain, universal reputation score, universal identity provider, hosted trust service, or production-scale network before the evidence core is proven interoperable.
-
-The next pressure test is code.
+Do not prioritize a marketplace, token, blockchain, universal reputation score, universal identity provider, hosted trust service, or production-scale network before the evidence core and selected higher-layer capabilities are proven interoperable.
