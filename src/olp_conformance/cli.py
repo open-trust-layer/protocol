@@ -11,6 +11,7 @@ from .adapter import SubprocessAdapter
 from .adapters import BrokenAdapter, ReferenceAdapter
 from .commitment import build_profile_corpus_commitment
 from .manifest import load_manifest
+from .promotion import evaluate_v1_promotion
 from .reporting import render_console, write_json_report
 from .runner import ConformanceRunner
 
@@ -22,6 +23,17 @@ def _default_manifest() -> Path:
     # Installed package development fallback: walk upward from this file.
     for parent in Path(__file__).resolve().parents:
         candidate = parent / "conformance" / "manifest.json"
+        if candidate.exists():
+            return candidate
+    return cwd
+
+
+def _default_candidate() -> Path:
+    cwd = Path.cwd() / "stabilization" / "v1.0-candidate.json"
+    if cwd.exists():
+        return cwd
+    for parent in Path(__file__).resolve().parents:
+        candidate = parent / "stabilization" / "v1.0-candidate.json"
         if candidate.exists():
             return candidate
     return cwd
@@ -50,6 +62,11 @@ def build_parser() -> argparse.ArgumentParser:
     commitment.add_argument("--manifest", type=Path, default=_default_manifest())
     commitment.add_argument("--profile", required=True)
     commitment.add_argument("--json", action="store_true")
+
+    promotion = sub.add_parser("promotion-check", help="evaluate v1 candidate stable-promotion gates")
+    promotion.add_argument("--candidate", type=Path, default=_default_candidate())
+    promotion.add_argument("--json", action="store_true")
+    promotion.add_argument("--require-ready", action="store_true", help="return non-zero unless every promotion gate is READY")
     return parser
 
 
@@ -68,6 +85,27 @@ def main(argv: list[str] | None = None) -> int:
             print(f"cases: {len(commitment.case_ids)}")
             print(f"files: {len(commitment.files)}")
             print(f"sha-256: {commitment.digest_hex}")
+        return 0
+
+    if args.command == "promotion-check":
+        report = evaluate_v1_promotion(args.candidate)
+        payload = report.as_dict()
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(f"candidate: {report.candidate}")
+            print(f"baseline release: {report.baseline_release}")
+            print(f"mandatory profile: {report.mandatory_profile}")
+            print(f"internal readiness: {report.internal_readiness}")
+            print(f"promotion status: {report.status}")
+            if report.blockers:
+                print("blockers:")
+                for blocker in report.blockers:
+                    print(f"  - {blocker}")
+        if report.status == "INVALID":
+            return 1
+        if args.require_ready and report.status != "READY":
+            return 1
         return 0
 
     manifest = load_manifest(args.manifest)
