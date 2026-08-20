@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 24 — Streaming & HTTP API Core
+**Current phase:** Post-Milestone 24 integration / next milestone selection
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -124,7 +124,7 @@ No native field-level redaction, zero-knowledge disclosure, global completeness 
 
 ### Milestone 23 — Transport Encoding Core
 
-**Accepted.**
+**Accepted and merged.**
 
 The deterministic non-network subset of Specification 0012 is independently executable in the separate 22-case `transport-encoding-v1` profile.
 
@@ -158,18 +158,44 @@ See `docs/transport-encoding-core.md` and `conformance/VECTOR-INDEX-M23.md`.
 
 ### Milestone 24 — Streaming & HTTP API Core
 
-**Next.**
+**Accepted and merged.**
 
-Take the network/API-sensitive remainder of Specification 0012 only after the transport encoding has been independently fixed:
+The deterministic exchange-semantics remainder of Specification 0012 is independently executable in the combined 36-case `streaming-http-v1` profile.
 
-- JSON Text Sequence / CBOR Sequence frame processing;
-- truncation and manifest-first behavior;
-- immutable object retrieval path validation;
-- HTTP content negotiation and structured status mapping;
-- `Content-Digest` handling;
-- redirects/caching/resource limits;
-- separation of HTTP authentication/authorization from OLP proof validity; and
-- deterministic HTTP conformance fixtures with no uncontrolled ambient network dependency.
+Acceptance includes:
+
+```text
+Python 3.11-3.14 streaming-http-v1  36 / 36 PASS
+Rust 1.85 streaming-http-v1         36 / 36 PASS
+Python <-> Rust M24 interoperability PASS
+Earlier accepted profiles/regressions PASS
+```
+
+Scope:
+
+- exact RFC 7464 JSON Text Sequence producer bytes and deterministic CBOR Sequence producer bytes for pinned cases;
+- manifested-stream processing from already-parsed frames;
+- manifest-first and single-manifest enforcement;
+- order-independent record/proof/resource semantics after the manifest;
+- explicit truncation/incompleteness without invalidating independently addressable present objects;
+- separation of transport completeness from bundle/evidence validity;
+- immutable Record/Proof/Bundle read semantics with exact typed-identity recomputation;
+- local HTTP 404 that never establishes global nonexistence;
+- content negotiation and HTTP/service status kept separate from OLP semantic status;
+- parsed RFC 9530 `Content-Digest` dictionary semantics with SHA-256 validation over HTTP content bytes;
+- fail-closed redirect semantics including HTTPS downgrade, immutable identity, sensitive methods, origin, and credential forwarding policy;
+- representation-specific cache validators, partial-range safety, 413 size limits, and 429 rate limits; and
+- separation of HTTP authentication/service authorization from OLP cryptographic validity and authority evidence.
+
+M24 conformance performs no ambient sockets, DNS lookups, HTTP fetching, or redirect following. It does not claim a production HTTP server/client, TLS stack, general hostile-input RFC 7464/CBOR parser, raw RFC 8941 parser, HTTP Message Signature implementation, proxy/cache deployment, or authentication framework.
+
+See `docs/streaming-http-api-core.md` and `conformance/VECTOR-INDEX-M24.md`.
+
+### Next milestone selection
+
+No Milestone 25 scope has been declared yet.
+
+The next phase should be selected through a post-M24 integration review of the remaining distance to a stable release: unresolved specification contradictions, stable-profile boundaries, security/audit gaps, migration/governance needs, and implementation/deployment surfaces that materially improve interoperability. New scope should not be invented merely to continue the milestone sequence.
 
 ## Path toward v1.0
 
