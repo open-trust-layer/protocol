@@ -1,6 +1,3 @@
-// OLP-RESOLUTION-REQUEST
-// NETWORK_ACCESS_DISABLED
+// Specification 0009 deterministic, offline-first resolution core.
+// The implementation is split into mechanically sized fragments for reviewability.
 include!("resolution_part1.rs");
-include!("resolution_part2.rs");
-include!("resolution_part3.rs");
-include!("resolution_part4.rs");
