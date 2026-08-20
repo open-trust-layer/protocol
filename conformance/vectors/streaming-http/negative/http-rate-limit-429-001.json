@@ -1,0 +1,1 @@
+{"capability":"olp.http-api.v1","category":"negative","expected":{"outcome":"SUCCESS","result":{"evidence_invalid":false,"http_status":429,"rate_limited":true,"retry_after_seconds":30}},"id":"m24.http.rate-limit-429.001","input":{"limited":true,"retry_after_seconds":30},"operation":"evaluate_http_rate_limit","schema":"olp-conformance-vector-v1"}
