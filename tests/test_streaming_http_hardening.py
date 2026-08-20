@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import base64
 import hashlib
 
 import pytest
 
 from olp.bundle import PackagedResourceV1
+from olp.content_digest import validate_parsed_content_digest
 from olp.errors import ConformanceError
 from olp.http_policy import (
     evaluate_cache_policy,
@@ -15,7 +15,7 @@ from olp.http_policy import (
 )
 from olp.model.bundle import ResourceRefV1
 from olp.model.record import RecordV1
-from olp.streaming_http import TransportFrameV1, evaluate_redirect, process_manifested_stream, validate_content_digest
+from olp.streaming_http import TransportFrameV1, evaluate_redirect, process_manifested_stream
 
 
 def _resource_manifest(ref: ResourceRefV1) -> RecordV1:
@@ -54,10 +54,19 @@ def test_complete_stream_remains_transport_complete_when_resource_is_invalid():
     assert result["bundle"]["resource_errors"][0]["reason"] == "RESOURCE_DIGEST_MISMATCH"
 
 
-def test_sha256_content_digest_requires_exact_32_octets():
-    short_digest = base64.b64encode(b"short").decode("ascii")
+def test_sha256_content_digest_requires_exact_32_octets_after_structured_field_parsing():
     with pytest.raises(ConformanceError) as exc:
-        validate_content_digest(f"sha-256=:{short_digest}:", b"payload", required=True)
+        validate_parsed_content_digest((('sha-256', b"short"),), b"payload", required=True)
+    assert exc.value.code == "MALFORMED_CONTENT_DIGEST"
+
+
+def test_duplicate_parsed_digest_algorithm_is_rejected():
+    with pytest.raises(ConformanceError) as exc:
+        validate_parsed_content_digest(
+            (('sha-256', b"\x00" * 32), ('sha-256', b"\x01" * 32)),
+            b"payload",
+            required=True,
+        )
     assert exc.value.code == "MALFORMED_CONTENT_DIGEST"
 
 
