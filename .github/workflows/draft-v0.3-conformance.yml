@@ -1,0 +1,139 @@
+name: OLP Draft v0.3 aggregate conformance
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python-draft-v03:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[test]'
+
+      - name: Run repository tests
+        run: python -m pytest -q
+
+      - name: Run Draft v0.3 aggregate profile
+        run: olp-conformance run --profile draft-v0.3-interoperable-v1 --quiet --report conformance-draft-v0.3-python.json
+
+      - name: Assert Draft v0.3 aggregate case count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-draft-v0.3-python.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 180, f"expected 180 Draft v0.3 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Python draft-v0.3-interoperable-v1: 180/180 PASS")
+          PY
+
+      - name: Compute Draft v0.3 corpus commitment
+        run: |
+          olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > draft-v0.3-corpus-commitment.json
+          python - <<'PY'
+          import json
+          value = json.load(open("draft-v0.3-corpus-commitment.json", encoding="utf-8"))
+          assert len(value["capabilities"]) == 15
+          assert len(value["case_ids"]) == 180
+          digest = value["commitment"]["digest_hex"]
+          assert len(digest) == 64
+          print(f"Draft v0.3 corpus SHA-256: {digest}")
+          PY
+
+      - name: Upload Draft v0.3 Python evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: draft-v0.3-python-${{ matrix.python-version }}
+          path: |
+            conformance-draft-v0.3-python.json
+            draft-v0.3-corpus-commitment.json
+          if-no-files-found: error
+
+  rust-draft-v03:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Set up Rust 1.85.0
+        uses: dtolnay/rust-toolchain@1.85.0
+
+      - name: Install OpenSSL development library
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libssl-dev
+
+      - name: Install Python package and test dependencies
+        run: python -m pip install -e '.[test]'
+
+      - name: Test independent Rust implementation
+        run: cargo test --locked --manifest-path implementations/rust/Cargo.toml
+
+      - name: Build independent Rust conformance adapter
+        run: cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
+
+      - name: Run Rust against Draft v0.3 aggregate profile
+        run: |
+          olp-conformance run \
+            --profile draft-v0.3-interoperable-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-draft-v0.3-rust.json
+
+      - name: Assert Rust Draft v0.3 aggregate case count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-draft-v0.3-rust.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 180, f"expected 180 Draft v0.3 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust draft-v0.3-interoperable-v1: 180/180 PASS")
+          PY
+
+      - name: Run complete Python-Rust interoperability suite
+        env:
+          OLP_RUN_RUST_INTEROP: "1"
+        run: python -m pytest -q tests/interoperability
+
+      - name: Compute Draft v0.3 corpus commitment
+        run: olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > draft-v0.3-corpus-commitment.json
+
+      - name: Upload Draft v0.3 Rust evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: draft-v0.3-rust-1.85.0
+          path: |
+            conformance-draft-v0.3-rust.json
+            draft-v0.3-corpus-commitment.json
+          if-no-files-found: error

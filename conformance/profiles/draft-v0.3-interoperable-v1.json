@@ -1,6 +1,6 @@
 {
   "schema": "olp-conformance-profile-v1",
-  "id": "core-v1",
+  "id": "draft-v0.3-interoperable-v1",
   "version": 1,
   "status": "draft-v0.3",
   "capabilities": [
@@ -11,6 +11,13 @@
     "olp.proof-verification.v1",
     "olp.proof-identity.v1",
     "olp.evidence-ref.v1",
-    "olp.evidence-relationship.v1"
+    "olp.evidence-relationship.v1",
+    "olp.bundle.v1",
+    "olp.resolution.v1",
+    "olp.identity-authority-lifecycle.v1",
+    "olp.privacy-disclosure.v1",
+    "olp.transport-encoding.v1",
+    "olp.streaming-transport.v1",
+    "olp.http-api.v1"
   ]
 }

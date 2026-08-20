@@ -1,7 +1,8 @@
 {
   "schema": "olp-conformance-profile-v1",
   "id": "proof-v1",
-  "status": "draft-v0.1",
+  "version": 1,
+  "status": "draft-v0.3",
   "capabilities": [
     "olp.proof-input.v1",
     "olp.proof.eddsa-ed25519.v1",
