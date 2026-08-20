@@ -10,6 +10,7 @@ from olp.http_policy import (
     evaluate_range_semantics,
     evaluate_rate_limit,
 )
+from olp.http_redirect import evaluate_redirect
 from olp.model.bundle import ResourceRefV1
 from olp.streaming_http import (
     TransportFrameV1,
@@ -17,7 +18,6 @@ from olp.streaming_http import (
     encode_stream_sequence,
     evaluate_http_operation,
     evaluate_immutable_http_read,
-    evaluate_redirect,
     process_manifested_stream,
     separate_http_auth_from_olp,
 )
