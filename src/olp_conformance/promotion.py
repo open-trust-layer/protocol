@@ -263,9 +263,9 @@ def _review_register_check(
     scope = raw.get("review_scope")
     if not isinstance(scope, dict):
         return False, "review register scope malformed"
-    expected_specs = tuple(f"{value:04d}" for value in range(15))
+    expected_specs = tuple(f"{value:04d}" for value in range(16))
     if tuple(scope.get("specifications", ())) != expected_specs:
-        return False, "review register must cover Specifications 0000 through 0014"
+        return False, "review register must cover Specifications 0000 through 0015"
     findings = raw.get("findings")
     if not isinstance(findings, list) or not findings:
         return False, "review register must contain recorded findings"
