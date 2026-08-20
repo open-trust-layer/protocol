@@ -1,0 +1,60 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [
+        {
+          "resource_id": "https://example.org/r",
+          "source_index": 0
+        }
+      ],
+      "errors": [
+        "RESOURCE_DIGEST_MISMATCH"
+      ],
+      "freshness": "NOT_APPLICABLE",
+      "matches": [],
+      "network_requests": 0,
+      "provenance": [],
+      "redirects": [],
+      "status": "IDENTITY_MISMATCH",
+      "warnings": []
+    }
+  },
+  "id": "resolution.resource.digest-mismatch.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true
+      },
+      "target": {
+        "resource_ref": {
+          "digest_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+          "hash_algorithm": -16,
+          "media_type": "application/octet-stream",
+          "resource_id": "https://example.org/r"
+        }
+      },
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "resources": [
+          {
+            "content_hex": "7265736f75726365",
+            "resource_ref": {
+              "digest_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "hash_algorithm": -16,
+              "media_type": "application/octet-stream",
+              "resource_id": "https://example.org/r"
+            }
+          }
+        ],
+        "source_class": "bundle",
+        "source_identifier": "urn:bundle:resource"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

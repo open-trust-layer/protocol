@@ -69,3 +69,10 @@ def test_bundle_profile_is_separate_from_frozen_core():
     assert report.total == 8
     assert report.passed == 8
     assert report.overall == 'PASS'
+
+
+def test_resolution_profile_is_separate_from_frozen_core():
+    report = ConformanceRunner(MANIFEST, ReferenceAdapter()).run(profile='resolution-v1')
+    assert report.total == 16
+    assert report.passed == 16
+    assert report.overall == 'PASS'

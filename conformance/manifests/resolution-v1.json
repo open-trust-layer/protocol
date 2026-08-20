@@ -1,0 +1,28 @@
+{
+  "schema": "olp-conformance-manifest-fragment-v1",
+  "version": 1,
+  "harness_version": "0.1.0",
+  "profiles": {
+    "resolution-v1": [
+      "olp.resolution.v1"
+    ]
+  },
+  "cases": [
+    {"capability":"olp.resolution.v1","category":"positive","description":"Bundle evidence hit recomputes the exact Record Identity before returning RESOLVED","id":"resolution.evidence.bundle-hit.001","operation":"resolve","vector":"vectors/resolution/positive/resolution-evidence-bundle-hit-001.json"},
+    {"capability":"olp.resolution.v1","category":"positive","description":"Committed external resource resolves from a bundle only after digest verification","id":"resolution.resource.bundle-hit.001","operation":"resolve","vector":"vectors/resolution/positive/resolution-resource-bundle-hit-001.json"},
+    {"capability":"olp.resolution.v1","category":"positive","description":"Permitted redirect preserves the requested identifier and returns explicit redirect/provenance state","id":"resolution.network.redirect-resolved.001","operation":"resolve","vector":"vectors/resolution/positive/resolution-network-redirect-resolved-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Wrong object under an EvidenceRef lookup key is identity mismatch rather than success","id":"resolution.evidence.identity-mismatch.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-evidence-identity-mismatch-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Offline-only URI resolution does not silently dereference a network source","id":"resolution.network.disabled.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-disabled-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Loopback/private network target is policy-blocked before a request is counted","id":"resolution.network.private-address.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Redirect is blocked when allowRedirects is false","id":"resolution.network.redirect-blocked.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-redirect-blocked-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"A redirect target is rechecked against private-address policy","id":"resolution.network.redirect-private.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-redirect-private-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Committed resource content with a mismatching SHA-256 digest is identity mismatch","id":"resolution.resource.digest-mismatch.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-resource-digest-mismatch-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Resolver redirect/discovery loop is LIMIT_EXCEEDED rather than evidence invalidity","id":"resolution.network.loop.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-loop-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Caller maxBytes stops oversized packaged resolution explicitly","id":"resolution.resource.max-bytes.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-resource-max-bytes-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"requireFresh rejects a stale matching source without rewriting object validity","id":"resolution.freshness.required.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-freshness-required-001.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Resolver unavailability remains distinct from not-found and invalid","id":"resolution.network.unavailable.001","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-unavailable-001.json"},
+    {"capability":"olp.resolution.v1","category":"malformed","description":"External-resource string target must be an absolute URI","id":"resolution.request.malformed-uri.001","operation":"resolve","vector":"vectors/resolution/malformed/resolution-request-malformed-uri-001.json"},
+    {"capability":"olp.resolution.v1","category":"unsupported","description":"Known but unimplemented target classes are UNSUPPORTED rather than malformed","id":"resolution.request.unsupported-target.001","operation":"resolve","vector":"vectors/resolution/unsupported/resolution-request-unsupported-target-001.json"},
+    {"capability":"olp.resolution.v1","category":"unsupported","description":"Unknown ResolutionRequest version is classified as unsupported","id":"resolution.request.unsupported-version.001","operation":"resolve","vector":"vectors/resolution/unsupported/resolution-request-unsupported-version-001.json"}
+  ]
+}

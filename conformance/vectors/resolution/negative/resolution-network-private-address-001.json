@@ -1,0 +1,38 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [
+        "RESOLUTION_POLICY_BLOCKED"
+      ],
+      "freshness": "NOT_APPLICABLE",
+      "matches": [],
+      "network_requests": 0,
+      "provenance": [],
+      "redirects": [],
+      "status": "POLICY_BLOCKED",
+      "warnings": []
+    }
+  },
+  "id": "resolution.network.private-address.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": false
+      },
+      "target": "http://127.0.0.1/admin",
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "source_class": "network",
+        "source_identifier": "urn:resolver:https",
+        "status": "resolved"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

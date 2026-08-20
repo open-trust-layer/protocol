@@ -9,3 +9,5 @@ Current implementations:
 - [`rust/`](rust/) — independent Rust implementation of the Specification 0003/0004 core introduced for Milestone 15 and the deterministic Specification 0005 evidence subset added in Milestone 16.
 
 An implementation living here MUST NOT import or link against the Python reference implementation in order to satisfy conformance cases.
+
+Milestone 20 extends the independent Rust implementation with deterministic Resolution & Discovery Core parity (`olp.resolution.v1`).

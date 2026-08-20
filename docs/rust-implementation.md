@@ -94,3 +94,7 @@ The tests require:
 `.github/workflows/conformance.yml` contains a dedicated `rust-interoperability` job. It installs the pinned Rust toolchain, builds and tests the independent crate, runs the Rust adapter against `core-v1`, and executes the bidirectional Python/Rust tests.
 
 A green job is the machine-verifiable acceptance signal for the current Milestone 16 cross-language evidence boundary.
+
+## Milestone 20
+
+The independent Rust adapter implements `olp.resolution.v1` and is gated against the separate `resolution-v1` corpus. The implementation consumes deterministic resolver snapshots and performs no network I/O.

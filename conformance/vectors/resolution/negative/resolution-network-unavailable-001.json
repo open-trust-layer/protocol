@@ -1,0 +1,39 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [
+        "RESOLUTION_UNAVAILABLE"
+      ],
+      "freshness": "UNKNOWN",
+      "matches": [],
+      "network_requests": 1,
+      "provenance": [],
+      "redirects": [],
+      "status": "UNAVAILABLE",
+      "warnings": []
+    }
+  },
+  "id": "resolution.network.unavailable.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": false
+      },
+      "target": "https://example.org/a",
+      "target_class": "externalResource"
+    },
+    "sources": [
+      {
+        "freshness": "UNKNOWN",
+        "source_class": "network",
+        "source_identifier": "urn:resolver:https",
+        "status": "unavailable"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

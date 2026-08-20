@@ -30,8 +30,11 @@ __all__ = [
     "EvidenceKind",
     "EvidenceRefV1",
     "RelationshipStatementV1",
+    "ResolutionRequestV1",
 ]
 
 from .evidence import EvidenceKind, EvidenceRefV1, RelationshipStatementV1
 
 from .bundle import BundleManifestStatementV1, ResourceRefV1
+
+from .resolution import ResolutionRequestV1

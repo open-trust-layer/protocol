@@ -1,0 +1,21 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "unsupported",
+  "expected": {
+    "classification": "UNSUPPORTED",
+    "outcome": "ERROR",
+    "reason": "UNSUPPORTED_TARGET_CLASS"
+  },
+  "id": "resolution.request.unsupported-target.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true
+      },
+      "target": "urn:example:principal:1",
+      "target_class": "principal"
+    },
+    "sources": []
+  },
+  "operation": "resolve"
+}

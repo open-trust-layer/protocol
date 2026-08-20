@@ -43,6 +43,18 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add independent Rust implementation and cross-language interoperability CI.
 - Add executable Specification 0005 Evidence Graph Core: Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, and Rust parity.
 
+### Milestone 20 resolution and discovery core
+
+- Add `ResolutionRequestV1` and deterministic offline-first resolver processing for Specification 0009.
+- Resolve exact `EvidenceRefV1` targets from bundle/local-store snapshots only after identity recomputation.
+- Resolve committed `ResourceRefV1` content only after digest verification.
+- Preserve provenance and distinguish not-found, unavailable, unsupported, policy-blocked, limit-exceeded, freshness failure, and identity mismatch outcomes.
+- Model network resolution as caller-supplied deterministic snapshots; the conformance implementation performs zero ambient network I/O.
+- Apply network policy before request accounting, including loopback/private-address checks and policy re-checks for redirects.
+- Add byte limits, redirect-loop detection, freshness requirements, and unsupported-scheme handling.
+- Add `olp.resolution.v1` and the separate 16-case `resolution-v1` profile without changing frozen `core-v1`.
+- Add Python↔Rust resolution interoperability coverage.
+
 ### Milestone 19 evidence bundle core
 
 - Add deterministic `BundleManifestStatementV1` and `ResourceRefV1` processing.

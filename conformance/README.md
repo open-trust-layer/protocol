@@ -1,181 +1,39 @@
 # OLP Executable Conformance Harness
 
-**Milestones 14–17 · Harness v0.1.0**
+**Milestones 14–20 · Harness v0.1.0**
 
-This directory contains implementation-neutral conformance material for the OLP capabilities currently executable from Specifications `0003`, `0004`, and the deterministic Evidence Graph Core of `0005`.
+The harness tests observable protocol behavior using implementation-neutral vectors. `core-v1` remains the frozen Draft v0.2 eight-capability core; later capabilities are additive profiles and do not redefine it.
 
-The harness tests observable protocol behavior. Official vectors do not import or depend on private Python implementation details.
+## Current executable profiles
 
-## Current capability IDs
-
-| Capability | Meaning |
-|---|---|
-| `olp.record-identity.v1` | OLP-CI-1 / OLP-CIE-1 Record Identity |
-| `olp.record-commitment.sha256.v1` | SHA-256 (`-16`) record commitment |
-| `olp.proof-input.v1` | deterministic-CBOR `ProofInputV1` |
-| `olp.proof.eddsa-ed25519.v1` | mandatory Pure Ed25519 proof creation |
-| `olp.proof-verification.v1` | structured proof verification semantics |
-| `olp.proof-identity.v1` | deterministic Proof Identity (OLP-PIE-1) |
-| `olp.evidence-ref.v1` | typed canonical EvidenceRefV1 encoding |
-| `olp.evidence-relationship.v1` | relationship statement validation and projection |
-
-`core-v1` remains the frozen Draft v0.2 eight-capability core. `evidence-v1` scopes the three Specification 0005 evidence capabilities. `bundle-v1` is the independent Specification 0008 bundle-processing capability added after Draft v0.2 integration.
-
-Milestone 17 hardens the adapter boundary: JSON inputs use unique object names, finite size/depth limits, and reversible `$map` projection for abstract maps whose keys cannot be represented safely as an ordinary JSON object.
-
-## Case categories
-
-- **positive** — a conforming implementation must produce the expected successful result.
-- **negative** — the operation is understood and processed, but a security/context property must fail in the specified way.
-- **malformed** — the supplied object violates a normative data-model or key-material rule.
-- **unsupported** — the input represents a capability/version/algorithm the implementation cannot process; this must remain distinct from cryptographic invalidity.
+- `core-v1` — frozen Draft v0.2 deterministic core (62 cases).
+- `evidence-v1` — Specification 0005 evidence capabilities.
+- `bundle-v1` — deterministic Specification 0008 bundle validation (8 cases).
+- `resolution-v1` — deterministic offline-first Specification 0009 resolution and network-policy processing (16 cases).
 
 ## Run the Python reference implementation
 
 ```bash
 python -m pip install -e '.[test]'
 olp-conformance run --profile core-v1
-```
-
-A machine-readable report is written to `conformance-report.json` by default.
-
-Useful filters:
-
-```bash
-olp-conformance run --category negative
-olp-conformance run --capability olp.proof-verification.v1
-olp-conformance run --case proof.verify.negative.signature.001
-olp-conformance list
+olp-conformance run --profile bundle-v1
+olp-conformance run --profile resolution-v1
 ```
 
 ## Adapter contract
 
-The harness supports both an in-process Python `ConformanceAdapter` and a language-neutral subprocess contract.
+The harness supports an in-process Python adapter and a language-neutral subprocess adapter. Each subprocess request and response is exactly one JSON line under `olp-conformance-adapter-v1`; classified errors preserve `MALFORMED`, `UNSUPPORTED`, unavailable/policy/resource distinctions rather than collapsing them into protocol invalidity.
 
-For an external implementation:
+## Generic OLP values
 
-```bash
-olp-conformance run \
-  --adapter subprocess \
-  --adapter-command './my-olp-adapter'
-```
+Known cryptographic fields use explicit hex properties. Generic byte strings use `{"$bytes":"..."}`. Abstract maps that cannot be represented safely as ordinary JSON objects use `{"$map":[[key,value],...]}`. Duplicate abstract keys and duplicate JSON object names are rejected.
 
-For every test case the harness starts the command, writes exactly one JSON request line to stdin, and expects exactly one JSON response line on stdout.
+## Stability and additive manifest fragments
 
-### Request
+The original `conformance/manifest.json` and its published checksum remain frozen. Later capability milestones add lexically ordered `manifests/*.json` fragments. A fragment MUST match the base manifest and harness versions, MUST NOT redefine an existing profile incompatibly, and MUST NOT duplicate a case ID. This makes conformance growth append-only at the corpus-file level while preserving global uniqueness and deterministic loading.
 
-```json
-{
-  "protocol": "olp-conformance-adapter-v1",
-  "operation": "derive_record_identity",
-  "input": {}
-}
-```
-
-The special `capabilities` operation has an empty input object.
-
-### Successful response
-
-```json
-{
-  "protocol": "olp-conformance-adapter-v1",
-  "ok": true,
-  "output": {}
-}
-```
-
-### Classified error response
-
-```json
-{
-  "protocol": "olp-conformance-adapter-v1",
-  "ok": false,
-  "error": {
-    "classification": "MALFORMED",
-    "reason": "INVALID_CORE_PROPERTY",
-    "message": "human-readable detail"
-  }
-}
-```
-
-`classification` is part of the observable conformance contract. Human-readable `message` text is not compared by official vectors.
-
-The included module `python -m olp_conformance.subprocess_reference` implements this contract using the Python reference core and is used by harness self-tests.
-
-## JSON representation of generic OLP values
-
-Known cryptographic fields use explicit names such as `digest_hex`, `proofValue_hex`, `public_key_hex`, and `challenge_hex`.
-
-Generic OLP values inside records or extensions represent byte strings as:
-
-```json
-{"$bytes": "001122aabb"}
-```
-
-When an abstract map contains integer keys, or when a literal text-keyed map would collide with a reserved wrapper shape, the conformance projection uses:
-
-```json
-{"$map": [[1, "integer-key"], ["1", "text-key"]]}
-```
-
-`$map` entries are two-element `[key, value]` arrays. Keys are text strings or integers and are recursively projected. Duplicate abstract keys are rejected.
-
-This projection exists only for conformance JSON. It is not the OJVE-1 transport serialization from Specification 0012. Strict conformance JSON also rejects duplicate JSON object names, floats, non-standard numeric constants, excessive input/depth, and non-scalar Unicode.
-
-## Expectations
-
-A vector expectation is either:
-
-```json
-{
-  "outcome": "SUCCESS",
-  "result": {
-    "cryptographic_validity": "INVALID"
-  }
-}
-```
-
-or:
-
-```json
-{
-  "outcome": "ERROR",
-  "classification": "UNSUPPORTED",
-  "reason": "UNSUPPORTED_CRYPTOSUITE"
-}
-```
-
-Successful result objects use subset matching: a vector lists the protocol properties it intends to constrain. Implementations may return additional diagnostic properties without failing that vector.
-
-## Normative anchors and supplemental vectors
-
-`record.identity.spec-vector.001` reproduces the normative `0003` Record Identity vector.
-
-`proof.input.spec-vector.001` reproduces the normative `0004` ProofInputV1 / Ed25519 input vector.
-
-`proof.identity.spec5.001` and `evidence.ref.record.001` anchor deterministic Specification 0005 identity/reference behavior.
-
-All other cases are deterministic supplemental conformance vectors derived from the same Draft v0.1 rules. They do not create new protocol semantics.
-
-## Harness self-test
-
-`BrokenAdapter` intentionally corrupts Record Identity digests and lies about an invalid signature. The test suite requires that this adapter fail the harness. This guards against a conformance runner that accidentally reports success regardless of observed output.
-
-## Stability
-
-Harness and vector formats are development artifacts while OLP remains Draft v0.1. Changes to a normative vector require a corresponding specification correction; they must never be silently adjusted merely to make an implementation pass.
+Milestone-specific vector indexes and checksum files commit the exact additive corpus. M20 uses `VECTOR-INDEX-M20.md` and `SHA256SUMS-M20.txt`.
 
 ## Independent Rust adapter
 
-Milestone 15 introduced the independent subprocess implementation at `implementations/rust/`; Milestone 16 extends it with the deterministic Specification 0005 evidence capabilities. After building it:
-
-```bash
-cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
-
-olp-conformance run \
-  --profile core-v1 \
-  --adapter subprocess \
-  --adapter-command implementations/rust/target/release/olp-conformance-adapter
-```
-
-The Rust process does not import the Python reference implementation. The repository CI requires this adapter to pass the same `core-v1` corpus and then runs bidirectional Python/Rust interoperability tests.
+The Rust implementation under `implementations/rust/` does not import or spawn the Python reference. CI builds it independently, executes every claimed profile against the shared vectors, and runs exact Python↔Rust interoperability comparisons.

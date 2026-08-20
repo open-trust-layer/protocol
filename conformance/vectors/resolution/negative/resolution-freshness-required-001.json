@@ -1,0 +1,58 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "negative",
+  "expected": {
+    "outcome": "SUCCESS",
+    "result": {
+      "conflicts": [],
+      "errors": [
+        "FRESHNESS_REQUIREMENT_NOT_MET"
+      ],
+      "freshness": "NOT_APPLICABLE",
+      "matches": [],
+      "network_requests": 0,
+      "provenance": [],
+      "redirects": [],
+      "status": "POLICY_BLOCKED",
+      "warnings": []
+    }
+  },
+  "id": "resolution.freshness.required.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true,
+        "require_fresh": true
+      },
+      "target": {
+        "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+        "kind": 0
+      },
+      "target_class": "evidence"
+    },
+    "sources": [
+      {
+        "candidates": [
+          {
+            "lookup_ref": {
+              "identity_digest_hex": "c69ed0f4c22fc0242da939d45448ec1fab7464fa054af334927dc0f91741cbb4",
+              "kind": 0
+            },
+            "record": {
+              "content": {
+                "statement": "example",
+                "subject": "urn:example:subject:1"
+              },
+              "envelope_version": 1,
+              "type": "claim"
+            }
+          }
+        ],
+        "freshness": "STALE",
+        "source_class": "bundle",
+        "source_identifier": "urn:bundle:test"
+      }
+    ]
+  },
+  "operation": "resolve"
+}

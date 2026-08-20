@@ -18,34 +18,26 @@ def test_rust_adapter_and_normative_tests_are_present():
 
 
 def test_rust_source_does_not_import_or_spawn_python_reference():
-    combined = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in sorted((RUST / "src").rglob("*.rs"))
-    )
-    forbidden = ("src/olp", "olp_conformance", "python", "pyo3", "Command::new")
-    for token in forbidden:
+    combined = "\n".join(path.read_text(encoding="utf-8") for path in sorted((RUST / "src").rglob("*.rs")))
+    for token in ("src/olp", "olp_conformance", "python", "pyo3", "Command::new"):
         assert token not in combined
 
 
 def test_rust_adapter_declares_all_core_v1_capabilities():
     source = (RUST / "src" / "lib.rs").read_text(encoding="utf-8")
-    for capability in (
-        "olp.record-identity.v1",
-        "olp.record-commitment.sha256.v1",
-        "olp.proof-input.v1",
-        "olp.proof.eddsa-ed25519.v1",
-        "olp.proof-verification.v1",
-    ):
+    for capability in ("olp.record-identity.v1","olp.record-commitment.sha256.v1","olp.proof-input.v1","olp.proof.eddsa-ed25519.v1","olp.proof-verification.v1"):
         assert capability in source
 
 
 def test_rust_build_output_is_ignored():
-    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    assert "implementations/rust/target/" in gitignore
+    assert "implementations/rust/target/" in (ROOT / ".gitignore").read_text(encoding="utf-8")
+
 
 def test_rust_bundle_capability_is_wired():
-    lib = (RUST / "src" / "lib.rs").read_text(encoding="utf-8")
-    bundle = (RUST / "src" / "bundle.rs").read_text(encoding="utf-8")
-    assert "olp.bundle.v1" in lib
-    assert '"process_bundle"=>bundle::process_bundle_operation' in lib
-    assert "OLP-EVIDENCE-BUNDLE-MANIFEST" in bundle
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8"); bundle=(RUST/"src"/"bundle.rs").read_text(encoding="utf-8")
+    assert "olp.bundle.v1" in lib; assert '"process_bundle"=>bundle::process_bundle_operation' in lib; assert "OLP-EVIDENCE-BUNDLE-MANIFEST" in bundle
+
+
+def test_rust_resolution_capability_is_wired():
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8"); resolution=(RUST/"src"/"resolution.rs").read_text(encoding="utf-8")
+    assert "olp.resolution.v1" in lib; assert '"resolve"=>resolution::resolve_operation' in lib; assert "OLP-RESOLUTION-REQUEST" in resolution; assert "NETWORK_ACCESS_DISABLED" in resolution

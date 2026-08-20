@@ -1,0 +1,21 @@
+{
+  "capability": "olp.resolution.v1",
+  "category": "malformed",
+  "expected": {
+    "classification": "MALFORMED",
+    "outcome": "ERROR",
+    "reason": "MALFORMED_RESOLUTION_REQUEST"
+  },
+  "id": "resolution.request.malformed-uri.001",
+  "input": {
+    "request": {
+      "options": {
+        "offline_only": true
+      },
+      "target": "relative/path",
+      "target_class": "externalResource"
+    },
+    "sources": []
+  },
+  "operation": "resolve"
+}

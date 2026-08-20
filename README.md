@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 19 — executable Evidence Bundle Core; Python/Rust bundle conformance is the acceptance gate
+**Current phase:** Milestone 20 — executable Resolution & Discovery Core; Python/Rust `resolution-v1` conformance is the acceptance gate
 
 ---
 
@@ -71,7 +71,7 @@ Python 3.11-3.14 CI             PASS
 
 This does **not** imply that every higher-layer behavior in Specifications 0006–0010 has been independently implemented and security-tested.
 
-Milestone 19 adds a separate, non-core `bundle-v1` profile for Specification 0008. `core-v1` remains frozen at the Draft v0.2 eight-capability / 62-case contract; higher-layer capabilities are added in separate profiles rather than silently changing `core-v1`.
+Milestone 19 added the separately verified `bundle-v1` profile for Specification 0008. Milestone 20 adds `resolution-v1` for the deterministic offline-first subset of Specification 0009. `core-v1` remains frozen at the Draft v0.2 eight-capability / 62-case contract; higher-layer capabilities use separate profiles rather than silently changing `core-v1`.
 
 ---
 
@@ -89,8 +89,8 @@ Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 | 0005 | Evidence Relationships and Graphs | Verified core subset |
 | 0006 | Identity and Authority Evidence | Draft design |
 | 0007 | Status, Revocation, and Lifecycle Evidence | Draft design |
-| 0008 | Evidence Exchange and Bundles | Draft design |
-| 0009 | Resolution and Discovery Profiles | Draft design |
+| 0008 | Evidence Exchange and Bundles | Executable `bundle-v1` subset |
+| 0009 | Resolution and Discovery Profiles | Executable `resolution-v1` subset |
 | 0010 | Privacy, Selective Disclosure, and Data Minimization | Draft design |
 | 0011 | Conformance and Interoperability | Executable framework |
 | 0012 | Transport and API Profiles | Draft transport/API profile |
@@ -170,7 +170,7 @@ OLP is still experimental and is **not** a production security certification.
 
 Milestone 17 hardened the currently executable core against parser differentials, malformed URI inputs, recursive/resource exhaustion, policy/cryptographic conflation, graph-processing errors, and cross-language representation drift.
 
-Higher-layer executable review remains necessary for resolver SSRF, bundle ingestion/amplification, authority evaluation, lifecycle/status conflict handling, and privacy/disclosure behavior.
+Milestone 19 added bounded bundle ingestion, and Milestone 20 models resolver SSRF/redirect/private-address policy through deterministic network snapshots with no ambient I/O. Authority evaluation, lifecycle/status conflict handling, and privacy/disclosure behavior still require executable review.
 
 See [`SECURITY.md`](SECURITY.md) and [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
 
