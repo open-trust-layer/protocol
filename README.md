@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-1.0 candidate work  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Milestone 26 — v1.0 Candidate Boundary & Promotion Gates
+**Current phase:** Post-Milestone 26 — public technical review / independent external security review
 
 ---
 
@@ -50,7 +50,7 @@ See [`specification/0014-release-profiles-and-conformance-suite-commitments.md`]
 
 ## v1.0 candidate boundary
 
-Milestone 26 adds stable-promotion governance without publishing OLP v1.0 or changing existing protocol bytes.
+Milestone 26 is accepted and merged. It adds stable-promotion governance without publishing OLP v1.0 or changing existing protocol bytes.
 
 The existing eight-capability `core-v1` profile is the **mandatory v1.0 candidate core**. Its exact candidate corpus contains 62 cases and has commitment:
 
@@ -259,7 +259,7 @@ See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-mod
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 26 is the current candidate-stabilization milestone. Its successful outcome is an internally coherent but externally **BLOCKED** v1.0 candidate. The next legitimate work after acceptance is public technical review and independent external security review, not speculative feature expansion.
+Milestone 26 is accepted and merged. The v1.0 candidate is internally coherent but remains externally **BLOCKED**. The next legitimate work is public technical review and independent external security review, followed by disposition of material findings—not speculative feature expansion.
 
 ---
 
