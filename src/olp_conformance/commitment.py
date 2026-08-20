@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .manifest import load_manifest
+from .strict_json import load_path
 
 
 COMMITMENT_SCHEMA = "olp-conformance-suite-commitment-v1"
@@ -98,19 +99,43 @@ def _commitment_preimage(
     return bytes(out)
 
 
+def _fragment_contributes(fragment: Path, profile: str, capabilities: frozenset[str]) -> bool:
+    """Return whether an additive fragment contributes to the selected corpus.
+
+    Unrelated future profile fragments MUST NOT perturb a frozen release
+    commitment. A fragment contributes when it defines the selected profile or
+    contains at least one case whose capability is selected by that profile.
+    Full structural validation is still performed by ``load_manifest`` before
+    this helper is used.
+    """
+
+    raw = load_path(fragment)
+    profiles = raw.get("profiles", {})
+    if profile in profiles:
+        return True
+    for case in raw.get("cases", []):
+        if case.get("capability") in capabilities:
+            return True
+    return False
+
+
 def build_profile_corpus_commitment(
     manifest_path: str | Path,
     profile: str,
 ) -> ProfileCorpusCommitment:
     """Commit to the exact corpus selected by *profile*.
 
-    The commitment covers the base manifest, every additive manifest fragment,
-    the standalone profile declaration, and each vector referenced by a case
-    selected by the profile. The preimage also contains the ordered capability
-    list and ordered selected case IDs, so selection semantics cannot change
-    without changing the commitment.
+    The commitment covers the base manifest, additive manifest fragments that
+    contribute to the selected profile/cases, the standalone profile
+    declaration, and each vector referenced by a selected case. The preimage
+    also contains the ordered capability list and ordered selected case IDs, so
+    selection semantics cannot change without changing the commitment.
+
+    Unrelated future profile fragments are intentionally excluded so a frozen
+    release commitment remains stable when the repository grows additively.
     """
 
+    manifest_path = Path(manifest_path).resolve()
     manifest = load_manifest(manifest_path)
     try:
         capabilities = tuple(manifest.profiles[profile])
@@ -139,11 +164,12 @@ def build_profile_corpus_commitment(
             raise ValueError(f"conformance corpus file not found: {relative}")
         corpus_paths[relative] = path
 
-    add_path(Path(manifest_path).resolve())
+    add_path(manifest_path)
     fragments_dir = root / "manifests"
     if fragments_dir.is_dir():
         for fragment in sorted(fragments_dir.glob("*.json"), key=lambda p: p.name.encode("utf-8")):
-            add_path(fragment)
+            if _fragment_contributes(fragment, profile, capability_set):
+                add_path(fragment)
     add_path(profile_path)
     for case in cases:
         add_path(root / case.vector)
