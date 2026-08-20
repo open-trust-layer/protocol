@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import base64
 import hashlib
 
 import pytest
 
 from olp.bundle import record_ref
+from olp.content_digest import validate_parsed_content_digest
 from olp.encoding.record_identity import record_identity
 from olp.errors import ConformanceError
 from olp.model.record import RecordV1
@@ -17,7 +17,6 @@ from olp.streaming_http import (
     evaluate_redirect,
     process_manifested_stream,
     separate_http_auth_from_olp,
-    validate_content_digest,
 )
 from olp.transport import encode_identity_text
 
@@ -185,14 +184,13 @@ def test_self_contained_bundle_query_never_silently_downgrades():
     assert result["silent_profile_downgrade"] is False
 
 
-def test_content_digest_validates_http_bytes_not_evidence_identity():
+def test_content_digest_validates_parsed_dictionary_bytes_not_evidence_identity():
     content = b'{"olp":1}'
-    digest = base64.b64encode(hashlib.sha256(content).digest()).decode("ascii")
-    valid = validate_content_digest(f"sha-256=:{digest}:", content, required=True)
+    digest = hashlib.sha256(content).digest()
+    valid = validate_parsed_content_digest((('sha-256', digest),), content, required=True)
     assert valid["status"] == "VALID"
 
-    mismatch_digest = base64.b64encode(b"\x00" * 32).decode("ascii")
-    mismatch = validate_content_digest(f"sha-256=:{mismatch_digest}:", content, required=True)
+    mismatch = validate_parsed_content_digest((('sha-256', b"\x00" * 32),), content, required=True)
     assert mismatch["status"] == "MISMATCH"
 
 
