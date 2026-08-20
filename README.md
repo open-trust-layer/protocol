@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Milestone 16 Evidence Graph Core implemented; cross-language evidence conformance is the acceptance gate
+**Current phase:** Milestone 16 Evidence Graph Core complete and independently verified; Milestone 17 adversarial/security review next
 
 ---
 
@@ -202,7 +202,7 @@ Draft v0.1 remains implementation-test material, not a stable production standar
 1. **Reference implementation core — complete** — Record Identity, ProofInputV1, deterministic CBOR, Ed25519 create/verify, structured verification results, normative vectors, and negative tests.
 2. **Executable conformance harness — complete** — implementation-neutral positive, negative, malformed, and unsupported corpus; adapter boundary; CLI; machine-readable reports; harness self-tests; CI.
 3. **Second independent implementation — complete and verified** — independent Rust core plus shared-corpus and bidirectional Python↔Rust interoperability gates.
-4. **Evidence Graph Core — implementation complete; CI-gated** — Proof Identity, EvidenceRef, relationship records, graph projection/traversal, 57-case shared corpus, and Rust parity for deterministic evidence primitives.
+4. **Evidence Graph Core — complete and independently verified** — Proof Identity, EvidenceRef, relationship records, graph projection/traversal, 57-case shared corpus, and Rust parity for deterministic evidence primitives.
 5. **Adversarial/security review — next** — cryptographic substitution, parser ambiguity, resolver/network attacks, resource exhaustion, graph/bundle abuse, and privacy failures.
 6. **Draft v0.2 integration pass** — feed implementation and security findings back into the specifications.
 

@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification status:** Draft v0.1  
-**Current phase:** Phase II — Milestone 16 Evidence Graph Core implemented; shared Python/Rust evidence conformance is the acceptance gate
+**Current phase:** Phase II — Milestone 16 Evidence Graph Core complete and independently verified; Milestone 17 adversarial/security review next
 
 This roadmap describes the intended development sequence. Milestone numbers are project milestones, not protocol version numbers.
 
@@ -117,7 +117,7 @@ Milestone 15 was accepted after the Rust crate compiled and tested in CI, the Ru
 
 ### Milestone 16 — Evidence Graph Core
 
-**Implementation complete; acceptance is gated on shared Python/Rust conformance CI.**
+**Completed and independently verified.**
 
 Make the deterministic and graph-processing core of Specification 0005 executable without turning graph edges into protocol truth.
 
@@ -134,7 +134,7 @@ The executable slice includes:
 - implementation-neutral `evidence-v1` vectors; and
 - Python/Rust parity for Proof Identity, EvidenceRef, and relationship processing.
 
-Milestone 16 is accepted only when both implementations pass the expanded `core-v1` corpus and the bidirectional interoperability suite remains green.
+Milestone 16 was accepted after both implementations passed the expanded 57-case `core-v1` corpus and all nine bidirectional Python↔Rust interoperability checks passed in CI.
 
 ### Milestone 17 — Adversarial & Security Review
 

@@ -63,7 +63,6 @@ The Draft v0.1 stack currently includes:
 
 ### Next
 
-- Require a green Milestone 16 expanded Python/Rust conformance gate for repository acceptance.
 - Perform the Milestone 17 adversarial security review.
 - Feed findings into the Milestone 18 Draft v0.2 specification pass.
 
