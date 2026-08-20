@@ -1,0 +1,84 @@
+name: OLP transport encoding conformance
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python-transport-encoding:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install -e '.[test]'
+      - name: Run transport-encoding-v1 corpus
+        run: olp-conformance run --profile transport-encoding-v1 --quiet --report conformance-transport-encoding.json
+      - name: Assert Milestone 23 case count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-transport-encoding.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 22, f"expected 22 transport-encoding-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Python transport-encoding-v1 conformance: 22/22 PASS")
+          PY
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: transport-encoding-python-${{ matrix.python-version }}
+          path: conformance-transport-encoding.json
+          if-no-files-found: error
+
+  rust-transport-encoding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - uses: dtolnay/rust-toolchain@1.85.0
+      - run: python -m pip install -e '.[test]'
+      - run: cargo test --locked --manifest-path implementations/rust/Cargo.toml
+      - run: cargo build --release --locked --manifest-path implementations/rust/Cargo.toml
+      - name: Run independent Rust against transport-encoding-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile transport-encoding-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust-transport-encoding.json
+      - name: Assert Milestone 23 case count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust-transport-encoding.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 22, f"expected 22 transport-encoding-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust transport-encoding-v1 conformance: 22/22 PASS")
+          PY
+      - name: Run direct Python-Rust interoperability tests
+        env:
+          OLP_RUN_RUST_INTEROP: "1"
+        run: python -m pytest -q tests/interoperability/test_python_rust.py
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: transport-encoding-rust-1.85.0
+          path: conformance-rust-transport-encoding.json
+          if-no-files-found: error
