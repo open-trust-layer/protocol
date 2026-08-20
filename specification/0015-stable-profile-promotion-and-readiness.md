@@ -1,8 +1,8 @@
 # OLP Specification 0015 — Stable Profile Promotion and Readiness
 
 **Status:** Draft  
-**Version:** v0.1  
-**Milestone:** 26 — v1.0 Candidate Boundary & Promotion Gates  
+**Version:** v0.2  
+**Milestone:** 26 — v1.0 Candidate Boundary & Promotion Gates; post-M26 review-binding amendment  
 **Filename:** `specification/0015-stable-profile-promotion-and-readiness.md`
 
 ---
@@ -13,7 +13,7 @@ This specification defines how Open Layer Protocol (OLP) behavior may be promote
 
 It selects the existing eight-capability `core-v1` profile as the **mandatory v1.0 candidate core** and keeps already accepted higher-layer profiles as optional candidates that may be promoted independently.
 
-It also defines machine-checkable stable-promotion gates, threat-model requirements, contradiction/errata review requirements, external-review requirements, and release/migration/deprecation invariants.
+It also defines machine-checkable stable-promotion gates, threat-model requirements, contradiction/errata review requirements, snapshot-bound external-review requirements, and release/migration/deprecation invariants.
 
 This specification adds no new evidence semantics, identity-bearing object format, canonical encoding, cryptosuite, resolver behavior, transport representation, trust algorithm, or authorization decision procedure.
 
@@ -36,6 +36,7 @@ This specification defines:
 - threat-model requirements;
 - independent external security-review requirements;
 - public technical-review requirements;
+- immutable review-target binding for external-review evidence;
 - migration, deprecation, errata, and release-process requirements;
 - machine-readable promotion states; and
 - the Milestone 26 candidate-readiness result.
@@ -314,7 +315,11 @@ The review SHOULD challenge at minimum:
 
 The project MUST NOT satisfy this gate by citing only its own maintainers, its own automated tests, or an internally produced adversarial review.
 
-Completion MUST include one or more durable review references.
+Completion MUST include one or more durable review references **and** MUST identify the exact frozen review-target source commit examined by the reviewer.
+
+A security review of a different commit MUST NOT satisfy this gate.
+
+If disposition of security findings materially changes the reviewed source boundary, the changed source MUST be frozen under a new review-target identifier and the security-review gate MUST return to `pending` for that new target.
 
 ---
 
@@ -323,6 +328,12 @@ Completion MUST include one or more durable review references.
 Stable v1.0 promotion MUST require public technical review of the exact candidate boundary.
 
 Completion MUST include durable references to the reviewed snapshot and resulting disposition of material findings.
+
+The completed public-review evidence MUST identify the same exact source commit as the frozen review target.
+
+A public review of a different commit MUST NOT satisfy this gate.
+
+If disposition of material public-review findings changes the reviewed source boundary, the changed source MUST be frozen under a new review-target identifier and the public-review gate MUST return to `pending` for that new target.
 
 The protocol does not prescribe one universal calendar duration for public review, but a review must be meaningful enough to permit independent inspection of the proposed stable snapshot.
 
@@ -350,7 +361,7 @@ READY
 
 ### 20.1 `INVALID`
 
-`INVALID` means one or more internal candidate invariants fail, for example profile mismatch, corpus drift, missing required artifact, invalid review metadata, or unresolved normative contradiction.
+`INVALID` means one or more internal candidate invariants fail, for example profile mismatch, corpus drift, missing required artifact, invalid review metadata, unresolved normative contradiction, or external-review evidence bound to the wrong source commit.
 
 ### 20.2 `BLOCKED`
 
@@ -360,7 +371,7 @@ READY
 
 ### 20.3 `READY`
 
-`READY` means every internal and required external promotion gate represented by the evaluator is satisfied.
+`READY` means every internal and required external promotion gate represented by the evaluator is satisfied for the exact frozen review target.
 
 `READY` is permission to begin final stable publication mechanics; it is not itself the published stable release.
 
@@ -372,17 +383,43 @@ The repository MAY represent the candidate boundary using a machine-readable man
 
 The manifest SHOULD identify:
 
-- candidate identifier and version;
+- candidate identifier and schema version;
 - baseline Draft/release manifest;
 - conformance manifest;
 - mandatory profile;
 - mandatory normative specifications;
 - optional candidate profiles and associated specifications;
 - required stabilization artifacts and their exact digests;
-- required external gates and current status; and
+- current review-target identifier/status/source commit;
+- required external gates, reviewed commits, and current status; and
 - the candidate baseline commit.
 
 The evaluator MUST NOT trust a declared `READY` string in the manifest. Readiness is derived from verified gates.
+
+### 21.1 Review-target lifecycle
+
+A machine-readable review target has:
+
+```text
+id
+status
+source_commit
+```
+
+Current review-target statuses are:
+
+```text
+preparing
+frozen
+```
+
+A `preparing` review target MUST have `source_commit = null`.
+
+A `frozen` review target MUST identify one exact immutable source commit.
+
+Once a review-target identifier is frozen, that identifier MUST NOT be silently rebound to different source bytes for the purpose of reusing review evidence.
+
+If a material source change is required after freeze, the project MUST create a new review-target identifier and external review completion MUST be evaluated against that new target.
 
 ---
 
@@ -392,6 +429,7 @@ An external gate has at minimum:
 
 ```text
 status
+reviewed_commit
 references
 ```
 
@@ -402,11 +440,15 @@ pending
 completed
 ```
 
-A `completed` external gate MUST include at least one durable reference.
+A `pending` external gate MUST have `reviewed_commit = null` and MUST NOT carry stale review references as if they applied to the current target.
+
+A `completed` external gate MUST include at least one durable reference, MUST identify one exact reviewed source commit, and that commit MUST equal the current frozen review target's `source_commit`.
+
+A completed gate bound to a different commit is internally inconsistent and MUST produce `INVALID`, not `READY` or ordinary `BLOCKED`.
 
 A `pending` required external gate produces a blocking reason code.
 
-For Milestone 26 the required external blocker codes are:
+For the current v1 candidate the required external blocker codes are:
 
 ```text
 PUBLIC_TECHNICAL_REVIEW_REQUIRED
@@ -439,7 +481,7 @@ This specification adds stable-promotion governance on top of those rules. It do
 
 ## 25. Milestone 26 candidate result
 
-Milestone 26 is designed to finish with this state:
+Milestone 26 completed with this state:
 
 ```text
 mandatory candidate core:       core-v1
@@ -449,6 +491,8 @@ public technical review:        PENDING
 independent external review:    PENDING
 stable promotion state:         BLOCKED
 ```
+
+The post-M26 review-preparation amendment adds exact source-snapshot binding before either external gate can be completed. It does not alter the accepted protocol corpus or evidence semantics.
 
 This is intentional.
 
@@ -461,6 +505,8 @@ The correct outcome of internal stabilization is not to self-certify independenc
 Premature stability is itself a security risk because downstream implementers may interpret the label as evidence that semantics, threat assumptions, and deployment boundaries have been independently reviewed.
 
 Promotion tooling MUST therefore fail closed on internal inconsistency and MUST preserve pending external review as an explicit blocker.
+
+A durable review URL without exact source binding is insufficient because it can accidentally or deliberately reuse review evidence for changed bytes.
 
 A stable label MUST NOT convert:
 
@@ -479,6 +525,6 @@ A stable label MUST NOT convert:
 
 OLP v1 stabilization follows one rule:
 
-> **Stabilize the smallest proven mandatory core, keep optional behavior explicit, and never let internal conformance masquerade as independent security review.**
+> **Stabilize the smallest proven mandatory core, keep optional behavior explicit, and never let internal conformance or stale review evidence masquerade as independent review of the current source.**
 
-Milestone 26 therefore defines a candidate boundary and promotion gates without publishing v1.0.
+Milestone 26 defined the candidate boundary and promotion gates without publishing v1.0. The review-preparation amendment binds future external-review completion to one exact frozen source commit.
