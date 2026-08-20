@@ -48,11 +48,15 @@ def test_candidate_v2_schema_requires_snapshot_binding_fields():
     assert "reviewed_commit" in external["properties"]
 
 
-def test_promotion_report_v2_schema_locks_readiness_and_review_target_states():
+def test_promotion_report_v2_schema_locks_readiness_and_supports_invalid_target_diagnostics():
     schema = _load(REPORT_SCHEMA)
     assert schema["properties"]["internal_readiness"]["enum"] == ["PASS", "FAIL"]
     assert schema["properties"]["status"]["enum"] == ["INVALID", "BLOCKED", "READY"]
-    assert schema["properties"]["review_target_status"]["enum"] == ["preparing", "frozen"]
+    target_status = schema["properties"]["review_target_status"]["oneOf"]
+    assert {"enum": ["preparing", "frozen"]} in target_status
+    assert {"type": "null"} in target_status
+    target_id = schema["properties"]["review_target_id"]["oneOf"]
+    assert {"type": "null"} in target_id
     assert schema["properties"]["checks"]["items"]["properties"]["status"]["enum"] == [
         "PASS",
         "FAIL",
