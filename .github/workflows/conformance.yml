@@ -43,6 +43,21 @@ jobs:
       - name: Run OLP identity-authority-lifecycle-v1 conformance profile
         run: olp-conformance run --profile identity-authority-lifecycle-v1 --quiet --report conformance-identity-authority-lifecycle-report.json
 
+      - name: Run OLP privacy-disclosure-v1 conformance profile
+        run: olp-conformance run --profile privacy-disclosure-v1 --quiet --report conformance-privacy-disclosure-report.json
+
+      - name: Assert Milestone 22 privacy disclosure conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-privacy-disclosure-report.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 18, f"expected 18 privacy-disclosure-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Python privacy-disclosure-v1 conformance: 18/18 PASS")
+          PY
+
       - name: Upload conformance report
         if: always()
         uses: actions/upload-artifact@v6
@@ -53,6 +68,7 @@ jobs:
             conformance-bundle-report.json
             conformance-resolution-report.json
             conformance-identity-authority-lifecycle-report.json
+            conformance-privacy-disclosure-report.json
           if-no-files-found: error
 
   rust-interoperability:
@@ -121,6 +137,27 @@ jobs:
             --quiet \
             --report conformance-rust-identity-authority-lifecycle.json
 
+      - name: Run Rust implementation against privacy-disclosure-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile privacy-disclosure-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust-privacy-disclosure.json
+
+      - name: Assert Milestone 22 privacy disclosure conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust-privacy-disclosure.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 18, f"expected 18 privacy-disclosure-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust privacy-disclosure-v1 conformance: 18/18 PASS")
+          PY
+
       - name: Assert Milestone 21 identity authority lifecycle conformance count
         run: |
           python - <<'PY'
@@ -184,4 +221,5 @@ jobs:
             conformance-rust-bundle.json
             conformance-rust-resolution.json
             conformance-rust-identity-authority-lifecycle.json
+            conformance-rust-privacy-disclosure.json
           if-no-files-found: error
