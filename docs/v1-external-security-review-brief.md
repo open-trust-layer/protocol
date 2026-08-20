@@ -2,13 +2,16 @@
 
 **Status:** reviewer brief; independent review not yet commissioned/completed  
 **Candidate:** `olp-v1.0`  
-**Review-target source commit:** not yet frozen
+**Review target:** `olp-v1.0-review-1`  
+**Frozen source commit:** `877493826d673ccf9bb94e7b6b113b35141ad220`
 
 ## Purpose
 
 This document describes the intended scope for an independent external security review of the OLP v1.0 candidate. It does not claim that such a review has occurred.
 
 The project deliberately keeps this gate separate from maintainer review, automated conformance, and the internal Milestone 17/Milestone 26 adversarial work.
+
+Any review intended to satisfy the stable-promotion gate must examine the exact frozen source commit above.
 
 ## Minimum review scope
 
@@ -70,7 +73,8 @@ Findings in those areas are still useful when they expose a protocol/specificati
 
 A useful review deliverable should identify:
 
-- the exact frozen source commit reviewed;
+- review target `olp-v1.0-review-1`;
+- exact source commit `877493826d673ccf9bb94e7b6b113b35141ad220`;
 - review methodology and scope;
 - findings with severity and affected components;
 - whether each finding changes deterministic bytes, capability semantics, implementation-only behavior, or documentation;
@@ -78,7 +82,7 @@ A useful review deliverable should identify:
 - residual risks; and
 - a durable public or project-verifiable reference suitable for the promotion manifest once disclosure permits.
 
-A review of a different source commit cannot satisfy the external-security promotion gate for the frozen target.
+A review of a different source commit cannot satisfy the external-security promotion gate for this frozen target.
 
 ## Finding disposition
 
