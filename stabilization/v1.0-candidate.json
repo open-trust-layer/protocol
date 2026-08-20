@@ -1,0 +1,86 @@
+{
+  "schema": "olp-v1-promotion-candidate-v1",
+  "version": 1,
+  "candidate": "olp-v1.0",
+  "status": "candidate",
+  "baseline_commit": "5acc4b8934305a5215379c480db32bd0fd22f3ae",
+  "baseline_release": "draft-v0.3",
+  "baseline_release_manifest": "specification/releases/draft-v0.3.json",
+  "conformance_manifest": "conformance/manifest.json",
+  "accepted_release_profile": "draft-v0.3-interoperable-v1",
+  "mandatory_profile": "core-v1",
+  "mandatory_specifications": [
+    "specification/0001-terminology.md",
+    "specification/0002-protocol-objects.md",
+    "specification/0003-record-representation.md",
+    "specification/0004-proofs-and-verification.md",
+    "specification/0005-evidence-relationships.md",
+    "specification/0011-conformance-and-interoperability.md",
+    "specification/0013-versioning-registries-and-core-profile.md",
+    "specification/0014-release-profiles-and-conformance-suite-commitments.md",
+    "specification/0015-stable-profile-promotion-and-readiness.md"
+  ],
+  "optional_profiles": [
+    {
+      "profile": "bundle-v1",
+      "specifications": [
+        "specification/0008-evidence-exchange-and-bundles.md"
+      ]
+    },
+    {
+      "profile": "resolution-v1",
+      "specifications": [
+        "specification/0009-resolution-and-discovery-profiles.md"
+      ]
+    },
+    {
+      "profile": "identity-authority-lifecycle-v1",
+      "specifications": [
+        "specification/0006-identity-and-authority.md",
+        "specification/0007-status-and-lifecycle.md"
+      ]
+    },
+    {
+      "profile": "privacy-disclosure-v1",
+      "specifications": [
+        "specification/0010-privacy-selective-disclosure-and-data-minimization.md"
+      ]
+    },
+    {
+      "profile": "transport-encoding-v1",
+      "specifications": [
+        "specification/0012-transport-and-api-profiles.md"
+      ]
+    },
+    {
+      "profile": "streaming-http-v1",
+      "specifications": [
+        "specification/0012-transport-and-api-profiles.md"
+      ]
+    }
+  ],
+  "required_artifacts": {
+    "threat_model": {
+      "path": "docs/v1-threat-model.md",
+      "sha256": "2300a6100d99378c7b4c34abb5b99f26672a0263e930a986665a33e478ff6b38"
+    },
+    "review_register": {
+      "path": "stabilization/v1-review-register.json",
+      "sha256": "ad925eab6ac7fa9a8dc87b0b256fa029e4e4eb72d8171a350df271e7b72329a1"
+    },
+    "release_process": {
+      "path": "docs/v1-release-process.md",
+      "sha256": "9cc20b7ef427af8d185fa138ba41a03f701d9bdf3dc69f375ad6c043de21a58b"
+    }
+  },
+  "external_gates": {
+    "public_technical_review": {
+      "status": "pending",
+      "references": []
+    },
+    "independent_external_security_review": {
+      "status": "pending",
+      "references": []
+    }
+  }
+}

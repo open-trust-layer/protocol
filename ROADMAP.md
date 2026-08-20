@@ -1,8 +1,8 @@
 # Open Layer Protocol — Roadmap
 
-**Project status:** experimental / pre-0.1  
+**Project status:** experimental / pre-1.0 candidate work  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Post-Milestone 25 stabilization / stable-profile review
+**Current phase:** Milestone 26 — v1.0 Candidate Boundary & Promotion Gates
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -92,9 +92,7 @@ See `docs/streaming-http-api-core.md` and `conformance/VECTOR-INDEX-M24.md`.
 
 **Accepted and merged.**
 
-M25 added no new evidence or wire semantics. It turns the independently accepted Milestones 17–24 into one precise release-level interoperability claim.
-
-Acceptance evidence:
+M25 added no new evidence or wire semantics. It turned the independently accepted Milestones 17–24 into one precise release-level interoperability claim.
 
 ```text
 draft-v0.3-interoperable-v1 capabilities   15
@@ -107,51 +105,99 @@ Independent Rust 1.85                     180 / 180 PASS
 Python <-> Rust interoperability           PASS
 ```
 
-The exact release corpus is committed with `OLP-CONFORMANCE-SUITE-COMMITMENT-V1`:
+Draft v0.3 corpus commitment:
 
 ```text
 SHA-256 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 ```
 
-M25 outputs:
-
-- aggregate `draft-v0.3-interoperable-v1` profile;
-- deterministic corpus-commitment algorithm and CLI;
-- Specification 0014;
-- `specification/releases/draft-v0.3.json`;
-- normalized standalone conformance-profile metadata/schema;
-- Python/Rust aggregate CI that recomputes and verifies the pinned corpus commitment;
-- Draft v0.3 overview/security/conformance documentation;
-- explicit Draft v0.2 → Draft v0.3 migration with no identity-bearing rewrite; and
-- a regression proving unrelated future profile growth does not perturb a frozen Draft v0.3 corpus commitment.
-
-M25 deliberately does **not** claim production network security, TLS correctness, operational security, or completion of an independent external security audit.
-
 See `docs/draft-v0.3-integration.md` and `specification/0014-release-profiles-and-conformance-suite-commitments.md`.
 
-### Next milestone selection
+### Milestone 26 — v1.0 Candidate Boundary & Promotion Gates
 
-No Milestone 26 scope has been declared.
+**In acceptance.**
 
-The next step should be selected from the remaining stabilization path toward a credible stable profile: explicit stable-boundary promotion criteria, contradiction/errata review, independent external security review, deployment/threat assumptions, and final migration/deprecation policy. New protocol features should not be invented merely to continue the milestone sequence.
+M26 adds no new evidence semantics or wire-format generation. It selects a conservative stable-candidate boundary and makes promotion requirements executable.
+
+Mandatory candidate core:
+
+```text
+core-v1
+8 capabilities
+62 cases
+SHA-256 8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e
+```
+
+Optional candidate profiles:
+
+```text
+bundle-v1
+resolution-v1
+identity-authority-lifecycle-v1
+privacy-disclosure-v1
+transport-encoding-v1
+streaming-http-v1
+```
+
+Mandatory + optional candidates cover exactly the 15 Draft v0.3 accepted capabilities without making the optional profiles mandatory.
+
+M26 outputs include:
+
+- Specification 0015 — Stable Profile Promotion and Readiness;
+- `stabilization/v1.0-candidate.json`;
+- machine-readable candidate/review/report schemas;
+- `olp-conformance promotion-check` with `INVALID`, `BLOCKED`, and `READY` states;
+- a pinned v1 candidate threat model;
+- a machine-readable contradiction/review register;
+- stable release, migration, deprecation, errata, and rollback rules;
+- adversarial promotion-gate tests; and
+- Python 3.11–3.14 promotion-readiness CI.
+
+The intended acceptance state is deliberately:
+
+```text
+internal readiness:                       PASS
+stable promotion:                         BLOCKED
+public technical review:                  PENDING
+independent external security review:     PENDING
+```
+
+Required blocker codes:
+
+```text
+PUBLIC_TECHNICAL_REVIEW_REQUIRED
+INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
+```
+
+A successful M26 does not publish v1.0. It makes the remaining external work explicit and prevents internal conformance from being misrepresented as independent security review.
+
+See `docs/v1-candidate-readiness.md`, `docs/v1-threat-model.md`, `docs/v1-release-process.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
 
 ## Path toward v1.0
 
 A stable OLP v1.0 should require at minimum:
 
-1. an explicitly promoted stable profile and normative data-model boundary;
-2. reproducible canonical vectors and release-level corpus commitment;
+1. an explicitly promoted mandatory stable profile and normative boundary;
+2. reproducible canonical vectors and release-level corpus commitments;
 3. independent interoperable implementations;
 4. cross-language proof production/verification and normative-byte parity;
 5. comprehensive malformed/negative/policy/resource testing;
-6. no known unresolved contradictions in the promoted stable boundary;
-7. stable extension, registry, reason-code, migration, and deprecation governance;
+6. no unresolved normative contradictions in the promoted boundary;
+7. stable extension, registry, reason-code, migration, deprecation, and errata governance;
 8. public versioned conformance corpus and immutable release manifests;
 9. independent external security review of the intended stable boundary; and
 10. documented deployment/threat assumptions and release criteria.
 
-Draft v0.3 materially advances items 2, 3, 4, 5, 7, and 8. It does not by itself complete items 1, 6, 9, or 10.
+M25 materially completed the corpus/release-identity layer. M26 is designed to complete the internally satisfiable parts of items 1, 6, 7, and 10 while making item 9 and public technical review impossible to bypass accidentally.
+
+After M26 acceptance, the next legitimate work should be review-driven:
+
+1. freeze an exact candidate snapshot for public technical review;
+2. obtain independent external security review;
+3. disposition material findings through clarification, errata, or explicit version changes;
+4. rerun exact conformance/interoperability on the resulting snapshot; and
+5. only when promotion state becomes `READY`, perform release-candidate/stable publication mechanics.
 
 ## Deliberately not on the immediate roadmap
 
-Do not prioritize a marketplace, token, blockchain, universal reputation score, universal identity provider, hosted trust service, or production-scale network before the evidence core and promoted release capabilities are proven interoperable and independently reviewed.
+Do not prioritize a marketplace, token, blockchain, universal reputation score, universal identity provider, hosted trust service, or speculative protocol features merely to continue the milestone sequence.
