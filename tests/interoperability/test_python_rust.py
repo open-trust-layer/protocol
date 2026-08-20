@@ -70,12 +70,12 @@ def test_resolution_processing_matches_python_and_spec(rust_adapter):
 
 def test_identity_authority_lifecycle_matches_python_and_vectors(rust_adapter):
     cases = (
-        "identity-authority-lifecycle/positive/principal-role-separation-001.json",
+        "identity-authority-lifecycle/positive/principal-role-separated-001.json",
         "identity-authority-lifecycle/positive/delegation-verified-001.json",
         "identity-authority-lifecycle/negative/delegation-identity-mismatch-001.json",
         "identity-authority-lifecycle/negative/delegation-scope-mismatch-001.json",
         "identity-authority-lifecycle/negative/lifecycle-sequence-conflict-001.json",
-        "identity-authority-lifecycle/negative/lifecycle-stale-status-001.json",
+        "identity-authority-lifecycle/negative/lifecycle-stale-001.json",
     )
     for relative in cases:
         case = _vector(relative)
