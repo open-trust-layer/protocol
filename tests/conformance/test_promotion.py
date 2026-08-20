@@ -62,6 +62,20 @@ def test_v1_candidate_is_internally_ready_but_externally_blocked():
     assert _check_statuses(report)["INDEPENDENT_EXTERNAL_SECURITY_REVIEW"] == "BLOCKED"
 
 
+def test_json_object_member_order_does_not_change_promotion_semantics(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    path = root / "stabilization" / "v1.0-candidate.json"
+    raw = _load(path)
+    raw["required_artifacts"] = dict(reversed(list(raw["required_artifacts"].items())))
+    raw["external_gates"] = dict(reversed(list(raw["external_gates"].items())))
+    _write(path, raw)
+
+    report = evaluate_v1_promotion(path)
+    assert report.internal_readiness == "PASS"
+    assert report.status == "BLOCKED"
+    assert report.blockers == EXPECTED_BLOCKERS
+
+
 def test_completed_external_gates_with_references_make_copy_ready(tmp_path):
     root = _copy_candidate_repo(tmp_path)
     path = root / "stabilization" / "v1.0-candidate.json"
