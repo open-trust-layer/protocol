@@ -6,6 +6,22 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ## [Unreleased]
 
+### Draft v0.3 — Milestone 25 integration and conformance freeze
+
+- Define Draft v0.3 as a specification-set integration/conformance-freeze release rather than a new wire-format generation.
+- Add the aggregate 15-capability `draft-v0.3-interoperable-v1` profile over exactly 180 already accepted implementation-neutral cases.
+- Require Python 3.11–3.14 and independent Rust 1.85 to pass the aggregate profile 180/180, while retaining the complete Python↔Rust interoperability suite.
+- Add Specification 0014 for release profiles and `OLP-CONFORMANCE-SUITE-COMMITMENT-V1`.
+- Add deterministic corpus commitments over the base manifest, contributing additive fragments, aggregate profile membership, ordered case IDs, and exact referenced vector bytes.
+- Pin the Draft v0.3 corpus to SHA-256 `62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc` and require CI to recompute it.
+- Add `specification/releases/draft-v0.3.json` and `docs/draft-v0.3-integration.md`.
+- Normalize standalone conformance profile metadata to one schema shape: `schema`, `id`, `version`, `status`, `capabilities`.
+- Fix a release-commitment design issue so unrelated future profile fragments do not perturb an already frozen release digest.
+- Preserve the eight-capability `core-v1` as the smallest frozen deterministic core; the Draft v0.3 aggregate profile is additive and does not redefine it.
+- Preserve Draft v0.2 v1 Record/Proof/Evidence identities and accepted capability semantics; no object needs regeneration or re-signing solely because the set release changes.
+- Reconcile README, roadmap, overview, security policy, and conformance documentation with the independently executed Milestones 19–24.
+- Explicitly keep production network deployment, TLS, operational security, and independent external security audit outside the Draft v0.3 conformance claim.
+
 ### Draft v0.2 — Milestone 18 integration
 
 - Define Draft v0.2 as a specification-set integration release rather than a new wire-format generation.
@@ -122,9 +138,9 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ### Specification foundation
 
-Draft v0.2 contains Specifications 0000–0013.
+Draft v0.3 contains Specifications 0000–0014.
 
-Specifications 0001–0012 originated in the Draft v0.1 design stack. Specification 0013 was added by the Draft v0.2 integration pass.
+Specifications 0001–0012 originated in the Draft v0.1 design stack. Specification 0013 was added by the Draft v0.2 integration pass. Specification 0014 was added by the Draft v0.3 integration/conformance-freeze pass.
 
 ## Release history
 
