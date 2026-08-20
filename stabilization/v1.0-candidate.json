@@ -75,8 +75,8 @@
   },
   "review_target": {
     "id": "olp-v1.0-review-1",
-    "status": "preparing",
-    "source_commit": null
+    "status": "frozen",
+    "source_commit": "877493826d673ccf9bb94e7b6b113b35141ad220"
   },
   "external_gates": {
     "public_technical_review": {
