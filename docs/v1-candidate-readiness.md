@@ -94,7 +94,7 @@ Threat model
 2300a6100d99378c7b4c34abb5b99f26672a0263e930a986665a33e478ff6b38
 
 Review / contradiction register
-57976acd1ac8b34ef43da575fd05ee39d1a9de7930181d2c40accf71c3ed2e35
+ad925eab6ac7fa9a8dc87b0b256fa029e4e4eb72d8171a350df271e7b72329a1
 
 Release / migration / deprecation / errata process
 9cc20b7ef427af8d185fa138ba41a03f701d9bdf3dc69f375ad6c043de21a58b
@@ -104,7 +104,7 @@ A byte change in one of these artifacts without updating the candidate metadata 
 
 ## 7. Cross-specification review
 
-The Milestone 26 review examined the highest-risk semantic boundaries for contradiction:
+The Milestone 26 review register covers Specifications **0000 through 0015** and the highest-risk semantic/governance boundaries, including:
 
 - proof purpose versus authority sufficiency;
 - identity/control versus authority;
@@ -114,12 +114,13 @@ The Milestone 26 review examined the highest-risk semantic boundaries for contra
 - resolution success versus verification;
 - HTTP status versus OLP semantic status;
 - transport security/authentication versus OLP object proof validity;
-- transport representation versus evidence identity; and
-- conformance/corpus identity versus certification or trust.
+- transport representation versus evidence identity;
+- conformance/corpus identity versus certification or trust; and
+- candidate/stable promotion metadata versus object/capability/corpus versioning.
 
-The existing numbered specifications already preserve these distinctions. The review found governance/documentation gaps but no semantic contradiction requiring a new Record, Proof, encoding, cryptosuite, or accepted capability version.
+The existing numbered specifications preserve these distinctions. The review found governance/documentation gaps but no semantic contradiction requiring a new Record, Proof, encoding, cryptosuite, or accepted capability version.
 
-The machine-readable review register retains the findings and resolutions rather than deleting closed findings from history.
+The machine-readable review register retains the findings and resolutions rather than deleting closed findings from history. Finding `M26-R011` explicitly verifies that Specification 0015 cannot use candidate/stable labels to reinterpret the existing version domains defined by Specifications 0013–0014.
 
 ## 8. Promotion evaluator
 
