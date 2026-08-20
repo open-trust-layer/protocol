@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+import shutil
 
 from olp_conformance.commitment import build_profile_corpus_commitment
 from olp_conformance.manifest import load_manifest
@@ -32,6 +34,29 @@ def test_different_profiles_have_different_corpus_commitments():
     core = build_profile_corpus_commitment(MANIFEST, "core-v1")
     assert aggregate.digest_hex != core.digest_hex
     assert len(core.case_ids) == 62
+
+
+def test_unrelated_future_profile_fragment_does_not_change_frozen_commitment(tmp_path):
+    copied = tmp_path / "conformance"
+    shutil.copytree(MANIFEST.parent, copied)
+    manifest_path = copied / "manifest.json"
+    before = build_profile_corpus_commitment(manifest_path, PROFILE)
+
+    unrelated = {
+        "schema": "olp-conformance-manifest-fragment-v1",
+        "version": 1,
+        "harness_version": "0.1.0",
+        "profiles": {"future-unrelated-v1": ["urn:example:future-capability:v1"]},
+        "cases": [],
+    }
+    (copied / "manifests" / "zzz-future-unrelated.json").write_text(
+        json.dumps(unrelated, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    after = build_profile_corpus_commitment(manifest_path, PROFILE)
+    assert after.digest_hex == before.digest_hex
+    assert after.files == before.files
 
 
 def test_standalone_profile_registry_matches_loaded_manifest_profiles():
