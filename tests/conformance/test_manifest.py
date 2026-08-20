@@ -12,8 +12,8 @@ def test_manifest_loads_all_cases():
     manifest = load_manifest(MANIFEST)
     assert manifest.version == 1
     assert manifest.harness_version == '0.1.0'
-    assert len(manifest.cases) == 86
-    assert len({case.id for case in manifest.cases}) == 86
+    assert len(manifest.cases) == 104
+    assert len({case.id for case in manifest.cases}) == 104
 
 
 def test_core_profile_contains_expected_capabilities():
@@ -60,3 +60,16 @@ def test_resolution_profile_is_separate_from_frozen_core():
     manifest = load_manifest(MANIFEST)
     assert set(manifest.profiles['resolution-v1']) == {'olp.resolution.v1'}
     assert 'olp.resolution.v1' not in set(manifest.profiles['core-v1'])
+
+
+def test_m21_profile_is_additive_and_separate_from_frozen_core():
+    manifest = load_manifest(MANIFEST)
+    assert set(manifest.profiles['identity-authority-lifecycle-v1']) == {
+        'olp.identity-authority-lifecycle.v1'
+    }
+    assert 'olp.identity-authority-lifecycle.v1' not in set(manifest.profiles['core-v1'])
+    m21_cases = [
+        case for case in manifest.cases
+        if case.capability == 'olp.identity-authority-lifecycle.v1'
+    ]
+    assert len(m21_cases) == 18

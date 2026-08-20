@@ -40,6 +40,9 @@ jobs:
       - name: Run OLP resolution-v1 conformance profile
         run: olp-conformance run --profile resolution-v1 --quiet --report conformance-resolution-report.json
 
+      - name: Run OLP identity-authority-lifecycle-v1 conformance profile
+        run: olp-conformance run --profile identity-authority-lifecycle-v1 --quiet --report conformance-identity-authority-lifecycle-report.json
+
       - name: Upload conformance report
         if: always()
         uses: actions/upload-artifact@v6
@@ -49,6 +52,7 @@ jobs:
             conformance-report.json
             conformance-bundle-report.json
             conformance-resolution-report.json
+            conformance-identity-authority-lifecycle-report.json
           if-no-files-found: error
 
   rust-interoperability:
@@ -108,6 +112,27 @@ jobs:
             --quiet \
             --report conformance-rust-resolution.json
 
+      - name: Run Rust implementation against identity-authority-lifecycle-v1 corpus
+        run: |
+          olp-conformance run \
+            --profile identity-authority-lifecycle-v1 \
+            --adapter subprocess \
+            --adapter-command implementations/rust/target/release/olp-conformance-adapter \
+            --quiet \
+            --report conformance-rust-identity-authority-lifecycle.json
+
+      - name: Assert Milestone 21 identity authority lifecycle conformance count
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("conformance-rust-identity-authority-lifecycle.json", encoding="utf-8"))
+          results = report["results"]
+          assert len(results) == 18, f"expected 18 identity-authority-lifecycle-v1 cases, got {len(results)}"
+          failed = [item for item in results if item["status"] != "PASS"]
+          assert not failed, failed
+          print("Rust identity-authority-lifecycle-v1 conformance: 18/18 PASS")
+          PY
+
       - name: Assert Milestone 20 resolution conformance count
         run: |
           python - <<'PY'
@@ -158,4 +183,5 @@ jobs:
             conformance-rust.json
             conformance-rust-bundle.json
             conformance-rust-resolution.json
+            conformance-rust-identity-authority-lifecycle.json
           if-no-files-found: error

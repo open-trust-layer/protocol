@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"positive",
+  "id":"m21.authority-status.revoke.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"authority_status","statement":["OLP-AUTHORITY-STATUS",1,[0,{"$bytes":"2222222222222222222222222222222222222222222222222222222222222222"}],"revoke","2026-05-01T00:00:00Z","urn:example:reason:terminated",{},[]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"authority_status","target_grant":[0,"2222222222222222222222222222222222222222222222222222222222222222"],"event":"revoke","producer_authority":"NOT_EVALUATED","mutates_target":false}}
+}

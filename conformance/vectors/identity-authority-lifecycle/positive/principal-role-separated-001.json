@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"positive",
+  "id":"m21.principal.role-separated.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"principal_relation","statement":["OLP-PRINCIPAL-RELATION",1,"holdsRole","did:example:alice",[2,"urn:example:role:auditor"],"did:example:org:acme",{},[]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"principal_relation","relation_type":"holdsRole","authority":"NOT_EVALUATED","trust":"NOT_EVALUATED"}}
+}

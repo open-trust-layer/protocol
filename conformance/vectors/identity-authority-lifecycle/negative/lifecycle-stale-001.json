@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"negative",
+  "id":"m21.lifecycle.stale.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["verificationMethod","did:example:alice#key-1"],"evaluation_time":"2026-06-01T00:00:00Z","statuses":[["OLP-LIFECYCLE-STATUS",1,["verificationMethod","did:example:alice#key-1"],"revoke","urn:example:authority:status","2026-05-01T00:00:00Z",1,null,"2026-05-15T00:00:00Z",null,{},[]]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"lifecycle","events":[{"event":"revoke","effective":"EFFECTIVE","freshness":"STALE_BY_SOURCE"}],"freshness":"STALE","completeness":"UNKNOWN","operational_state":"INDETERMINATE"}}
+}

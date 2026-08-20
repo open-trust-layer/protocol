@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"unsupported",
+  "id":"m21.principal.unsupported-object-kind.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"principal_relation","statement":["OLP-PRINCIPAL-RELATION",1,"controlsVerificationMethod","did:example:alice",[9,"urn:example:future-object"],null,{},[]]},
+  "expected":{"outcome":"ERROR","classification":"UNSUPPORTED","reason":"UNSUPPORTED_PRINCIPAL_OBJECT_KIND"}
+}

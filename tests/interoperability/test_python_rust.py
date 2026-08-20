@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from olp_conformance.adapter import SubprocessAdapter
-from olp_conformance.adapters.reference import ReferenceAdapter
+from olp_conformance.adapters import ReferenceAdapter
 
 ROOT = Path(__file__).resolve().parents[2]
 RUST_MANIFEST = ROOT / "implementations" / "rust" / "Cargo.toml"
@@ -29,6 +29,23 @@ def rust_adapter() -> SubprocessAdapter:
 
 def _vector(relative: str) -> dict:
     return json.loads((VECTOR_ROOT / relative).read_text(encoding="utf-8"))
+
+
+def _assert_subset(expected, observed, path="$"):
+    if isinstance(expected, dict):
+        assert isinstance(observed, dict), f"{path}: expected object"
+        for key, value in expected.items():
+            assert key in observed, f"{path}: missing key {key!r}"
+            _assert_subset(value, observed[key], f"{path}.{key}")
+        return
+    if isinstance(expected, list):
+        assert isinstance(observed, list), f"{path}: expected list"
+        assert len(expected) == len(observed), f"{path}: list length differs"
+        for index, (expected_item, observed_item) in enumerate(zip(expected, observed)):
+            _assert_subset(expected_item, observed_item, f"{path}[{index}]")
+        return
+    assert observed == expected, f"{path}: expected {expected!r}, observed {observed!r}"
+
 
 def test_capabilities_match_reference(rust_adapter):
     assert rust_adapter.capabilities() == ReferenceAdapter().capabilities()
@@ -66,3 +83,20 @@ def test_bundle_processing_matches_python_and_spec(rust_adapter):
 def test_resolution_processing_matches_python_and_spec(rust_adapter):
     for rel in ("resolution/positive/resolution-evidence-bundle-hit-001.json","resolution/positive/resolution-network-redirect-resolved-001.json","resolution/negative/resolution-network-private-address-001.json","resolution/negative/resolution-network-loop-001.json"):
         case=_vector(rel); py=ReferenceAdapter().execute("resolve",case["input"]); rs=rust_adapter.execute("resolve",case["input"]); assert rs==py==case["expected"]["result"]
+
+
+def test_identity_authority_lifecycle_matches_python_and_vectors(rust_adapter):
+    cases = (
+        "identity-authority-lifecycle/positive/principal-role-separated-001.json",
+        "identity-authority-lifecycle/positive/delegation-verified-001.json",
+        "identity-authority-lifecycle/negative/delegation-identity-mismatch-001.json",
+        "identity-authority-lifecycle/negative/delegation-scope-mismatch-001.json",
+        "identity-authority-lifecycle/negative/lifecycle-sequence-conflict-001.json",
+        "identity-authority-lifecycle/negative/lifecycle-stale-001.json",
+    )
+    for relative in cases:
+        case = _vector(relative)
+        py = ReferenceAdapter().execute("evaluate_authority_lifecycle", case["input"])
+        rs = rust_adapter.execute("evaluate_authority_lifecycle", case["input"])
+        assert rs == py, relative
+        _assert_subset(case["expected"]["result"], rs)

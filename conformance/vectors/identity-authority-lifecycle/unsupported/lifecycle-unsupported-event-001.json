@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"unsupported",
+  "id":"m21.lifecycle.unsupported-event.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["principal","did:example:alice"],"statuses":[["OLP-LIFECYCLE-STATUS",1,["principal","did:example:alice"],"urn:example:lifecycle:future-event","urn:example:authority:status","2026-05-01T00:00:00Z",1,null,null,null,{},[]]]},
+  "expected":{"outcome":"ERROR","classification":"UNSUPPORTED","reason":"UNSUPPORTED_LIFECYCLE_EVENT"}
+}

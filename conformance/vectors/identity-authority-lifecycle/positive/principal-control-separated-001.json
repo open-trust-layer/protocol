@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"positive",
+  "id":"m21.principal.control-separated.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"principal_relation","statement":["OLP-PRINCIPAL-RELATION",1,"controlsVerificationMethod","did:example:alice",[1,"did:example:alice#key-1"],null,{},[]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"principal_relation","relation_type":"controlsVerificationMethod","authority":"NOT_EVALUATED","trust":"NOT_EVALUATED"}}
+}

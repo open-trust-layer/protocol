@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"negative",
+  "id":"m21.lifecycle.sequence-conflict.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"lifecycle","target":["record",[0,{"$bytes":"1111111111111111111111111111111111111111111111111111111111111111"}]],"evaluation_time":"2026-06-01T00:00:00Z","statuses":[["OLP-LIFECYCLE-STATUS",1,["record",[0,{"$bytes":"1111111111111111111111111111111111111111111111111111111111111111"}]],"suspend","urn:example:authority:status","2026-05-01T00:00:00Z",7,null,null,null,{},[]],["OLP-LIFECYCLE-STATUS",1,["record",[0,{"$bytes":"1111111111111111111111111111111111111111111111111111111111111111"}]],"resume","urn:example:authority:status","2026-05-01T00:00:00Z",7,null,null,null,{},[]]]},
+  "expected":{"outcome":"SUCCESS","result":{"kind":"lifecycle","conflicts":["STATUS_SEQUENCE_CONFLICT"],"completeness":"UNKNOWN","operational_state":"INDETERMINATE","absence_is_active":false}}
+}

@@ -1,0 +1,8 @@
+{
+  "capability":"olp.identity-authority-lifecycle.v1",
+  "category":"malformed",
+  "id":"m21.principal.object-kind.001",
+  "operation":"evaluate_authority_lifecycle",
+  "input":{"mode":"principal_relation","statement":["OLP-PRINCIPAL-RELATION",1,"controlsVerificationMethod","did:example:alice",[0,"did:example:bob"],null,{},[]]},
+  "expected":{"outcome":"ERROR","classification":"MALFORMED","reason":"INVALID_PRINCIPAL_RELATION_OBJECT"}
+}
