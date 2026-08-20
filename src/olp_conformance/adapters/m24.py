@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from olp.bundle import PackagedResourceV1
+from olp.content_digest import validate_parsed_content_digest
 from olp.http_policy import (
     evaluate_cache_policy,
     evaluate_http_limit,
@@ -19,7 +20,6 @@ from olp.streaming_http import (
     evaluate_redirect,
     process_manifested_stream,
     separate_http_auth_from_olp,
-    validate_content_digest,
 )
 from olp.transport import unproject_abstract
 
@@ -66,6 +66,19 @@ def _wire_frame_from_json(value):
         version=value.get("version", 1),
         domain=value.get("domain", "OLP-FRAME"),
     )
+
+
+def _parsed_digest_members(value):
+    if value is None:
+        return None
+    if not isinstance(value, list):
+        raise ValueError("digest_members MUST be null or an array")
+    members = []
+    for item in value:
+        if not isinstance(item, dict) or set(item) != {"algorithm", "digest_hex"}:
+            raise ValueError("each digest member MUST contain exactly algorithm and digest_hex")
+        members.append((item["algorithm"], bytes.fromhex(item["digest_hex"])))
+    return tuple(members)
 
 
 class ReferenceAdapter(M23ReferenceAdapter):
@@ -123,8 +136,8 @@ class ReferenceAdapter(M23ReferenceAdapter):
         )
 
     def _op_validate_content_digest(self, payload):
-        return validate_content_digest(
-            payload.get("header_value"),
+        return validate_parsed_content_digest(
+            _parsed_digest_members(payload.get("digest_members")),
             bytes.fromhex(payload.get("content_hex", "")),
             required=bool(payload.get("required", False)),
         )
