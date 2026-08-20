@@ -43,6 +43,20 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add independent Rust implementation and cross-language interoperability CI.
 - Add executable Specification 0005 Evidence Graph Core: Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, and Rust parity.
 
+### Milestone 22 privacy and disclosure core
+
+- Add the executable Specification 0010 disclosure-planning core without inventing native OLP field-level redaction, zero-knowledge disclosure, a universal privacy score, or a global completeness/minimality proof.
+- Process the exact eight-element `DisclosureRequestV1` with explicit caller-supplied planner context rather than introducing a new evidence record or universal policy language.
+- Support whole-object disclosure, explicit graph-subset dependency closure, omission of unrelated sibling evidence, and structured unresolved dependencies.
+- Recompute Record Identity and Proof Identity for supplied immutable bodies and reject redaction/substitution that does not match the selected `EvidenceRefV1`.
+- Verify selected committed resources against `ResourceRefV1` digests before disclosure.
+- Preserve the distinction between task-scoped minimized disclosure and global graph completeness; the planner always reports that global completeness is not established and performs no field redaction.
+- Model offline/self-contained support as an explicit disclosure tradeoff and surface resolver-interest, manifest, stable-identifier, same-subject, lifecycle, and external-presentation privacy warnings without ambient network I/O.
+- Require explicit permission before carrying external native selective-disclosure presentations and preserve their native cryptographic semantics without reconstructing undisclosed claims.
+- Defer exact `maxBundleBytes` enforcement to Specification 0008 packaging rather than falsely certifying a size the abstract planner cannot know.
+- Add `olp.privacy-disclosure.v1` and the separate 18-case `privacy-disclosure-v1` profile without changing the frozen earlier profiles.
+- Add an independent dependency-free Rust 1.85 implementation, source-contract guards, required Python/Rust conformance gates, and direct Python↔Rust M22 interoperability coverage.
+
 ### Milestone 21 identity, authority, and lifecycle core
 
 - Add the executable Specifications 0006/0007 core without introducing a global Actor, trust score, authorization boolean, or mutable canonical current state.
