@@ -41,3 +41,21 @@ def test_rust_bundle_capability_is_wired():
 def test_rust_resolution_capability_is_wired():
     lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8"); resolution=(RUST/"src"/"resolution.rs").read_text(encoding="utf-8")
     assert "olp.resolution.v1" in lib; assert '"resolve"=>resolution::resolve_operation' in lib; assert "OLP-RESOLUTION-REQUEST" in resolution; assert "NETWORK_ACCESS_DISABLED" in resolution
+
+
+def test_rust_identity_authority_lifecycle_capability_is_wired_and_policy_separated():
+    lib=(RUST/"src"/"lib.rs").read_text(encoding="utf-8")
+    source=(RUST/"src"/"identity_authority_lifecycle.rs").read_text(encoding="utf-8")
+    assert "olp.identity-authority-lifecycle.v1" in lib
+    assert '"evaluate_authority_lifecycle"=>identity_authority_lifecycle::evaluate_operation' in lib
+    for token in (
+        "OLP-PRINCIPAL-RELATION",
+        "OLP-AUTHORITY-GRANT",
+        "OLP-AUTHORITY-STATUS",
+        "OLP-LIFECYCLE-STATUS",
+        "PARENT_GRANT_IDENTITY_MISMATCH",
+        "STATUS_SEQUENCE_CONFLICT",
+        '"INDETERMINATE"',
+    ):
+        assert token in source
+    assert '"authorized"' not in source
