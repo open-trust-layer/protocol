@@ -1,7 +1,7 @@
 """Machine-checkable OLP v1 candidate promotion gates.
 
 This module intentionally evaluates release/stabilization metadata rather than
-protocol evidence.  A green conformance corpus is necessary but not sufficient
+protocol evidence. A green conformance corpus is necessary but not sufficient
 for stable promotion: independent external security review and public technical
 review remain separate required gates.
 """
@@ -18,10 +18,10 @@ from .manifest import load_manifest
 from .strict_json import load_path
 
 
-CANDIDATE_SCHEMA = "olp-v1-promotion-candidate-v1"
-CANDIDATE_VERSION = 1
-REPORT_SCHEMA = "olp-v1-promotion-report-v1"
-REPORT_VERSION = 1
+CANDIDATE_SCHEMA = "olp-v1-promotion-candidate-v2"
+CANDIDATE_VERSION = 2
+REPORT_SCHEMA = "olp-v1-promotion-report-v2"
+REPORT_VERSION = 2
 REVIEW_SCHEMA = "olp-v1-review-register-v1"
 
 V1_CORE_CAPABILITIES = (
@@ -104,6 +104,9 @@ class PromotionReport:
     release_profile: str
     release_corpus_commitment: str | None
     core_corpus_commitment: str | None
+    review_target_id: str
+    review_target_status: str
+    review_target_source_commit: str | None
     internal_readiness: str
     status: str
     blockers: tuple[str, ...]
@@ -122,6 +125,9 @@ class PromotionReport:
             "release_profile": self.release_profile,
             "release_corpus_commitment": self.release_corpus_commitment,
             "core_corpus_commitment": self.core_corpus_commitment,
+            "review_target_id": self.review_target_id,
+            "review_target_status": self.review_target_status,
+            "review_target_source_commit": self.review_target_source_commit,
             "internal_readiness": self.internal_readiness,
             "status": self.status,
             "blockers": list(self.blockers),
@@ -152,6 +158,14 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _valid_commit_id(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 40
+        and all(char in "0123456789abcdef" for char in value)
+    )
+
+
 def _check(checks: list[PromotionCheck], check_id: str, ok: bool, good: str, bad: str) -> None:
     checks.append(PromotionCheck(check_id, "PASS" if ok else "FAIL", good if ok else bad))
 
@@ -173,6 +187,7 @@ def _validate_candidate_shape(raw: Any) -> dict[str, Any]:
         "mandatory_specifications",
         "optional_profiles",
         "required_artifacts",
+        "review_target",
         "external_gates",
     }
     if set(raw) != required:
@@ -185,8 +200,8 @@ def _validate_candidate_shape(raw: Any) -> dict[str, Any]:
         raise ValueError("v1 promotion manifest status must be candidate")
     if not isinstance(raw["candidate"], str) or not raw["candidate"]:
         raise ValueError("candidate identifier must be non-empty")
-    if not isinstance(raw["baseline_commit"], str) or len(raw["baseline_commit"]) != 40:
-        raise ValueError("baseline_commit must be a 40-character commit id")
+    if not _valid_commit_id(raw["baseline_commit"]):
+        raise ValueError("baseline_commit must be a lowercase 40-character commit id")
     if not isinstance(raw["baseline_release"], str) or not raw["baseline_release"]:
         raise ValueError("baseline_release must be non-empty")
     return raw
@@ -286,10 +301,31 @@ def _review_register_check(
     return True, "internal review register has no unresolved normative contradiction or release blocker"
 
 
+def _review_target_check(raw: Any) -> tuple[bool, str, str, str | None, str]:
+    if not isinstance(raw, dict) or set(raw) != {"id", "status", "source_commit"}:
+        return False, "", "", None, "review_target metadata malformed"
+
+    target_id = raw.get("id")
+    status = raw.get("status")
+    source_commit = raw.get("source_commit")
+
+    if not isinstance(target_id, str) or not target_id:
+        return False, "", "", None, "review_target id must be non-empty"
+    if status not in {"preparing", "frozen"}:
+        return False, target_id, "", None, "review_target status must be preparing or frozen"
+    if status == "preparing":
+        if source_commit is not None:
+            return False, target_id, status, None, "preparing review_target must not declare source_commit"
+        return True, target_id, status, None, "review target is valid and awaiting an immutable source commit"
+    if not _valid_commit_id(source_commit):
+        return False, target_id, status, None, "frozen review_target requires a lowercase 40-character source_commit"
+    return True, target_id, status, source_commit, f"review target is frozen to source commit {source_commit}"
+
+
 def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     """Evaluate the repository's v1 candidate stable-promotion gates.
 
-    Structural errors in the candidate document raise ``ValueError``.  Valid
+    Structural errors in the candidate document raise ``ValueError``. Valid
     candidate documents always produce a report whose state is one of
     ``INVALID``, ``BLOCKED``, or ``READY``.
     """
@@ -480,9 +516,14 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     )
     checks.append(PromotionCheck("INTERNAL_REVIEW_REGISTER", "PASS" if review_ok else "FAIL", review_detail))
 
-    # External gates are deliberately not self-satisfiable. Completed gates
-    # require durable references; pending gates are valid but block promotion.
-    # JSON object member order is not semantic.
+    review_target_ok, review_target_id, review_target_status, review_target_source_commit, review_target_detail = _review_target_check(
+        raw.get("review_target")
+    )
+    checks.append(PromotionCheck("REVIEW_TARGET", "PASS" if review_target_ok else "FAIL", review_target_detail))
+
+    # External gates are deliberately not self-satisfiable. A pending gate must
+    # not carry stale review evidence. A completed gate is accepted only when it
+    # cites durable references and names the exact frozen review-target commit.
     external = raw.get("external_gates")
     expected_external_names = {name for name, _ in _EXTERNAL_GATES}
     if not isinstance(external, dict) or set(external) != expected_external_names:
@@ -490,22 +531,50 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     else:
         for name, blocker in _EXTERNAL_GATES:
             value = external[name]
-            if not isinstance(value, dict) or set(value) != {"status", "references"}:
+            if not isinstance(value, dict) or set(value) != {"status", "reviewed_commit", "references"}:
                 checks.append(PromotionCheck(name.upper(), "FAIL", f"external gate metadata malformed: {name}"))
                 continue
+
             gate_status = value.get("status")
+            reviewed_commit = value.get("reviewed_commit")
             refs = value.get("references")
             if not isinstance(refs, list) or any(not isinstance(item, str) or not item for item in refs):
                 checks.append(PromotionCheck(name.upper(), "FAIL", f"external gate references malformed: {name}"))
                 continue
-            if gate_status == "completed" and refs:
-                checks.append(PromotionCheck(name.upper(), "PASS", f"external gate completed with {len(refs)} durable reference(s)"))
-            elif gate_status == "pending":
-                checks.append(PromotionCheck(name.upper(), "BLOCKED", f"required external gate remains pending: {name}", blocker=blocker))
-            elif gate_status == "completed":
-                checks.append(PromotionCheck(name.upper(), "FAIL", f"completed external gate has no durable reference: {name}"))
-            else:
+            if len(refs) != len(set(refs)):
+                checks.append(PromotionCheck(name.upper(), "FAIL", f"external gate references must be unique: {name}"))
+                continue
+
+            if gate_status == "pending":
+                if reviewed_commit is not None or refs:
+                    checks.append(PromotionCheck(name.upper(), "FAIL", f"pending external gate must not carry stale review evidence: {name}"))
+                else:
+                    checks.append(PromotionCheck(name.upper(), "BLOCKED", f"required external gate remains pending: {name}", blocker=blocker))
+                continue
+
+            if gate_status != "completed":
                 checks.append(PromotionCheck(name.upper(), "FAIL", f"unsupported external gate status: {name}"))
+                continue
+
+            if not refs:
+                checks.append(PromotionCheck(name.upper(), "FAIL", f"completed external gate has no durable reference: {name}"))
+                continue
+            if not _valid_commit_id(reviewed_commit):
+                checks.append(PromotionCheck(name.upper(), "FAIL", f"completed external gate requires a lowercase 40-character reviewed_commit: {name}"))
+                continue
+            if not review_target_ok or review_target_status != "frozen" or review_target_source_commit is None:
+                checks.append(PromotionCheck(name.upper(), "FAIL", f"external gate cannot complete before review target is frozen: {name}"))
+                continue
+            if reviewed_commit != review_target_source_commit:
+                checks.append(PromotionCheck(name.upper(), "FAIL", f"external gate reviewed commit does not match frozen review target: {name}"))
+                continue
+            checks.append(
+                PromotionCheck(
+                    name.upper(),
+                    "PASS",
+                    f"external gate completed for frozen review target {review_target_id} at {reviewed_commit} with {len(refs)} durable reference(s)",
+                )
+            )
 
     internal_failures = tuple(item for item in checks if item.status == "FAIL")
     blockers = tuple(item.blocker for item in checks if item.status == "BLOCKED" and item.blocker is not None)
@@ -527,6 +596,9 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
         release_profile=release_profile,
         release_corpus_commitment=release_commitment,
         core_corpus_commitment=core_commitment,
+        review_target_id=review_target_id,
+        review_target_status=review_target_status,
+        review_target_source_commit=review_target_source_commit,
         internal_readiness=internal_readiness,
         status=state,
         blockers=blockers,
