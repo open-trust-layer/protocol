@@ -1,6 +1,6 @@
 {
-  "schema": "olp-v1-promotion-candidate-v1",
-  "version": 1,
+  "schema": "olp-v1-promotion-candidate-v2",
+  "version": 2,
   "candidate": "olp-v1.0",
   "status": "candidate",
   "baseline_commit": "5acc4b8934305a5215379c480db32bd0fd22f3ae",
@@ -73,13 +73,20 @@
       "sha256": "9cc20b7ef427af8d185fa138ba41a03f701d9bdf3dc69f375ad6c043de21a58b"
     }
   },
+  "review_target": {
+    "id": "olp-v1.0-review-1",
+    "status": "preparing",
+    "source_commit": null
+  },
   "external_gates": {
     "public_technical_review": {
       "status": "pending",
+      "reviewed_commit": null,
       "references": []
     },
     "independent_external_security_review": {
       "status": "pending",
+      "reviewed_commit": null,
       "references": []
     }
   }
