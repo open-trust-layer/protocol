@@ -66,7 +66,7 @@
     },
     "review_register": {
       "path": "stabilization/v1-review-register.json",
-      "sha256": "57976acd1ac8b34ef43da575fd05ee39d1a9de7930181d2c40accf71c3ed2e35"
+      "sha256": "ad925eab6ac7fa9a8dc87b0b256fa029e4e4eb72d8171a350df271e7b72329a1"
     },
     "release_process": {
       "path": "docs/v1-release-process.md",
