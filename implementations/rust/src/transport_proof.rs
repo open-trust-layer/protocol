@@ -4,7 +4,7 @@
 //! its public operation surface, then reconstructs the ordinary conformance
 //! proof representation before recomputing Proof Identity.
 use std::collections::BTreeMap;
-use crate::{error::OlpError,json::Json,proof_identity,transport,util::{hex_decode,hex_encode}};
+use crate::{error::OlpError,json::Json,proof_identity,transport,transport_cbor,util::{hex_decode,hex_encode}};
 
 fn malformed(msg:impl Into<String>)->OlpError{OlpError::malformed("MALFORMED_TRANSPORT_INPUT",msg)}
 
@@ -55,9 +55,10 @@ fn reconstruct(value:&Json)->Result<Json,OlpError>{
 pub fn equivalence(input:&Json)->Result<Json,OlpError>{
  let proof=input.get("proof").map_err(malformed)?;let before=proof_identity::proof_identity_digest_for(proof)?;
  let projection=proof_projection(proof)?;
- let mut encode_input=Json::object();encode_input.insert("value".into(),projection);let encoded=transport::operation("encode_ojve",&Json::Object(encode_input))?;
+ let mut encode_input=Json::object();encode_input.insert("value".into(),projection.clone());let encoded=transport::operation("encode_ojve",&Json::Object(encode_input))?;
  let ojve=encoded.get("ojve").map_err(malformed)?.clone();let mut decode_input=Json::object();decode_input.insert("ojve".into(),ojve);let decoded=transport::operation("decode_ojve",&Json::Object(decode_input))?;
  let reconstructed=reconstruct(decoded.get("value").map_err(malformed)?)?;let after=proof_identity::proof_identity_digest_for(&reconstructed)?;
  let old_sig=proof.get("proofValue_hex").map_err(malformed)?.as_str().map_err(malformed)?;let new_sig=reconstructed.get("proofValue_hex").map_err(malformed)?.as_str().map_err(malformed)?;
- let mut out=Json::object();out.insert("proof_identity_before_hex".into(),Json::String(hex_encode(&before)));out.insert("proof_identity_after_json_hex".into(),Json::String(hex_encode(&after)));out.insert("identity_preserved".into(),Json::Bool(before==after));out.insert("proof_value_preserved".into(),Json::Bool(old_sig==new_sig));Ok(Json::Object(out))
+ let mut envelope_input=Json::object();envelope_input.insert("message_type".into(),Json::String("proof".into()));envelope_input.insert("payload".into(),projection);let envelope=transport_cbor::encode_envelope(&Json::Object(envelope_input))?;
+ let mut out=Json::object();out.insert("proof_identity_before_hex".into(),Json::String(hex_encode(&before)));out.insert("proof_identity_after_json_hex".into(),Json::String(hex_encode(&after)));out.insert("identity_preserved".into(),Json::Bool(before==after));out.insert("proof_value_preserved".into(),Json::Bool(old_sig==new_sig));out.insert("json".into(),envelope.get("json").map_err(malformed)?.clone());out.insert("cbor_hex".into(),envelope.get("cbor_hex").map_err(malformed)?.clone());Ok(Json::Object(out))
 }
