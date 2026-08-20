@@ -32,6 +32,7 @@ jobs:
         run: |
           python -m pytest -q \
             tests/conformance/test_promotion.py \
+            tests/conformance/test_promotion_review_binding.py \
             tests/conformance/test_promotion_schemas.py \
             tests/conformance/test_commitment.py \
             tests/conformance/test_draft_v03_release.py
