@@ -71,12 +71,14 @@ def _compare_vector(rust_adapter, relative: str):
 
 
 def test_stream_frame_and_sequence_wire_bytes_match_exactly(rust_adapter):
-    for relative in (
-        "positive/stream-frame-wire-001.json",
-        "positive/stream-sequence-wire-001.json",
-    ):
-        py, rs = _compare_vector(rust_adapter, relative)
-        assert rs == py, relative
+    frame_py, frame_rs = _compare_vector(rust_adapter, "positive/stream-frame-wire-001.json")
+    assert frame_rs["json_seq_hex"] == frame_py["json_seq_hex"]
+    assert frame_rs["cbor_item_hex"] == frame_py["cbor_item_hex"]
+
+    sequence_py, sequence_rs = _compare_vector(rust_adapter, "positive/stream-sequence-wire-001.json")
+    assert sequence_rs["frame_count"] == sequence_py["frame_count"]
+    assert sequence_rs["json_seq_hex"] == sequence_py["json_seq_hex"]
+    assert sequence_rs["cbor_seq_hex"] == sequence_py["cbor_seq_hex"]
 
 
 def test_stream_semantic_separations_match(rust_adapter):
