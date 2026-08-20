@@ -56,8 +56,18 @@
         {"type": "null"}
       ]
     },
-    "review_target_id": {"type": "string", "minLength": 1},
-    "review_target_status": {"enum": ["preparing", "frozen"]},
+    "review_target_id": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "review_target_status": {
+      "oneOf": [
+        {"enum": ["preparing", "frozen"]},
+        {"type": "null"}
+      ]
+    },
     "review_target_source_commit": {
       "oneOf": [
         {"type": "null"},
