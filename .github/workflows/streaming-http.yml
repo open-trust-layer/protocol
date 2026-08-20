@@ -72,6 +72,10 @@ jobs:
           assert not failed, failed
           print("Rust streaming-http-v1 conformance: 36/36 PASS")
           PY
+      - name: Run direct Python-Rust M24 interoperability tests
+        env:
+          OLP_RUN_RUST_INTEROP: "1"
+        run: python -m pytest -q tests/interoperability/test_streaming_http_python_rust.py
       - if: always()
         uses: actions/upload-artifact@v6
         with:
