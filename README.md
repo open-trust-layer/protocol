@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-0.1  
 **Specification-set status:** Draft v0.2  
-**Current phase:** Milestone 24 — Streaming & HTTP API Core
+**Current phase:** Post-Milestone 24 integration / next milestone selection
 
 ---
 
@@ -77,11 +77,10 @@ resolution-v1                    16 / 16 PASS  (Python + Rust)
 identity-authority-lifecycle-v1  18 / 18 PASS  (Python + Rust)
 privacy-disclosure-v1            18 / 18 PASS  (Python + Rust)
 transport-encoding-v1            22 / 22 PASS  (Python + Rust)
+streaming-http-v1                36 / 36 PASS  (Python + Rust)
 ```
 
-Direct Python↔Rust interoperability gates cover all of those accepted executable slices. Milestone 23 additionally requires exact deterministic CBOR parity for the single-envelope, Record, and Proof transport cases rather than treating JSON-only success as sufficient.
-
-Milestone 24 takes the separately reviewed streaming and HTTP/API remainder of Specification 0012. Live network behavior remains outside the accepted interoperability surface until that milestone passes its own gates.
+Direct Python↔Rust interoperability gates cover all accepted executable slices. Milestone 23 additionally requires exact deterministic CBOR parity for the single-envelope, Record, and Proof transport cases rather than treating JSON-only success as sufficient. Milestone 24 additionally verifies pinned JSON Text Sequence / CBOR Sequence producer bytes and keeps transport completeness, HTTP/service status, evidence validity, and OLP proof validity as separate dimensions.
 
 ---
 
@@ -103,7 +102,7 @@ Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 | 0009 | Resolution and Discovery Profiles | Executable `resolution-v1` subset |
 | 0010 | Privacy, Selective Disclosure, and Data Minimization | Executable `privacy-disclosure-v1` subset |
 | 0011 | Conformance and Interoperability | Executable framework |
-| 0012 | Transport and API Profiles | Executable `transport-encoding-v1` subset; M24 streaming/HTTP slice next |
+| 0012 | Transport and API Profiles | Executable `transport-encoding-v1` and `streaming-http-v1` subsets |
 | 0013 | Versioning, Registries, and Draft v0.2 Interoperable Core | Cross-cutting v0.2 governance |
 
 The individual numbered documents retain their own document revisions. The **Draft v0.2** label identifies the repository-level specification-set release.
@@ -175,6 +174,8 @@ Milestones 19–22 independently reproduced bundle, resolution, identity/authori
 
 Milestone 23 independently reproduced canonical textual identities, OJVE-1, and the single-object JSON/CBOR transport envelope. Its acceptance corpus explicitly verifies that transport round trips preserve Record Identity, Proof Identity, proof bytes, and deterministic CBOR output.
 
+Milestone 24 independently reproduced the deterministic streaming/HTTP semantic boundary from Specification 0012: exact producer framing, manifest-first stream processing, truncation/completeness separation, immutable identity-bearing reads, HTTP negotiation/status mapping, parsed `Content-Digest` semantics, redirect policy, cache/range/limit handling, and HTTP-auth/OLP-proof separation without ambient network I/O.
+
 ---
 
 ## Security status
@@ -183,11 +184,11 @@ OLP is still experimental and is **not** a production security certification.
 
 Milestone 17 hardened the executable core against parser differentials, URI ambiguity, recursive/resource exhaustion, policy/cryptography conflation, graph-processing errors, and cross-language representation drift.
 
-Milestone 19 added bounded bundle ingestion. Milestone 20 added deterministic resolver SSRF/redirect/private-address policy. Milestone 21 added exact delegation identity/scope checks and immutable lifecycle conflict handling. Milestone 22 added identity-preserving disclosure minimization and correlation/privacy warnings without field-level redaction or ambient network access. Milestone 23 hardened the deterministic transport boundary against non-canonical textual identities, OJVE type loss, heterogeneous-map-key collapse, wrapper ambiguity, and unproven JSON/CBOR parity.
+Milestone 19 added bounded bundle ingestion. Milestone 20 added deterministic resolver SSRF/redirect/private-address policy. Milestone 21 added exact delegation identity/scope checks and immutable lifecycle conflict handling. Milestone 22 added identity-preserving disclosure minimization and correlation/privacy warnings without field-level redaction or ambient network access. Milestone 23 hardened the deterministic transport boundary against non-canonical textual identities, OJVE type loss, heterogeneous-map-key collapse, wrapper ambiguity, and unproven JSON/CBOR parity. Milestone 24 hardened deterministic streaming and HTTP exchange semantics against transport/evidence conflation, local-404 overclaiming, unsafe redirect behavior, content-digest ambiguity, cache/range misuse, and HTTP-auth/proof-validity conflation.
 
-Streaming and HTTP/API boundaries remain security-sensitive work. Live HTTP, redirects, caching, message authentication, authorization, content-digest processing, rate limiting, and stream truncation remain outside the accepted surface until Milestone 24.
+Live production networking remains outside the accepted interoperability surface: M24 does not certify a production HTTP server/client, DNS/TLS stack, general hostile-input RFC 7464/CBOR parser, raw RFC 8941 parser, HTTP Message Signature implementation, proxy/cache deployment, or authentication framework.
 
-See [`SECURITY.md`](SECURITY.md) and [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
+See [`SECURITY.md`](SECURITY.md), [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md), and [`docs/streaming-http-api-core.md`](docs/streaming-http-api-core.md).
 
 ---
 
@@ -195,7 +196,7 @@ See [`SECURITY.md`](SECURITY.md) and [`docs/security-review-milestone-17.md`](do
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-The immediate goal is Milestone 24 — Streaming & HTTP API Core. The project continues to choose executable slices by security risk and interoperability value rather than by adding speculative protocol scope.
+Milestone 24 is accepted and merged. No Milestone 25 scope has been declared yet; the next executable slice will be selected after post-M24 integration review, based on security risk and interoperability value rather than speculative protocol expansion.
 
 ---
 
