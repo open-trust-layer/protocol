@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:olp:stabilization:schema:v1-promotion-candidate:v2",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "candidate",
+    "status",
+    "baseline_commit",
+    "baseline_release",
+    "baseline_release_manifest",
+    "conformance_manifest",
+    "accepted_release_profile",
+    "mandatory_profile",
+    "mandatory_specifications",
+    "optional_profiles",
+    "required_artifacts",
+    "review_target",
+    "external_gates"
+  ],
+  "properties": {
+    "schema": {"const": "olp-v1-promotion-candidate-v2"},
+    "version": {"const": 2},
+    "candidate": {"type": "string", "minLength": 1},
+    "status": {"const": "candidate"},
+    "baseline_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "baseline_release": {"type": "string", "minLength": 1},
+    "baseline_release_manifest": {"type": "string", "minLength": 1},
+    "conformance_manifest": {"type": "string", "minLength": 1},
+    "accepted_release_profile": {"type": "string", "minLength": 1},
+    "mandatory_profile": {"type": "string", "minLength": 1},
+    "mandatory_specifications": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "optional_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["profile", "specifications"],
+        "properties": {
+          "profile": {"type": "string", "minLength": 1},
+          "specifications": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "required_artifacts": {
+      "type": "object",
+      "required": ["threat_model", "review_register", "release_process"],
+      "properties": {
+        "threat_model": {"$ref": "#/$defs/artifact"},
+        "review_register": {"$ref": "#/$defs/artifact"},
+        "release_process": {"$ref": "#/$defs/artifact"}
+      },
+      "additionalProperties": false
+    },
+    "review_target": {"$ref": "#/$defs/reviewTarget"},
+    "external_gates": {
+      "type": "object",
+      "required": ["public_technical_review", "independent_external_security_review"],
+      "properties": {
+        "public_technical_review": {"$ref": "#/$defs/externalGate"},
+        "independent_external_security_review": {"$ref": "#/$defs/externalGate"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "reviewTarget": {
+      "type": "object",
+      "required": ["id", "status", "source_commit"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["preparing", "frozen"]},
+        "source_commit": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "preparing"}}},
+          "then": {"properties": {"source_commit": {"type": "null"}}}
+        },
+        {
+          "if": {"properties": {"status": {"const": "frozen"}}},
+          "then": {"properties": {"source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}}}
+        }
+      ],
+      "additionalProperties": false
+    },
+    "externalGate": {
+      "type": "object",
+      "required": ["status", "reviewed_commit", "references"],
+      "properties": {
+        "status": {"enum": ["pending", "completed"]},
+        "reviewed_commit": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "pending"}}},
+          "then": {
+            "properties": {
+              "reviewed_commit": {"type": "null"},
+              "references": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "completed"}}},
+          "then": {
+            "properties": {
+              "reviewed_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+              "references": {"minItems": 1}
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
