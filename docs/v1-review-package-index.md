@@ -1,12 +1,14 @@
 # OLP v1 Review Package Index
 
-**Status:** review-2 package preparing  
+**Status:** frozen review package index  
 **Review target:** `olp-v1.0-review-2`  
-**Source commit:** not yet frozen
+**Source commit:** `d470970180bfa128ca14fd01ac920c95dd8ec288`
 
 This index collects the materials for the second public/external review round of the OLP v1.0 candidate.
 
 Review-2 supersedes review-1 because the review-1 source did not enforce deterministic LF working-tree bytes for Git for Windows checkouts with `core.autocrlf=true`. The defect and rollover rationale are recorded in Issue #21 and `docs/v1-review-2-rollover.md`.
+
+Public review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Neither tracker by itself satisfies a promotion gate.
 
 ## Candidate and promotion state
 
@@ -28,6 +30,7 @@ Review-2 supersedes review-1 because the review-1 source did not enforce determi
 
 - `docs/v1-public-review-guide.md`
 - `stabilization/v1-review-register.json`
+- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-2`
 
 ## Review-2 rollover and cross-platform reproduction
 
@@ -85,16 +88,14 @@ Specification 0000 is the non-normative overview and should also be reviewed for
 
 ## Source binding
 
-Review-2 is currently in `preparing` state and therefore has no source commit yet.
-
-After the preparation snapshot is merged and fully verified, a metadata-only follow-up will freeze:
+Review-2 is frozen as:
 
 ```text
 id:             olp-v1.0-review-2
-source commit:  <exact immutable SHA>
+source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
-Reviewers must then inspect that exact commit. A branch tip, later commit, or review of different source does not satisfy the promotion gate for this target.
+Reviewers must inspect that exact commit. A branch tip, later commit, or review of different source does not satisfy the promotion gate for this target.
 
 Historical review-1 remains bound to:
 

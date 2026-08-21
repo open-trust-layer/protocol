@@ -10,6 +10,7 @@ REPORT_SCHEMA_V1 = SCHEMAS / "v1-promotion-report.schema.json"
 REPORT_SCHEMA = SCHEMAS / "v2-promotion-report.schema.json"
 CANDIDATE = Path("stabilization/v1.0-candidate.json")
 REVIEW = Path("stabilization/v1-review-register.json")
+CHECKED_IN_REVIEW_COMMIT = "d470970180bfa128ca14fd01ac920c95dd8ec288"
 
 
 def _load(path: Path):
@@ -71,15 +72,15 @@ def test_review_schema_cannot_mark_open_finding_as_an_unknown_status():
     assert finding["properties"]["severity"]["enum"] == ["low", "medium", "high", "critical"]
 
 
-def test_checked_in_candidate_v2_is_preparing_review2_with_empty_external_evidence():
+def test_checked_in_candidate_v2_is_frozen_review2_snapshot_bound_external_review():
     candidate = _load(CANDIDATE)
     assert candidate["schema"] == "olp-v1-promotion-candidate-v2"
     assert candidate["version"] == 2
     assert candidate["status"] == "candidate"
     assert candidate["review_target"] == {
         "id": "olp-v1.0-review-2",
-        "status": "preparing",
-        "source_commit": None,
+        "status": "frozen",
+        "source_commit": CHECKED_IN_REVIEW_COMMIT,
     }
     for gate in candidate["external_gates"].values():
         assert gate == {"status": "pending", "reviewed_commit": None, "references": []}

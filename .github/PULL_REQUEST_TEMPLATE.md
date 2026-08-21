@@ -38,15 +38,15 @@ Explain any checked semantic impact:
 Current frozen target:
 
 ```text
-olp-v1.0-review-1
-877493826d673ccf9bb94e7b6b113b35141ad220
+olp-v1.0-review-2
+d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
 - [ ] This PR is operational/editorial and does not change the frozen reviewed source.
 - [ ] This PR is a material source-changing fix and may require a new review target.
 - [ ] Not applicable.
 
-If a new review target may be required, explain why. Do not silently rebind review evidence from an older target.
+If a new review target may be required, explain why. Do not silently rebind review evidence from an older target. `olp-v1.0-review-1` and any later superseded targets remain historical evidence for their original source bytes.
 
 ## Finding / issue linkage
 
@@ -56,7 +56,7 @@ Related issue or review finding:
 
 List the tests, conformance profiles, commitment checks, or manual verification performed.
 
-For deterministic behavior changes, include Python/Rust parity and direct interoperability evidence where applicable.
+For deterministic behavior changes, include Python/Rust parity and direct interoperability evidence where applicable. For repository-byte or release-reproducibility changes, include the Windows `core.autocrlf=true` path where relevant.
 
 ## Security
 
@@ -71,3 +71,4 @@ For deterministic behavior changes, include Python/Rust parity and direct intero
 - [ ] JSON object order was not made semantic.
 - [ ] Conformance was not described as security certification.
 - [ ] Public/internal review was not described as independent external security review.
+- [ ] Review evidence was not silently carried across changed source bytes.

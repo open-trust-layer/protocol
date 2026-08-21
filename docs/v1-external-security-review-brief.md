@@ -1,9 +1,10 @@
 # OLP v1 Independent External Security Review Brief
 
-**Status:** reviewer brief; review-2 source not yet frozen  
+**Status:** reviewer brief; independent review not yet completed  
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-2`  
-**Source commit:** not yet frozen
+**Frozen source commit:** `d470970180bfa128ca14fd01ac920c95dd8ec288`  
+**Security review tracker:** Issue #25
 
 ## Purpose
 
@@ -15,7 +16,7 @@ The project deliberately keeps this gate separate from maintainer review, automa
 
 Review-1 remains historically bound to source commit `877493826d673ccf9bb94e7b6b113b35141ad220`; it is not rebound to the corrected source.
 
-Any review intended to satisfy the stable-promotion gate must examine the exact review-2 source commit after it is frozen. A branch tip or different commit cannot satisfy the gate.
+Any review intended to satisfy the stable-promotion gate must examine the exact frozen review-2 source commit above. A branch tip or different commit cannot satisfy the gate.
 
 ## Minimum review scope
 
@@ -80,7 +81,7 @@ Findings in those areas are still useful when they expose a protocol/specificati
 A useful review deliverable should identify:
 
 - review target `olp-v1.0-review-2`;
-- the exact frozen source commit once published;
+- exact source commit `d470970180bfa128ca14fd01ac920c95dd8ec288`;
 - review methodology and scope;
 - findings with severity and affected components;
 - whether each finding changes deterministic bytes, capability semantics, implementation-only behavior, or documentation;
@@ -88,10 +89,10 @@ A useful review deliverable should identify:
 - residual risks; and
 - a durable public or project-verifiable reference suitable for the promotion manifest once disclosure permits.
 
-A review of a different source commit cannot satisfy the external-security promotion gate for the frozen review-2 target.
+A review of a different source commit cannot satisfy the external-security promotion gate for this frozen target.
 
 ## Finding disposition
 
 High/critical findings affecting the promoted boundary keep stable promotion blocked until resolved. If a material source change is required, the project must freeze a new review-target identifier and obtain review evidence for that new target rather than reusing the old completion state.
 
-Sensitive vulnerability details should use the coordinated process in `SECURITY.md`.
+Coordination belongs in Issue #25. Sensitive vulnerability details should use the coordinated process in `SECURITY.md` rather than being posted publicly.

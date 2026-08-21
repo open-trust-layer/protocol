@@ -1,9 +1,10 @@
 # OLP v1 Public Technical Review Guide
 
-**Status:** review-2 preparation guide  
+**Status:** open-review guide  
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-2`  
-**Source commit:** not yet frozen  
+**Frozen source commit:** `d470970180bfa128ca14fd01ac920c95dd8ec288`  
+**Public review tracker:** Issue #24  
 **Current mandatory candidate core:** `core-v1`
 
 ## Review goal
@@ -14,7 +15,7 @@ The public technical review is intended to challenge the proposed OLP v1.0 candi
 
 Review-1 remains immutable historical evidence for source commit `877493826d673ccf9bb94e7b6b113b35141ad220`. Its review evidence, if any, does not automatically satisfy review-2.
 
-The exact review-2 source commit will be bound only after this preparation snapshot is merged and the full repository matrix passes. Until then, reviewers should not treat a moving branch tip as the review target.
+Reviewers must inspect the exact frozen review-2 source commit above. A branch tip, later `main`, or another commit is not the review target.
 
 ## Primary questions
 
@@ -62,9 +63,15 @@ Optional profiles are not silently required for a mandatory-core conformance cla
 
 ## Review-2 reproduction invariant
 
-The review-2 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
+The frozen review-2 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
 
-Once the exact source commit is frozen, reviewers should check out that exact SHA and run:
+Check out exactly:
+
+```text
+d470970180bfa128ca14fd01ac920c95dd8ec288
+```
+
+Then run:
 
 ```bash
 python -m pip install -e '.[test]'
@@ -86,23 +93,23 @@ draft-v0.3-interoperable-v1
 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 ```
 
-The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for the same frozen review-2 target.
+The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
 
 ## Finding format
 
 A useful public review finding should identify:
 
-1. the exact frozen review-2 source commit once published;
+1. frozen source commit `d470970180bfa128ca14fd01ac920c95dd8ec288`;
 2. affected specification section(s) or implementation file(s);
 3. finding class (`ambiguity`, `interoperability`, `security`, `privacy`, `governance`, `reproducibility`, `editorial`, or other clearly described class);
 4. severity or likely impact;
 5. a concrete conflicting interpretation, reproduction, or attack scenario where possible; and
 6. whether the proposed resolution would change deterministic bytes or capability semantics.
 
-Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
+Public findings belong in Issue #24 or a dedicated linked issue. Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
 
 ## Review completion
 
 Public review is not complete merely because a tracker issue exists or a period of time has elapsed.
 
-Completion requires durable references that identify the exact frozen review-2 source commit and disposition of material findings. If a later material source change results, a new review target must be frozen and review evidence for review-2 cannot satisfy that new target automatically.
+Completion requires durable references that identify this exact frozen review-2 source commit and disposition of material findings. If a later material source change results, a new review target must be frozen and review evidence for review-2 cannot satisfy that new target automatically.
