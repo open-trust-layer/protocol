@@ -6,6 +6,20 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ## [Unreleased]
 
+### v1.0 external review round 1 and review-binding hardening
+
+- Add promotion-schema v2 source binding so completed external-review evidence must identify the exact frozen review-target source commit.
+- Preserve historical v1 promotion schemas rather than silently changing their contracts; add v2 candidate/report schemas for source-bound review evidence.
+- Advance Specification 0015 governance from v0.1 to v0.2 without changing Record, Proof, evidence, transport, or accepted capability semantics.
+- Add regression coverage for stale or mismatched reviewed commits, malformed frozen targets, and attempts to reuse review evidence after source changes.
+- Add reviewer-facing package material for public technical review, independent external security review, review-target lifecycle, and review-package navigation.
+- Freeze `olp-v1.0-review-1` to exact source commit `877493826d673ccf9bb94e7b6b113b35141ad220`.
+- Keep both external promotion gates `PENDING`; opening trackers or contacting reviewers does not satisfy either gate.
+- Open public technical review Issue #17 and independent external security review coordination Issue #18.
+- Update `README.md` to surface the active review round, exact frozen source, source-binding rules, reviewer navigation, and intentionally `BLOCKED` promotion state.
+- Refresh `ROADMAP.md` and `SECURITY.md` for the active review round and add contributor/review templates that preserve the frozen-target discipline.
+- Preserve the Draft v0.3 180-case corpus commitment `62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc` and mandatory `core-v1` commitment `8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e` unchanged.
+
 ### Milestone 26 — v1.0 candidate boundary and promotion gates
 
 - Select the existing eight-capability `core-v1` profile as the mandatory v1.0 candidate core without renaming or redefining it.

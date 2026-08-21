@@ -1,10 +1,61 @@
 # Open Layer Protocol — Roadmap
 
-**Project status:** experimental / pre-1.0 candidate work  
+**Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Post-Milestone 26 — public technical review / independent external security review
+**Current phase:** v1.0 candidate — external review round 1 in progress
 
 Milestone numbers are project milestones, not protocol version numbers.
+
+> **OLP v1.0 has not been released.** Stable promotion remains intentionally blocked until the required public technical review and independent external security review are completed against the same exact frozen review target.
+
+## Current v1.0 review target
+
+The first external-review target is frozen as:
+
+```text
+review target:  olp-v1.0-review-1
+status:         frozen
+source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
+```
+
+The authoritative freeze declaration was merged afterward in commit:
+
+```text
+7379e3c34a762cf5dbf44075dc47c291e9f0b749
+```
+
+That ordering is intentional: the immutable source snapshot must exist before later metadata can bind a review-target identifier to its exact commit hash.
+
+Reviewers must inspect the frozen source commit, not a moving branch tip or later `main`.
+
+Public coordination:
+
+- Issue #17 — public technical review
+- Issue #18 — independent external security review coordination
+- `docs/v1-review-package-index.md`
+- `docs/v1-public-review-guide.md`
+- `docs/v1-external-security-review-brief.md`
+- `docs/v1-review-round-lifecycle.md`
+
+Current promotion state:
+
+```text
+internal readiness:                       PASS
+stable promotion:                         BLOCKED
+public technical review:                  PENDING
+independent external security review:     PENDING
+```
+
+Required blocker codes:
+
+```text
+PUBLIC_TECHNICAL_REVIEW_REQUIRED
+INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
+```
+
+Opening a tracker, sending outreach, receiving an audit proposal, or publishing a review URL does not itself satisfy either external gate.
+
+---
 
 ## Phase I — Specification foundation
 
@@ -27,7 +78,7 @@ Milestones 1–12 are complete at the specification-design level:
 
 ### Milestone 13 — Reference Implementation Core
 
-**Completed.** Python implementation of Record Identity, commitments, ProofInputV1, Ed25519 proof creation/verification, deterministic CBOR, and structured verification results.
+**Completed.** Python implementation of Record Identity, commitments, `ProofInputV1`, Ed25519 proof creation/verification, deterministic CBOR, and structured verification results.
 
 ### Milestone 14 — Executable Conformance Harness
 
@@ -35,15 +86,15 @@ Milestones 1–12 are complete at the specification-design level:
 
 ### Milestone 15 — Independent Second Implementation
 
-**Completed and independently verified.** Independent Rust implementation reproduces the deterministic core and cross-verifies with Python.
+**Completed and independently reproduced.** Independent Rust implementation reproduces the deterministic core and cross-verifies with Python.
 
 ### Milestone 16 — Evidence Graph Core
 
-**Completed and independently verified.** Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, dangling references, cycle safety, and resource-bound behavior.
+**Completed and independently reproduced.** Proof Identity, `EvidenceRefV1`, relationship processing, graph projection/traversal, dangling references, cycle safety, and resource-bound behavior.
 
-### Milestone 17 — Adversarial & Security Review
+### Milestone 17 — Internal Adversarial & Security Review
 
-**Completed, fixed, independently verified, and merged.**
+**Completed, fixed, independently reproduced, and merged.**
 
 ```text
 Python core-v1            62 / 62 PASS
@@ -52,11 +103,15 @@ Python <-> Rust interop    PASS
 Python 3.11-3.14 CI        PASS
 ```
 
+This was an internal adversarial review. It is not the independent external security review required for stable promotion.
+
 See `docs/security-review-milestone-17.md`.
 
 ### Milestone 18 — Draft v0.2 Integration Pass
 
-**Completed, independently verified, and merged.** Added Specification 0013, release/version/registry governance, Draft v0.2 release metadata, promoted evidence vectors, and a frozen eight-capability `core-v1` without changing existing v1 deterministic bytes.
+**Completed, independently reproduced, and merged.** Added Specification 0013, release/version/registry governance, Draft v0.2 release metadata, promoted evidence vectors, and the frozen eight-capability `core-v1` without changing existing v1 deterministic bytes.
+
+---
 
 ## Phase III — Executable higher layers
 
@@ -84,7 +139,7 @@ See `docs/security-review-milestone-17.md`.
 
 **Accepted and merged.** `streaming-http-v1` 36/36 in Python and Rust; exact sequence producer bytes, manifest-first/truncation semantics, immutable HTTP reads, status/negotiation separation, parsed `Content-Digest`, redirect/cache/range/413/429 policy, and HTTP-auth/OLP-proof separation with zero ambient network I/O in conformance.
 
-See `docs/streaming-http-api-core.md` and `conformance/VECTOR-INDEX-M24.md`.
+---
 
 ## Phase IV — Release integration and stabilization
 
@@ -92,7 +147,7 @@ See `docs/streaming-http-api-core.md` and `conformance/VECTOR-INDEX-M24.md`.
 
 **Accepted and merged.**
 
-M25 added no new evidence or wire semantics. It turned the independently accepted Milestones 17–24 into one precise release-level interoperability claim.
+M25 added no new evidence or wire semantics. It converted independently accepted executable work into one reproducibly committed release-level interoperability claim:
 
 ```text
 draft-v0.3-interoperable-v1 capabilities   15
@@ -139,43 +194,64 @@ transport-encoding-v1
 streaming-http-v1
 ```
 
-Mandatory + optional candidates cover exactly the 15 Draft v0.3 accepted capabilities without making the optional profiles mandatory.
+Mandatory + optional candidates cover exactly the 15 Draft v0.3 accepted capabilities without making optional profiles mandatory.
 
-M26 outputs include:
+M26 also added:
 
 - Specification 0015 — Stable Profile Promotion and Readiness;
 - `stabilization/v1.0-candidate.json`;
-- machine-readable candidate/review/report schemas;
-- `olp-conformance promotion-check` with `INVALID`, `BLOCKED`, and `READY` states;
+- machine-readable promotion schemas;
+- `olp-conformance promotion-check` with `INVALID`, `BLOCKED`, and `READY`;
 - a pinned v1 candidate threat model;
 - a machine-readable contradiction/review register covering Specifications 0000–0015;
 - stable release, migration, deprecation, errata, and rollback rules;
 - adversarial promotion-gate tests; and
 - Python 3.11–3.14 promotion-readiness CI.
 
-The accepted M26 state is deliberately:
+M26 does not publish v1.0. It makes the remaining external work explicit and prevents internal conformance from being misrepresented as independent review.
 
-```text
-internal readiness:                       PASS
-stable promotion:                         BLOCKED
-public technical review:                  PENDING
-independent external security review:     PENDING
-```
+---
 
-Required blocker codes:
+## Phase V — External review and finding disposition
 
-```text
-PUBLIC_TECHNICAL_REVIEW_REQUIRED
-INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
-```
+**In progress.**
 
-M26 does not publish v1.0. It makes the remaining external work explicit and prevents internal conformance from being misrepresented as independent security review.
+### Review round 1
 
-See `docs/v1-candidate-readiness.md`, `docs/v1-threat-model.md`, `docs/v1-release-process.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
+The exact candidate snapshot has already been frozen as `olp-v1.0-review-1` at source commit `877493826d673ccf9bb94e7b6b113b35141ad220`.
+
+The current legitimate work is:
+
+1. obtain meaningful public technical review of that exact source;
+2. obtain genuinely independent external security review of that exact source;
+3. reproduce and classify findings;
+4. disposition findings with durable references;
+5. add regression/conformance coverage for accepted defects where appropriate; and
+6. preserve exact source-binding in all promotion evidence.
+
+### If a material source change is required
+
+A material fix does **not** silently modify the meaning of `olp-v1.0-review-1`.
+
+Instead:
+
+1. `olp-v1.0-review-1` remains historical evidence for its original bytes;
+2. the defect is fixed in a new source snapshot;
+3. a new review-target identifier is frozen, expected to be `olp-v1.0-review-2`;
+4. affected external gates return to `PENDING` for the new target; and
+5. review evidence for review-1 cannot automatically satisfy review-2.
+
+### If no material source change is required
+
+Once both external gates are legitimately completed for the same exact frozen source, the promotion evaluator may reach `READY`.
+
+`READY` is permission to begin final stable publication mechanics. It is not itself the stable release.
+
+---
 
 ## Path toward v1.0
 
-A stable OLP v1.0 should require at minimum:
+A stable OLP v1.0 requires, at minimum:
 
 1. an explicitly promoted mandatory stable profile and normative boundary;
 2. reproducible canonical vectors and release-level corpus commitments;
@@ -185,21 +261,16 @@ A stable OLP v1.0 should require at minimum:
 6. no unresolved normative contradictions in the promoted boundary;
 7. stable extension, registry, reason-code, migration, deprecation, and errata governance;
 8. public versioned conformance corpus and immutable release manifests;
-9. independent external security review of the intended stable boundary; and
-10. documented deployment/threat assumptions and release criteria.
+9. meaningful public technical review of the exact promoted source;
+10. independent external security review of that exact source; and
+11. documented deployment/threat assumptions and release criteria.
 
-M25 materially completed the corpus/release-identity layer. M26 completed the internally satisfiable parts of stable-boundary selection, contradiction review, governance, and threat/release assumptions while making independent external security review and public technical review impossible to bypass accidentally.
+Items 1–8 and 11 are internally established for the current candidate boundary. Items 9–10 are the active promotion blockers.
 
-The current next legitimate work is review-driven:
-
-1. freeze an exact candidate snapshot for public technical review;
-2. obtain independent external security review;
-3. disposition material findings through clarification, errata, or explicit version changes;
-4. rerun exact conformance/interoperability on the resulting snapshot; and
-5. only when promotion state becomes `READY`, perform release-candidate/stable publication mechanics.
-
-No Milestone 27 protocol-feature scope is declared by this roadmap update.
+No Milestone 27 protocol-feature scope is declared.
 
 ## Deliberately not on the immediate roadmap
 
 Do not prioritize a marketplace, token, blockchain, universal reputation score, universal identity provider, hosted trust service, or speculative protocol features merely to continue the milestone sequence.
+
+The project should remain review-driven until the current candidate has either been dispositioned successfully or superseded by a new frozen review target.
