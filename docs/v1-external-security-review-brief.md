@@ -1,9 +1,9 @@
 # OLP v1 Independent External Security Review Brief
 
-**Status:** reviewer brief; independent review not yet commissioned/completed  
+**Status:** reviewer brief; review-2 source not yet frozen  
 **Candidate:** `olp-v1.0`  
-**Review target:** `olp-v1.0-review-1`  
-**Frozen source commit:** `877493826d673ccf9bb94e7b6b113b35141ad220`
+**Review target:** `olp-v1.0-review-2`  
+**Source commit:** not yet frozen
 
 ## Purpose
 
@@ -11,7 +11,11 @@ This document describes the intended scope for an independent external security 
 
 The project deliberately keeps this gate separate from maintainer review, automated conformance, and the internal Milestone 17/Milestone 26 adversarial work.
 
-Any review intended to satisfy the stable-promotion gate must examine the exact frozen source commit above.
+`olp-v1.0-review-2` supersedes review-1 after a cross-platform checkout reproducibility defect was identified: exact-byte corpus and promotion-artifact hashes could fail on Git for Windows checkouts with `core.autocrlf=true`. Review-2 includes repository-enforced LF text checkout semantics and a Windows reproduction gate. See Issue #21 and `docs/v1-review-2-rollover.md`.
+
+Review-1 remains historically bound to source commit `877493826d673ccf9bb94e7b6b113b35141ad220`; it is not rebound to the corrected source.
+
+Any review intended to satisfy the stable-promotion gate must examine the exact review-2 source commit after it is frozen. A branch tip or different commit cannot satisfy the gate.
 
 ## Minimum review scope
 
@@ -33,7 +37,8 @@ The external review should challenge the exact frozen source snapshot, including
 - modeled HTTP integrity/status/auth separation where assessed;
 - versioning, extensions, downgrade resistance, and registry governance;
 - cross-specification contradictions or ambiguity;
-- conformance corpus adequacy and meaningful negative coverage; and
+- conformance corpus adequacy and meaningful negative coverage;
+- exact-byte release/corpus reproducibility across supported checkout environments; and
 - release/promotion rules that could permit stale review evidence or premature stable claims.
 
 ## High-value attacker models
@@ -51,7 +56,8 @@ Review should consider attempts to:
 - bypass delegation scope or lifecycle/status constraints;
 - cause graph/bundle/parser resource exhaustion;
 - induce SSRF, redirect-policy, cache, or content-integrity confusion;
-- exploit disclosure/correlation surfaces; and
+- exploit disclosure/correlation surfaces;
+- exploit platform, checkout, newline, filesystem, locale, or serialization assumptions to break deterministic verification; and
 - reuse review/conformance artifacts against changed source.
 
 ## Deliberate non-claims
@@ -73,8 +79,8 @@ Findings in those areas are still useful when they expose a protocol/specificati
 
 A useful review deliverable should identify:
 
-- review target `olp-v1.0-review-1`;
-- exact source commit `877493826d673ccf9bb94e7b6b113b35141ad220`;
+- review target `olp-v1.0-review-2`;
+- the exact frozen source commit once published;
 - review methodology and scope;
 - findings with severity and affected components;
 - whether each finding changes deterministic bytes, capability semantics, implementation-only behavior, or documentation;
@@ -82,7 +88,7 @@ A useful review deliverable should identify:
 - residual risks; and
 - a durable public or project-verifiable reference suitable for the promotion manifest once disclosure permits.
 
-A review of a different source commit cannot satisfy the external-security promotion gate for this frozen target.
+A review of a different source commit cannot satisfy the external-security promotion gate for the frozen review-2 target.
 
 ## Finding disposition
 

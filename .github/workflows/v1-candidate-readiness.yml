@@ -53,7 +53,7 @@ jobs:
           assert len(value["mandatory_capabilities"]) == 8
           assert len(value["optional_profiles"]) == 6
           assert len(value["optional_capabilities"]) == 7
-          assert value["review_target_id"] == "olp-v1.0-review-1"
+          assert value["review_target_id"] == "olp-v1.0-review-2"
           assert value["review_target_status"] in {"preparing", "frozen"}
           if value["review_target_status"] == "preparing":
               assert value["review_target_source_commit"] is None

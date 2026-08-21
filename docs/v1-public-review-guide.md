@@ -1,16 +1,20 @@
 # OLP v1 Public Technical Review Guide
 
-**Status:** open-review guide  
+**Status:** review-2 preparation guide  
 **Candidate:** `olp-v1.0`  
-**Review target:** `olp-v1.0-review-1`  
-**Frozen source commit:** `877493826d673ccf9bb94e7b6b113b35141ad220`  
+**Review target:** `olp-v1.0-review-2`  
+**Source commit:** not yet frozen  
 **Current mandatory candidate core:** `core-v1`
 
 ## Review goal
 
 The public technical review is intended to challenge the proposed OLP v1.0 candidate boundary before stable promotion. It is not a vote on branding or project direction and it is not a substitute for independent security review.
 
-Reviewers must inspect the exact frozen source commit above. A branch tip or later commit is not the review target.
+`olp-v1.0-review-2` supersedes `olp-v1.0-review-1` because review-1 did not enforce deterministic LF working-tree bytes on Git for Windows checkouts with `core.autocrlf=true`. That defect is recorded in Issue #21 and corrected by repository-level line-ending policy plus an explicit Windows reproduction gate.
+
+Review-1 remains immutable historical evidence for source commit `877493826d673ccf9bb94e7b6b113b35141ad220`. Its review evidence, if any, does not automatically satisfy review-2.
+
+The exact review-2 source commit will be bound only after this preparation snapshot is merged and the full repository matrix passes. Until then, reviewers should not treat a moving branch tip as the review target.
 
 ## Primary questions
 
@@ -24,12 +28,13 @@ Reviewers are especially asked to identify:
 - resolver/HTTP semantics that could overclaim verification or global existence;
 - privacy/correlation risks that are understated or internally inconsistent;
 - extension/versioning rules that could permit silent downgrade or semantic drift;
-- stable-promotion rules that could reuse stale conformance or review evidence; and
-- migration/deprecation/errata rules that could silently rewrite historical evidence.
+- stable-promotion rules that could reuse stale conformance or review evidence;
+- migration/deprecation/errata rules that could silently rewrite historical evidence; and
+- release/corpus reproduction assumptions that depend on host platform, Git checkout policy, filesystem behavior, locale, or newline conversion.
 
 ## Candidate boundary
 
-The mandatory candidate core is exactly the existing eight-capability `core-v1` profile:
+The mandatory candidate core remains exactly the existing eight-capability `core-v1` profile:
 
 ```text
 olp.record-identity.v1
@@ -55,15 +60,11 @@ streaming-http-v1
 
 Optional profiles are not silently required for a mandatory-core conformance claim.
 
-## Reproduction
+## Review-2 reproduction invariant
 
-Check out exactly:
+The review-2 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
 
-```text
-877493826d673ccf9bb94e7b6b113b35141ad220
-```
-
-Then run:
+Once the exact source commit is frozen, reviewers should check out that exact SHA and run:
 
 ```bash
 python -m pip install -e '.[test]'
@@ -75,7 +76,7 @@ olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json
 olp-conformance promotion-check --candidate stabilization/v1.0-candidate.json --json
 ```
 
-Expected corpus commitments are:
+Expected corpus commitments remain unchanged:
 
 ```text
 core-v1
@@ -85,15 +86,15 @@ draft-v0.3-interoperable-v1
 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 ```
 
-The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
+The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for the same frozen review-2 target.
 
 ## Finding format
 
 A useful public review finding should identify:
 
-1. frozen source commit `877493826d673ccf9bb94e7b6b113b35141ad220`;
+1. the exact frozen review-2 source commit once published;
 2. affected specification section(s) or implementation file(s);
-3. finding class (`ambiguity`, `interoperability`, `security`, `privacy`, `governance`, `editorial`, or other clearly described class);
+3. finding class (`ambiguity`, `interoperability`, `security`, `privacy`, `governance`, `reproducibility`, `editorial`, or other clearly described class);
 4. severity or likely impact;
 5. a concrete conflicting interpretation, reproduction, or attack scenario where possible; and
 6. whether the proposed resolution would change deterministic bytes or capability semantics.
@@ -104,4 +105,4 @@ Security-sensitive exploit details should follow `SECURITY.md` rather than being
 
 Public review is not complete merely because a tracker issue exists or a period of time has elapsed.
 
-Completion requires durable references that identify this exact frozen source commit and disposition of material findings. If a material source change results, a new review target must be frozen and review evidence for `olp-v1.0-review-1` cannot satisfy the new target automatically.
+Completion requires durable references that identify the exact frozen review-2 source commit and disposition of material findings. If a later material source change results, a new review target must be frozen and review evidence for review-2 cannot satisfy that new target automatically.
