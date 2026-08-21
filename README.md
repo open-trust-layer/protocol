@@ -4,9 +4,11 @@
 
 > Open Layer Protocol exists to make trust portable and verifiable without making trust centrally owned.
 
-**Project status:** experimental / pre-1.0 candidate work  
+**Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** Post-Milestone 26 — public technical review / independent external security review
+**Current phase:** v1.0 candidate — external review round 1 in progress
+
+> **OLP v1.0 has not been released.** The current candidate is intentionally blocked from stable promotion until public technical review and independent external security review are completed against the exact frozen review target.
 
 ---
 
@@ -93,6 +95,77 @@ See [`specification/0015-stable-profile-promotion-and-readiness.md`](specificati
 
 ---
 
+## v1.0 external review — round 1
+
+The first v1.0 external-review target is frozen and review is open.
+
+```text
+review target:  olp-v1.0-review-1
+status:         frozen
+source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
+```
+
+Reviewers must inspect the **exact frozen source commit**, not a moving branch tip or later `main`:
+
+- [Frozen source snapshot](https://github.com/open-trust-layer/protocol/commit/877493826d673ccf9bb94e7b6b113b35141ad220)
+- [Issue #17 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/17)
+- [Issue #18 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/18)
+
+The authoritative freeze declaration was merged after the reviewed source snapshot, in commit:
+
+```text
+7379e3c34a762cf5dbf44075dc47c291e9f0b749
+```
+
+That ordering is intentional. A Git commit cannot contain its own eventual hash, so the immutable source snapshot had to exist before later metadata could bind `olp-v1.0-review-1` to that exact source SHA. At the reviewed source commit itself, candidate metadata therefore still records the review target as `preparing`; current candidate metadata records the authoritative frozen binding.
+
+A review of another commit, later branch tip, or later `main` does **not** satisfy this review round.
+
+Reviewer-facing material:
+
+- [`docs/v1-review-package-index.md`](docs/v1-review-package-index.md)
+- [`docs/v1-public-review-guide.md`](docs/v1-public-review-guide.md)
+- [`docs/v1-external-security-review-brief.md`](docs/v1-external-security-review-brief.md)
+- [`docs/v1-review-round-lifecycle.md`](docs/v1-review-round-lifecycle.md)
+- [`docs/v1-threat-model.md`](docs/v1-threat-model.md)
+- [`docs/v1-release-process.md`](docs/v1-release-process.md)
+- [`docs/v1-candidate-readiness.md`](docs/v1-candidate-readiness.md)
+- [`stabilization/v1-review-register.json`](stabilization/v1-review-register.json)
+- [`SECURITY.md`](SECURITY.md)
+
+High-value review areas include:
+
+- cross-specification contradictions and ambiguous security semantics;
+- canonicalization, Record Identity, Proof Identity, and cross-implementation determinism;
+- proof-input construction, algorithm/key/verification-method/record/proof-purpose substitution;
+- identity, authority, lifecycle, trust, and authorization separation;
+- evidence relationships and graph semantics;
+- bundle completeness, disclosure withholding, and nonexistence claims;
+- resolver/network/HTTP success versus cryptographic verification or existence;
+- privacy and correlation assumptions;
+- extension, versioning, registry, downgrade, migration, deprecation, and errata behavior;
+- malformed input and parser/resource bounds;
+- graph and bundle amplification;
+- transport, framing, encoding, and content-integrity ambiguity; and
+- stale conformance or review-evidence reuse during promotion.
+
+### Review evidence is source-bound
+
+Opening a review issue, sending an outreach message, receiving an audit proposal, or publishing a review URL does not by itself satisfy a promotion gate.
+
+A completed external gate must identify the exact frozen source commit and provide durable review evidence for that target.
+
+If a material finding requires a source-changing fix:
+
+1. `olp-v1.0-review-1` remains historically bound to its original frozen source;
+2. the source is corrected;
+3. a new review-target identifier is frozen; and
+4. affected external reviews must apply to that new target.
+
+Review evidence is never silently rebound to changed source bytes.
+
+---
+
 ## Independently verified executable profiles
 
 The frozen `core-v1` profile contains eight capabilities and remains 62/62 in both implementations.
@@ -147,7 +220,7 @@ Start with [`specification/0000-overview.md`](specification/0000-overview.md).
 | 0014 | Release Profiles and Conformance Suite Commitments | Mandatory release/corpus governance |
 | 0015 | Stable Profile Promotion and Readiness | Mandatory v1 candidate promotion governance |
 
-Individual numbered documents retain their own document revisions. Draft v0.3 remains the current specification-set release; Milestone 26 defines a candidate boundary on top of it rather than publishing a new set release.
+Individual numbered documents retain their own document revisions. Draft v0.3 remains the current specification-set release; the v1.0 candidate boundary and external-review round sit on top of that set rather than publishing a new specification-set release.
 
 ---
 
@@ -187,6 +260,9 @@ release corpus commitment
           |
           v
 candidate boundary + promotion gates
+          |
+          v
+source-bound external review
 ```
 
 Foundational separations include:
@@ -205,6 +281,8 @@ corpus commitment     != conformance result
 candidate             != stable
 conformance result    != security certification
 protocol conformance  != deployment certification
+review issue          != completed review
+review URL            != source-bound review evidence
 ```
 
 ---
@@ -239,6 +317,28 @@ olp-conformance promotion-check \
 
 and it must fail while required external review remains pending.
 
+To reproduce the frozen review target itself, check out:
+
+```bash
+git checkout 877493826d673ccf9bb94e7b6b113b35141ad220
+python -m pip install -e '.[test]'
+python -m pytest -q
+olp-conformance run --profile core-v1
+olp-conformance run --profile draft-v0.3-interoperable-v1
+olp-conformance commitment --profile core-v1 --json
+olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json
+```
+
+Expected commitments:
+
+```text
+core-v1
+8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e
+
+draft-v0.3-interoperable-v1
+62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
+```
+
 ---
 
 ## Security status
@@ -247,11 +347,13 @@ OLP remains experimental and is **not** a production security certification.
 
 Milestones 17–24 added adversarial hardening across canonicalization, proof handling, graph traversal, bundles, resolution/SSRF policy, delegation/lifecycle evidence, privacy/disclosure planning, transport encoding, streaming semantics, and modeled HTTP exchange behavior.
 
-Milestone 26 adds an explicit candidate threat model, contradiction/review register, release/deprecation/errata process, and a fail-closed promotion gate. It deliberately does not mark independent external security review complete.
+Milestone 26 added an explicit candidate threat model, contradiction/review register, release/deprecation/errata process, and a fail-closed promotion gate.
+
+The current v1.0 review round further binds external review evidence to an exact immutable source commit. Public technical review is open, and the project is seeking a genuinely independent external security review. Neither external gate is complete yet.
 
 Not certified include production HTTP clients/servers, DNS/TLS behavior, proxy/cache deployments, raw hostile-input parser completeness beyond the tested boundaries, HTTP Message Signature deployment, application authentication/authorization frameworks, operational key management, production-scale denial-of-service resistance, or independent external security review.
 
-See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-model.md), and [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
+See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-model.md), [`docs/v1-external-security-review-brief.md`](docs/v1-external-security-review-brief.md), and [`docs/security-review-milestone-17.md`](docs/security-review-milestone-17.md).
 
 ---
 
@@ -259,7 +361,17 @@ See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-mod
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 26 is accepted and merged. The v1.0 candidate is internally coherent but remains externally **BLOCKED**. The next legitimate work is public technical review and independent external security review, followed by disposition of material findings—not speculative feature expansion.
+Milestone 26 is accepted and merged. The first v1.0 external-review target is frozen and public review is open.
+
+The current work is **review and disposition**, not speculative feature expansion:
+
+1. public technical reviewers inspect the exact frozen source;
+2. an independent external security reviewer assesses the exact frozen source;
+3. findings are reproduced, classified, and dispositioned;
+4. source-changing material fixes trigger a new frozen review target; and
+5. stable promotion is considered only after all mandatory gates are satisfied for the same exact target.
+
+Until then, the v1.0 candidate remains intentionally **BLOCKED** from stable promotion.
 
 ---
 
