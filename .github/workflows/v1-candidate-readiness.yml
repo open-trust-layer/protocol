@@ -35,7 +35,8 @@ jobs:
             tests/conformance/test_promotion_review_binding.py \
             tests/conformance/test_promotion_schemas.py \
             tests/conformance/test_commitment.py \
-            tests/conformance/test_draft_v03_release.py
+            tests/conformance/test_draft_v03_release.py \
+            tests/conformance/test_repository_byte_reproducibility.py
 
       - name: Evaluate v1 candidate promotion gates
         run: |
@@ -105,3 +106,45 @@ jobs:
             v1-promotion-report.json
             v1-core-candidate-commitment.json
           if-no-files-found: error
+
+  windows-checkout-reproducibility:
+    runs-on: windows-latest
+
+    steps:
+      - name: Enable the common Git for Windows newline policy
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf true
+          git config --global --get core.autocrlf
+
+      - name: Check out repository under core.autocrlf=true
+        uses: actions/checkout@v5
+
+      - name: Inspect effective line-ending policy
+        shell: pwsh
+        run: |
+          git check-attr text eol -- conformance/manifest.json docs/v1-threat-model.md stabilization/v1-review-register.json docs/v1-release-process.md
+          git ls-files --eol -- conformance/manifest.json docs/v1-threat-model.md stabilization/v1-review-register.json docs/v1-release-process.md
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install package and test dependencies
+        shell: pwsh
+        run: python -m pip install -e ".[test]"
+
+      - name: Run exact-byte checkout regressions
+        shell: pwsh
+        run: |
+          python -m pytest -q tests/conformance/test_repository_byte_reproducibility.py tests/conformance/test_commitment.py tests/conformance/test_promotion.py tests/conformance/test_promotion_schemas.py
+
+      - name: Run reviewer commitment and promotion commands
+        shell: pwsh
+        run: |
+          olp-conformance commitment --profile core-v1 --json > core-commitment.json
+          olp-conformance commitment --profile draft-v0.3-interoperable-v1 --json > release-commitment.json
+          olp-conformance promotion-check --candidate stabilization/v1.0-candidate.json --json > promotion-report.json
+          python -c 'import json; core=json.load(open("core-commitment.json", encoding="utf-8")); release=json.load(open("release-commitment.json", encoding="utf-8")); promotion=json.load(open("promotion-report.json", encoding="utf-8")); assert core["commitment"]["digest_hex"] == "8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e"; assert release["commitment"]["digest_hex"] == "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"; assert promotion["internal_readiness"] == "PASS"; assert promotion["status"] == "BLOCKED"'
