@@ -11,16 +11,16 @@ assignees: ""
 Review target:
 
 ```text
-olp-v1.0-review-1
+olp-v1.0-review-2
 ```
 
 Exact source commit:
 
 ```text
-877493826d673ccf9bb94e7b6b113b35141ad220
+d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
-If you reviewed a different source, replace the values above and explain why.
+If you reviewed a different source, replace the values above and explain why. Findings intended to satisfy the current v1.0 public-review gate must apply to the exact frozen review-2 source.
 
 ## Finding summary
 
@@ -58,6 +58,7 @@ Check all that apply:
 - [ ] privacy / correlation issue
 - [ ] resource-exhaustion / amplification issue
 - [ ] transport / resolver / HTTP ambiguity
+- [ ] platform / checkout / newline reproducibility issue
 - [ ] release / promotion / stale-evidence issue
 - [ ] editorial ambiguity only
 - [ ] other

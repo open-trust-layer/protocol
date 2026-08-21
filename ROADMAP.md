@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — external review round 1 in progress
+**Current phase:** v1.0 candidate — external review round 2 in progress
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -10,31 +10,35 @@ Milestone numbers are project milestones, not protocol version numbers.
 
 ## Current v1.0 review target
 
-The first external-review target is frozen as:
+The active external-review target is frozen as:
+
+```text
+review target:  olp-v1.0-review-2
+status:         frozen
+source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+```
+
+Review-2 supersedes review-1 after Issue #21 identified a cross-platform checkout reproducibility defect in the original frozen source. Review-1 remains immutable historical evidence:
 
 ```text
 review target:  olp-v1.0-review-1
-status:         frozen
 source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
+status:         historical / superseded
 ```
 
-The authoritative freeze declaration was merged afterward in commit:
+The review-2 source includes repository-enforced LF text checkout bytes, exact-byte regression coverage, and a Windows `core.autocrlf=true` reproduction gate. The published corpus commitments remain unchanged.
 
-```text
-7379e3c34a762cf5dbf44075dc47c291e9f0b749
-```
-
-That ordering is intentional: the immutable source snapshot must exist before later metadata can bind a review-target identifier to its exact commit hash.
-
-Reviewers must inspect the frozen source commit, not a moving branch tip or later `main`.
+Reviewers must inspect the frozen review-2 source commit, not a moving branch tip or later `main`.
 
 Public coordination:
 
-- Issue #17 — public technical review
-- Issue #18 — independent external security review coordination
+- Issue #24 — public technical review of `olp-v1.0-review-2`
+- Issue #25 — independent external security review coordination for `olp-v1.0-review-2`
+- Issue #21 — review-1 checkout-byte reproducibility finding and rollover rationale
 - `docs/v1-review-package-index.md`
 - `docs/v1-public-review-guide.md`
 - `docs/v1-external-security-review-brief.md`
+- `docs/v1-review-2-rollover.md`
 - `docs/v1-review-round-lifecycle.md`
 
 Current promotion state:
@@ -214,36 +218,47 @@ M26 does not publish v1.0. It makes the remaining external work explicit and pre
 
 ## Phase V — External review and finding disposition
 
-**In progress.**
+**In progress — review round 2.**
 
-### Review round 1
+### Review round 1 — historical / superseded
 
-The exact candidate snapshot has already been frozen as `olp-v1.0-review-1` at source commit `877493826d673ccf9bb94e7b6b113b35141ad220`.
+`olp-v1.0-review-1` is permanently bound to source commit `877493826d673ccf9bb94e7b6b113b35141ad220`.
+
+Issue #21 found that a normal Git for Windows checkout with `core.autocrlf=true` could alter hash-critical working-tree text bytes, causing the central reproduction instructions to fail. The source was therefore superseded rather than silently rebound.
+
+### Review round 2 — active
+
+The corrected exact candidate snapshot is frozen as:
+
+```text
+olp-v1.0-review-2
+d470970180bfa128ca14fd01ac920c95dd8ec288
+```
 
 The current legitimate work is:
 
-1. obtain meaningful public technical review of that exact source;
-2. obtain genuinely independent external security review of that exact source;
+1. obtain meaningful public technical review of that exact source through Issue #24 and related findings;
+2. obtain genuinely independent external security review of that exact source through Issue #25 / external reviewer deliverables;
 3. reproduce and classify findings;
 4. disposition findings with durable references;
 5. add regression/conformance coverage for accepted defects where appropriate; and
 6. preserve exact source-binding in all promotion evidence.
 
-### If a material source change is required
+### If another material source change is required
 
-A material fix does **not** silently modify the meaning of `olp-v1.0-review-1`.
+A material fix does **not** silently modify the meaning of `olp-v1.0-review-2`.
 
 Instead:
 
-1. `olp-v1.0-review-1` remains historical evidence for its original bytes;
+1. review-2 remains historical evidence for its original bytes;
 2. the defect is fixed in a new source snapshot;
-3. a new review-target identifier is frozen, expected to be `olp-v1.0-review-2`;
+3. a new review-target identifier is frozen;
 4. affected external gates return to `PENDING` for the new target; and
-5. review evidence for review-1 cannot automatically satisfy review-2.
+5. earlier review evidence cannot automatically satisfy the new target.
 
-### If no material source change is required
+### If no further material source change is required
 
-Once both external gates are legitimately completed for the same exact frozen source, the promotion evaluator may reach `READY`.
+Once both external gates are legitimately completed for the same exact frozen review-2 source, the promotion evaluator may reach `READY`.
 
 `READY` is permission to begin final stable publication mechanics. It is not itself the stable release.
 

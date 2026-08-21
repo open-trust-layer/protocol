@@ -4,15 +4,17 @@ Open Layer Protocol is currently **experimental / pre-1.0 candidate work**.
 
 The current specification-set release is **Draft v0.3**. OLP v1.0 has not been released.
 
-The first v1.0 external-review target is frozen as:
+The active v1.0 external-review target is frozen as:
 
 ```text
-review target:  olp-v1.0-review-1
+review target:  olp-v1.0-review-2
 status:         frozen
-source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
+source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
 The project is actively seeking public technical review and genuinely independent external security review of that exact source snapshot. Neither external promotion gate is complete.
+
+Review-1 remains immutable historical evidence at `877493826d673ccf9bb94e7b6b113b35141ad220`. It was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review evidence is never silently rebound from an older target to changed source.
 
 ## Supported versions
 
@@ -20,8 +22,9 @@ There is currently no stable production-supported OLP release.
 
 | Version / branch | Security support |
 |---|---|
-| Frozen `olp-v1.0-review-1` source | Active public/external review and coordinated fixes |
+| Frozen `olp-v1.0-review-2` source | Active public/external review and coordinated fixes |
 | Draft v0.3 specification set / v1 candidate work | Experimental review and coordinated fixes |
+| `olp-v1.0-review-1` | Historical / superseded review evidence |
 | Earlier draft snapshots | Historical/compatibility review only |
 | Future tagged pre-releases | As documented with the release |
 | Stable v1.0 | Not released |
@@ -34,13 +37,13 @@ Please do **not** publish exploitable or security-sensitive vulnerability detail
 
 Use GitHub's private vulnerability reporting / Security Advisory workflow for this repository when available. If private vulnerability reporting is unavailable, contact the repository owners privately through the project's GitHub organization before disclosing exploit details publicly.
 
-For non-sensitive public technical findings, use the public review tracker:
+For non-sensitive public technical findings, use the active public review tracker:
 
-- Issue #17 — `OLP v1.0 public technical review — olp-v1.0-review-1`
+- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-2`
 
 For independent external security-review coordination, use:
 
-- Issue #18 — `Independent external security review needed — olp-v1.0-review-1`
+- Issue #25 — `Independent external security review needed — olp-v1.0-review-2`
 
 The existence of either tracker does not satisfy a promotion gate.
 
@@ -51,9 +54,9 @@ A useful security report should include, where possible:
 - minimal reproducible example or test vector;
 - expected versus observed behavior;
 - security impact and likely severity;
-- whether the issue affects interoperability or canonicalization;
+- whether the issue affects interoperability, canonicalization, or release reproducibility;
 - whether deterministic bytes or capability semantics would need to change;
-- whether network access or untrusted input is required;
+- whether behavior depends on platform, Git checkout policy, filesystem, locale, newline handling, network access, or untrusted input;
 - known mitigations; and
 - any proposed specification wording or conformance-vector change.
 
@@ -61,33 +64,40 @@ A useful security report should include, where possible:
 
 Review evidence intended to satisfy a v1.0 promotion gate is source-bound.
 
-For review round 1, the only source commit that can satisfy the current external gates is:
+For the active review round, the only source commit that can satisfy the current external gates is:
 
 ```text
-877493826d673ccf9bb94e7b6b113b35141ad220
+d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
-A review of later `main`, a branch tip, or a different commit does not satisfy `olp-v1.0-review-1`.
+A review of later `main`, a branch tip, review-1, or another commit does not satisfy `olp-v1.0-review-2`.
 
-The authoritative freeze declaration was merged afterward in commit:
+The source snapshot was merged first with review-2 in `preparing` state. A later metadata-only freeze binds the target identifier to that immutable SHA. This ordering is intentional: a Git commit cannot contain its own eventual hash.
 
-```text
-7379e3c34a762cf5dbf44075dc47c291e9f0b749
-```
-
-That ordering is intentional: the immutable source snapshot must exist before later metadata can bind a review-target identifier to its exact Git hash.
-
-Opening a review issue, sending outreach, receiving an audit proposal, or publishing a review URL is not completed review evidence.
+Opening a review issue, sending outreach, receiving an audit proposal, publishing a review URL, or receiving delivery confirmation is not completed review evidence.
 
 If a material finding requires source changes:
 
-1. `olp-v1.0-review-1` remains historically bound to its original bytes;
+1. `olp-v1.0-review-2` remains historically bound to its original bytes;
 2. the defect is fixed in a new source snapshot;
 3. a new review-target identifier is frozen;
-4. affected external gates are evaluated for the new target; and
+4. affected external gates return to pending for the new target; and
 5. review evidence is never silently rebound to changed source.
 
-See `docs/v1-review-round-lifecycle.md` and `specification/0015-stable-profile-promotion-and-readiness.md`.
+See `docs/v1-review-round-lifecycle.md`, `docs/v1-review-2-rollover.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
+
+## Cross-platform exact-byte reproducibility
+
+Specification 0014 commits exact repository file bytes and forbids newline normalization before hashing. Issue #21 demonstrated that this guarantee also requires deterministic repository checkout semantics.
+
+The active review-2 source therefore includes:
+
+- root `.gitattributes` with `* text=auto eol=lf`;
+- explicit `-text` handling for common binary artifacts;
+- `tests/conformance/test_repository_byte_reproducibility.py`; and
+- a `windows-latest` readiness job that sets `core.autocrlf=true` **before checkout**, validates effective Git attributes, and runs the actual corpus commitment and promotion commands.
+
+The correction did not change conformance corpus blobs or the published commitment values. It makes ordinary cross-platform checkout reproduce the exact bytes those commitments already identify.
 
 ## Executable security evidence
 
@@ -118,7 +128,7 @@ These are evidence of reproducible conformance against specific corpora. They ar
 
 ## v1 candidate security gate
 
-The candidate includes an explicit threat model, contradiction/review register, release/deprecation/errata process, machine-checkable promotion evaluator, and source-bound external-review governance.
+The candidate includes an explicit threat model, contradiction/review register, release/deprecation/errata process, machine-checkable promotion evaluator, source-bound external-review governance, and a cross-platform exact-byte checkout regression.
 
 The intended current state is:
 
@@ -136,7 +146,7 @@ PUBLIC_TECHNICAL_REVIEW_REQUIRED
 INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
 ```
 
-The project MUST NOT mark the independent-review gate complete solely on the basis of its own maintainers, automated tests, internal adversarial review, passing conformance reports, or outreach activity.
+The project MUST NOT mark the independent-review gate complete solely on the basis of its own maintainers, automated tests, internal adversarial review, passing conformance reports, outreach activity, or coordination trackers.
 
 See:
 
@@ -144,6 +154,7 @@ See:
 - `docs/v1-candidate-readiness.md`
 - `docs/v1-external-security-review-brief.md`
 - `docs/v1-review-package-index.md`
+- `docs/v1-review-2-rollover.md`
 - `specification/0015-stable-profile-promotion-and-readiness.md`
 
 ## Security boundaries already exercised
@@ -166,8 +177,9 @@ Current executable/adversarial coverage includes:
 - immutable identity-bearing HTTP read semantics;
 - parsed RFC 9530 `Content-Digest` semantics over content bytes;
 - redirect downgrade/origin/credential policy;
-- cache/range/413/429 separation from evidence validity; and
-- HTTP authentication/service authorization separated from OLP proof validity and authority evidence.
+- cache/range/413/429 separation from evidence validity;
+- HTTP authentication/service authorization separated from OLP proof validity and authority evidence; and
+- exact-byte commitment/promotion reproduction under Git for Windows `core.autocrlf=true`.
 
 These tests are important evidence, not a substitute for independent external review.
 
@@ -186,6 +198,7 @@ Reports and external review are especially valuable for:
 - transport framing or content-integrity confusion;
 - cache/proxy/range behavior that changes security meaning;
 - corpus/profile drift that permits two release claims to refer to different tests;
+- hidden platform, checkout, filesystem, locale, newline, or serialization dependencies in deterministic operations;
 - stale review-evidence reuse after source changes;
 - specification ambiguity that causes implementations to make different security decisions; and
 - weaknesses in the candidate threat model or conformance corpus that internal review did not discover.
@@ -227,6 +240,6 @@ The stable release, migration, deprecation, errata, vulnerability-fix, and withd
 
 ## Cryptographic disclaimer
 
-The presence of standardized primitives such as SHA-256 and Ed25519, independent implementations, committed conformance corpora, and machine-checkable promotion gates does not mean the overall OLP construction has completed independent cryptographic or security review.
+The presence of standardized primitives such as SHA-256 and Ed25519, independent implementations, committed conformance corpora, cross-platform reproduction gates, and machine-checkable promotion gates does not mean the overall OLP construction has completed independent cryptographic or security review.
 
 Do not deploy Draft v0.3 or the current v1 candidate as high-assurance production security infrastructure without appropriate independent review and deployment-specific threat assessment.

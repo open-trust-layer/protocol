@@ -4,8 +4,8 @@ contact_links:
     url: https://github.com/open-trust-layer/protocol/security/policy
     about: Do not publish exploitable vulnerability details publicly. Read the security policy and use private reporting when available.
   - name: v1.0 public technical review tracker
-    url: https://github.com/open-trust-layer/protocol/issues/17
-    about: Coordination and context for public technical review of olp-v1.0-review-1.
+    url: https://github.com/open-trust-layer/protocol/issues/24
+    about: Coordination and context for public technical review of olp-v1.0-review-2.
   - name: Independent security review tracker
-    url: https://github.com/open-trust-layer/protocol/issues/18
-    about: Coordination for independent external security review of olp-v1.0-review-1.
+    url: https://github.com/open-trust-layer/protocol/issues/25
+    about: Coordination for independent external security review of olp-v1.0-review-2.

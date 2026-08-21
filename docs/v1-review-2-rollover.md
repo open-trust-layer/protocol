@@ -4,7 +4,7 @@
 **Previous target:** `olp-v1.0-review-1`  
 **Previous source:** `877493826d673ccf9bb94e7b6b113b35141ad220`  
 **New target:** `olp-v1.0-review-2`  
-**New source:** not yet frozen
+**New source:** `d470970180bfa128ca14fd01ac920c95dd8ec288`
 
 ## Why review-1 was superseded
 
@@ -21,7 +21,7 @@ The cryptographic commitment construction itself was not changed, and the publis
 
 ## Correction
 
-The corrected source adds:
+The frozen review-2 source adds:
 
 1. root `.gitattributes` with `* text=auto eol=lf`;
 2. explicit `-text` handling for common binary artifact extensions;
@@ -56,7 +56,13 @@ draft-v0.3-interoperable-v1
 
 `olp-v1.0-review-1` remains permanently bound to its original source commit. It is historical evidence and is never rebound to the corrected source.
 
-`olp-v1.0-review-2` begins in `preparing` state with no source commit. After the corrected preparation snapshot is merged and the full repository matrix passes, a metadata-only follow-up freezes review-2 to that exact immutable source SHA.
+`olp-v1.0-review-2` is frozen to:
+
+```text
+d470970180bfa128ca14fd01ac920c95dd8ec288
+```
+
+Public technical review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25.
 
 Both external review gates remain pending for review-2. Any review-1 discussion may be useful background, but it cannot automatically satisfy a review-2 completion gate.
 
