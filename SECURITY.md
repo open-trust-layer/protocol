@@ -2,7 +2,17 @@
 
 Open Layer Protocol is currently **experimental / pre-1.0 candidate work**.
 
-The current specification-set release is **Draft v0.3**. Milestone 26 defines a future v1.0 candidate boundary, but OLP v1.0 has not been released and the candidate has not completed independent external security review.
+The current specification-set release is **Draft v0.3**. OLP v1.0 has not been released.
+
+The first v1.0 external-review target is frozen as:
+
+```text
+review target:  olp-v1.0-review-1
+status:         frozen
+source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
+```
+
+The project is actively seeking public technical review and genuinely independent external security review of that exact source snapshot. Neither external promotion gate is complete.
 
 ## Supported versions
 
@@ -10,31 +20,78 @@ There is currently no stable production-supported OLP release.
 
 | Version / branch | Security support |
 |---|---|
+| Frozen `olp-v1.0-review-1` source | Active public/external review and coordinated fixes |
 | Draft v0.3 specification set / v1 candidate work | Experimental review and coordinated fixes |
 | Earlier draft snapshots | Historical/compatibility review only |
 | Future tagged pre-releases | As documented with the release |
 | Stable v1.0 | Not released |
 
+Review and support status does not imply production certification.
+
 ## Reporting a vulnerability
 
-Please do **not** publish exploitable vulnerability details in a public GitHub issue.
+Please do **not** publish exploitable or security-sensitive vulnerability details in a public GitHub issue.
 
 Use GitHub's private vulnerability reporting / Security Advisory workflow for this repository when available. If private vulnerability reporting is unavailable, contact the repository owners privately through the project's GitHub organization before disclosing exploit details publicly.
 
-A useful report should include, where possible:
+For non-sensitive public technical findings, use the public review tracker:
 
-- the affected specification section or implementation component;
-- a minimal reproducible example or test vector;
+- Issue #17 — `OLP v1.0 public technical review — olp-v1.0-review-1`
+
+For independent external security-review coordination, use:
+
+- Issue #18 — `Independent external security review needed — olp-v1.0-review-1`
+
+The existence of either tracker does not satisfy a promotion gate.
+
+A useful security report should include, where possible:
+
+- exact reviewed source commit;
+- affected specification section or implementation component;
+- minimal reproducible example or test vector;
 - expected versus observed behavior;
-- security impact;
+- security impact and likely severity;
 - whether the issue affects interoperability or canonicalization;
+- whether deterministic bytes or capability semantics would need to change;
 - whether network access or untrusted input is required;
 - known mitigations; and
-- any proposed specification wording change.
+- any proposed specification wording or conformance-vector change.
+
+## Frozen review target and source binding
+
+Review evidence intended to satisfy a v1.0 promotion gate is source-bound.
+
+For review round 1, the only source commit that can satisfy the current external gates is:
+
+```text
+877493826d673ccf9bb94e7b6b113b35141ad220
+```
+
+A review of later `main`, a branch tip, or a different commit does not satisfy `olp-v1.0-review-1`.
+
+The authoritative freeze declaration was merged afterward in commit:
+
+```text
+7379e3c34a762cf5dbf44075dc47c291e9f0b749
+```
+
+That ordering is intentional: the immutable source snapshot must exist before later metadata can bind a review-target identifier to its exact Git hash.
+
+Opening a review issue, sending outreach, receiving an audit proposal, or publishing a review URL is not completed review evidence.
+
+If a material finding requires source changes:
+
+1. `olp-v1.0-review-1` remains historically bound to its original bytes;
+2. the defect is fixed in a new source snapshot;
+3. a new review-target identifier is frozen;
+4. affected external gates are evaluated for the new target; and
+5. review evidence is never silently rebound to changed source.
+
+See `docs/v1-review-round-lifecycle.md` and `specification/0015-stable-profile-promotion-and-readiness.md`.
 
 ## Executable security evidence
 
-Milestone 17 performed the first systematic internal adversarial review of the deterministic core. Milestones 19–24 then added independently reproduced higher-layer boundaries for bundles, resolution, identity/authority/lifecycle, privacy/disclosure, transport encoding, and deterministic streaming/HTTP exchange semantics.
+Milestone 17 performed the first systematic **internal** adversarial review of the deterministic core. Milestones 19–24 then added independently reproduced higher-layer boundaries for bundles, resolution, identity/authority/lifecycle, privacy/disclosure, transport encoding, and deterministic streaming/HTTP exchange semantics.
 
 Draft v0.3 groups the accepted executable capabilities into `draft-v0.3-interoperable-v1`:
 
@@ -61,7 +118,7 @@ These are evidence of reproducible conformance against specific corpora. They ar
 
 ## v1 candidate security gate
 
-Milestone 26 adds an explicit candidate threat model, contradiction/review register, release/deprecation/errata process, and machine-checkable promotion evaluator.
+The candidate includes an explicit threat model, contradiction/review register, release/deprecation/errata process, machine-checkable promotion evaluator, and source-bound external-review governance.
 
 The intended current state is:
 
@@ -79,9 +136,15 @@ PUBLIC_TECHNICAL_REVIEW_REQUIRED
 INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED
 ```
 
-The project MUST NOT mark the independent-review gate complete solely on the basis of its own maintainers, automated tests, internal adversarial review, or passing conformance reports.
+The project MUST NOT mark the independent-review gate complete solely on the basis of its own maintainers, automated tests, internal adversarial review, passing conformance reports, or outreach activity.
 
-See [`docs/v1-threat-model.md`](docs/v1-threat-model.md), [`docs/v1-candidate-readiness.md`](docs/v1-candidate-readiness.md), and [`specification/0015-stable-profile-promotion-and-readiness.md`](specification/0015-stable-profile-promotion-and-readiness.md).
+See:
+
+- `docs/v1-threat-model.md`
+- `docs/v1-candidate-readiness.md`
+- `docs/v1-external-security-review-brief.md`
+- `docs/v1-review-package-index.md`
+- `specification/0015-stable-profile-promotion-and-readiness.md`
 
 ## Security boundaries already exercised
 
@@ -106,6 +169,8 @@ Current executable/adversarial coverage includes:
 - cache/range/413/429 separation from evidence validity; and
 - HTTP authentication/service authorization separated from OLP proof validity and authority evidence.
 
+These tests are important evidence, not a substitute for independent external review.
+
 ## Residual high-priority risks
 
 Reports and external review are especially valuable for:
@@ -121,12 +186,13 @@ Reports and external review are especially valuable for:
 - transport framing or content-integrity confusion;
 - cache/proxy/range behavior that changes security meaning;
 - corpus/profile drift that permits two release claims to refer to different tests;
+- stale review-evidence reuse after source changes;
 - specification ambiguity that causes implementations to make different security decisions; and
 - weaknesses in the candidate threat model or conformance corpus that internal review did not discover.
 
 ## What the current candidate does not certify
 
-Draft v0.3 conformance and Milestone 26 candidate readiness do **not** certify:
+Draft v0.3 conformance and v1 candidate readiness do **not** certify:
 
 - a production HTTP server or client;
 - DNS or TLS implementation/security;
@@ -155,10 +221,12 @@ The project aims to coordinate fixes and specification clarification before publ
 
 Because no stable v1.0 exists yet, compatibility may still be intentionally broken to correct a serious security design defect, but such a break must be explicit and versioned.
 
-The stable release, migration, deprecation, errata, vulnerability-fix, and withdrawal process is documented in [`docs/v1-release-process.md`](docs/v1-release-process.md).
+A material change discovered during external review also requires a new frozen review target rather than reuse of review evidence for old source bytes.
+
+The stable release, migration, deprecation, errata, vulnerability-fix, and withdrawal process is documented in `docs/v1-release-process.md`.
 
 ## Cryptographic disclaimer
 
 The presence of standardized primitives such as SHA-256 and Ed25519, independent implementations, committed conformance corpora, and machine-checkable promotion gates does not mean the overall OLP construction has completed independent cryptographic or security review.
 
-Do not deploy Draft v0.3 or the Milestone 26 v1 candidate as high-assurance production security infrastructure without appropriate independent review and deployment-specific threat assessment.
+Do not deploy Draft v0.3 or the current v1 candidate as high-assurance production security infrastructure without appropriate independent review and deployment-specific threat assessment.
