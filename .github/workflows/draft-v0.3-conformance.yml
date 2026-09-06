@@ -69,6 +69,7 @@ jobs:
             conformance-draft-v0.3-python.json
             draft-v0.3-corpus-commitment.json
           if-no-files-found: error
+          retention-days: 7
 
   rust-draft-v03:
     runs-on: ubuntu-latest
@@ -147,3 +148,4 @@ jobs:
             conformance-draft-v0.3-rust.json
             draft-v0.3-corpus-commitment.json
           if-no-files-found: error
+          retention-days: 7
