@@ -56,6 +56,87 @@ def _base(
     }
 
 
+_DECIMAL_DIGITS = frozenset("0123456789")
+_OCTAL_DIGITS = frozenset("01234567")
+_HEX_DIGITS = frozenset("0123456789abcdef")
+
+
+def _ipv4_part(text: str) -> int | None:
+    """Parse one inet_aton IPv4 component: decimal, octal, or hexadecimal.
+
+    ``int()`` is deliberately not used on unvalidated text: it accepts
+    underscores, surrounding whitespace, and non-ASCII digits, any of which
+    would reintroduce a parser differential between this classifier and the
+    network stack that later resolves the host.
+    """
+    if not text:
+        return None
+    lowered = text.lower()
+    if lowered.startswith("0x"):
+        body = lowered[2:]
+        if not body or not set(body) <= _HEX_DIGITS:
+            return None
+        return int(body, 16)
+    if len(lowered) > 1 and lowered.startswith("0"):
+        body = lowered[1:]
+        if not set(body) <= _OCTAL_DIGITS:
+            return None
+        return int(body, 8)
+    if not set(lowered) <= _DECIMAL_DIGITS:
+        return None
+    return int(lowered, 10)
+
+
+def _ipv4_literal(host: str) -> ipaddress.IPv4Address | None:
+    """Return the address for any inet_aton-accepted IPv4 spelling of *host*.
+
+    ``ipaddress.ip_address`` accepts only dotted-quad notation, but the C
+    resolver used by real HTTP stacks also accepts decimal (``2130706433``),
+    hexadecimal (``0x7f000001``), octal (``017700000001``) and short
+    (``127.1``) forms, all of which denote ``127.0.0.1``. Classifying those as
+    public names would let a loopback, private-range or metadata-service
+    target pass the policy check with no DNS involvement at all.
+
+    Returns ``None`` when *host* is not an IPv4 literal in any of those forms.
+    """
+    parts = host.split(".")
+    if not 1 <= len(parts) <= 4:
+        return None
+    values: list[int] = []
+    for part in parts:
+        value = _ipv4_part(part)
+        if value is None:
+            return None
+        values.append(value)
+    leading, final = values[:-1], values[-1]
+    if any(value > 0xFF for value in leading):
+        return None
+    if final >= (1 << (8 * (4 - len(leading)))):
+        return None
+    packed = final
+    for index, value in enumerate(leading):
+        packed |= value << (8 * (3 - index))
+    return ipaddress.IPv4Address(packed)
+
+
+def _is_address_literal_attempt(host: str) -> bool:
+    """Whether *host* can only be read as an address literal, not a DNS name.
+
+    A DNS name's final label may not be entirely numeric, so a host whose
+    labels are all numeric-looking is an address literal however it is spelled.
+    Such a host is never a name that could resolve to something public.
+    """
+    parts = host.split(".")
+    return all(
+        part
+        and (
+            set(part) <= _DECIMAL_DIGITS
+            or part.lower().startswith("0x")
+        )
+        for part in parts
+    )
+
+
 def _blocked_network_target(uri: str) -> bool:
     parsed = urlsplit(uri)
     if parsed.scheme not in {"http", "https"}:
@@ -67,9 +148,15 @@ def _blocked_network_target(uri: str) -> bool:
     if lowered == "localhost" or lowered.endswith(".localhost"):
         return True
     try:
-        ip = ipaddress.ip_address(host)
+        ip: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(host)
     except ValueError:
-        return False
+        literal = _ipv4_literal(lowered)
+        if literal is None:
+            # An address literal that does not parse is never treated as a
+            # public DNS name: failing open here is what allowed non-canonical
+            # loopback spellings through.
+            return _is_address_literal_attempt(lowered)
+        ip = literal
     return bool(
         ip.is_private
         or ip.is_loopback
