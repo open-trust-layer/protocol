@@ -40,6 +40,7 @@ jobs:
           name: streaming-http-python-${{ matrix.python-version }}
           path: conformance-streaming-http.json
           if-no-files-found: error
+          retention-days: 7
 
   rust-streaming-http:
     runs-on: ubuntu-latest
@@ -82,3 +83,4 @@ jobs:
           name: streaming-http-rust-1.85.0
           path: conformance-rust-streaming-http.json
           if-no-files-found: error
+          retention-days: 7

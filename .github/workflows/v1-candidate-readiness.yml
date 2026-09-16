@@ -106,6 +106,7 @@ jobs:
             v1-promotion-report.json
             v1-core-candidate-commitment.json
           if-no-files-found: error
+          retention-days: 7
 
   windows-checkout-reproducibility:
     runs-on: windows-latest

@@ -86,6 +86,7 @@ jobs:
             conformance-privacy-disclosure-report.json
             conformance-transport-encoding-report.json
           if-no-files-found: error
+          retention-days: 7
 
   rust-interoperability:
     runs-on: ubuntu-latest
@@ -264,3 +265,4 @@ jobs:
             conformance-rust-privacy-disclosure.json
             conformance-rust-transport-encoding.json
           if-no-files-found: error
+          retention-days: 7
