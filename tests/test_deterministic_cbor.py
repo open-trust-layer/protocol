@@ -42,6 +42,34 @@ def test_integer_map_labels_are_deterministic():
     assert encode({4: b"n", 0: "t"}).hex() == "a200617404416e"
 
 
+def test_map_ordering_is_bytewise_not_length_first():
+    # Regression barrier for the RFC 8949 vs RFC 7049 canonical-ordering split.
+    #
+    # OLP-CIE-1 (Specification 0003 6.4) and ProofInputV1 (Specification 0004
+    # 17.2) both require ascending bytewise lexicographic order of the complete
+    # deterministic CBOR encoding of each key. RFC 7049 3.9 "canonical CBOR"
+    # instead ordered shorter encodings first, and several CBOR libraries still
+    # implement that rule in their canonical mode.
+    #
+    # Text-only keys cannot tell the two rules apart: within one major type the
+    # head byte grows monotonically with length, so bytewise and length-first
+    # agree. They diverge only when a map mixes a multi-octet integer key with
+    # a single-octet key, which is what this case pins.
+    #
+    # Key 24 encodes as 0x1818 (two octets); key -1 encodes as 0x20 (one
+    # octet). Bytewise puts 24 first; length-first would put -1 first.
+    assert encode({24: "a", -1: "b"}).hex() == "a218186161206162"
+    assert encode({-1: "b", 24: "a"}).hex() == "a218186161206162"
+
+
+def test_map_ordering_is_bytewise_across_major_types():
+    # Key 24 encodes as 0x1818; the empty text key encodes as 0x60. Bytewise
+    # puts the integer first; length-first would put the shorter text key first.
+    assert encode({24: "a", "": "b"}).hex() == "a218186161606162"
+    # Three keys whose length order and bytewise order disagree.
+    assert encode({1: "x", 24: "y", -1: "z"}).hex() == "a30161781818617920617a"
+
+
 def test_float_is_forbidden():
     with pytest.raises(EncodingError):
         encode(1.5)

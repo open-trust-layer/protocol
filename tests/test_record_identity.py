@@ -90,6 +90,18 @@ def test_record_integer_boundaries_are_supported():
     record_identity(RecordV1(1, "claim", {"max": (1 << 64) - 1, "min": -(1 << 64)}))
 
 
+def test_integer_map_keys_are_rejected_in_record_values():
+    # Specification 0003 5.7 restricts identity-value map keys to text strings.
+    # This is the invariant that keeps the OLP-CIE-1 map-ordering rule free of
+    # ambiguity for records: a map able to distinguish bytewise from RFC 7049
+    # length-first ordering needs an integer key, which never reaches the
+    # encoder from a record. See test_map_ordering_is_bytewise_not_length_first
+    # in tests/test_deterministic_cbor.py.
+    for content in ({"m": {1: "x"}}, {"m": {24: "x"}}, {"m": {-1: "x"}}):
+        with pytest.raises(ConformanceError):
+            record_identity(RecordV1(1, "claim", content))
+
+
 def test_extension_names_must_be_absolute_uris(sample_record):
     bad = replace(sample_record, extensions={"vendor-extension": True})
     with pytest.raises(ConformanceError):

@@ -95,6 +95,33 @@ draft-v0.3-interoperable-v1
 
 The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
 
+### Expected `review_target` output at the frozen commit
+
+`promotion-check` run at the frozen review-2 source reports the review target as **not yet frozen**:
+
+```text
+status:                       BLOCKED
+internal_readiness:           PASS
+review_target_id:             olp-v1.0-review-2
+review_target_status:         preparing
+review_target_source_commit:  null
+REVIEW_TARGET:                PASS  review target is valid and awaiting an immutable source commit
+```
+
+This is expected. It is not a defect and it does not mean you checked out the wrong commit.
+
+A Git commit cannot contain its own hash, so the frozen snapshot cannot record the SHA it is about to become. The binding of `olp-v1.0-review-2` to `d470970180bfa128ca14fd01ac920c95dd8ec288` is made by a later metadata-only commit:
+
+```text
+binding commit  41b768e50b6cb9cc8e516ad7b6c40969f9ed7b6c
+```
+
+That commit changes `review_target.status` and `review_target.source_commit` in `stabilization/v1.0-candidate.json`, the assertions in `tests/conformance/test_promotion.py` and `tests/conformance/test_promotion_schemas.py` that track the checked-in candidate's own state, and reviewer-facing prose. It changes no specification, implementation, conformance vector, corpus commitment, or promotion-gate logic.
+
+For the same reason, the copies of this guide and of `docs/v1-external-security-review-brief.md` **inside** the frozen checkout still read `Source commit: not yet frozen`. Those copies predate the freeze. The authoritative statement of the frozen target is Issue #24, `SECURITY.md`, and the binding commit above.
+
+The evaluator's refusal to let an external gate complete while `review_target.status` is `preparing` is deliberate fail-closed behavior: review evidence cannot be bound to a target that has no immutable source commit.
+
 ## Finding format
 
 A useful public review finding should identify:
