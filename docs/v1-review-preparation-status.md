@@ -3,9 +3,9 @@
 The second snapshot-bound OLP v1.0 review target is now frozen.
 
 ```text
-review target:          olp-v1.0-review-2
+review target:          olp-v1.0-review-3
 status:                 frozen
-source commit:          d470970180bfa128ca14fd01ac920c95dd8ec288
+source commit:          f0dd778f09f904e334477bb1d6294f78d3d466f0
 public review:          pending
 external security:      pending
 stable promotion:       BLOCKED
@@ -13,7 +13,7 @@ stable promotion:       BLOCKED
 
 Review-2 supersedes review-1 after Issue #21 identified a cross-platform checkout reproducibility defect: exact-byte corpus commitments and required-artifact digests could fail on Git for Windows checkouts with `core.autocrlf=true` because review-1 had no repository line-ending policy.
 
-The frozen review-2 source includes:
+The frozen review-3 source includes:
 
 - root `.gitattributes` enforcing LF working-tree bytes for text and excluding common binary formats;
 - a hash-critical repository-byte regression; and
@@ -32,4 +32,4 @@ reason superseded:      Issue #21 checkout-byte reproducibility defect
 
 No review-1 completion evidence is carried forward automatically.
 
-Public technical review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Both gates remain pending and must identify the exact frozen review-2 source commit before either gate can be completed.
+Public technical review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Both gates remain pending and must identify the exact frozen review-3 source commit before either gate can be completed.

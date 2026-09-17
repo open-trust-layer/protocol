@@ -9,22 +9,25 @@ OLP is currently an **experimental pre-1.0 candidate**. The project is in extern
 The active v1.0 review target is frozen as:
 
 ```text
-review target:  olp-v1.0-review-2
-source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+review target:  olp-v1.0-review-3
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 If your contribution is a finding about the current v1.0 candidate, identify that exact source commit in the issue or report.
 
-A later `main` commit may contain review coordination, freeze metadata, documentation, or other maintenance work. Review evidence for `olp-v1.0-review-2` must still refer to the exact frozen source above.
+A later `main` commit may contain review coordination, freeze metadata, documentation, or other maintenance work. Review evidence for `olp-v1.0-review-3` must still refer to the exact frozen source above.
 
-Review-1 remains historical and permanently bound to:
+Earlier rounds remain historical and permanently bound to their own source:
 
 ```text
 olp-v1.0-review-1
 877493826d673ccf9bb94e7b6b113b35141ad220
+
+olp-v1.0-review-2
+d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
-It was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review evidence is never silently rebound from review-1 to review-2.
+Review-1 was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review-2 was superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`. Review evidence is never silently rebound from an older round to changed source.
 
 ## Before opening an issue
 
@@ -58,7 +61,7 @@ External review is especially useful for:
 Check out the exact source:
 
 ```bash
-git checkout d470970180bfa128ca14fd01ac920c95dd8ec288
+git checkout f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 The frozen source contains a root `.gitattributes` policy that forces LF working-tree bytes for textual files and excludes common binary formats from text conversion. CI also exercises a Git for Windows checkout with `core.autocrlf=true` before running exact-byte commitment checks.
@@ -152,13 +155,13 @@ Do not silently mutate the meaning of a frozen review target.
 For the active target:
 
 ```text
-olp-v1.0-review-2
-d470970180bfa128ca14fd01ac920c95dd8ec288
+olp-v1.0-review-3
+f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 If a material accepted finding requires a source-changing fix:
 
-1. preserve review-2 as historical evidence for its original source;
+1. preserve review-3 as historical evidence for its original source;
 2. implement and verify the correction;
 3. freeze a new review target;
 4. return affected external gates to pending for the new target; and

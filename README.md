@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — external review round 2 in progress
+**Current phase:** v1.0 candidate — external review round 3 in progress
 
 > **OLP v1.0 has not been released.** The current candidate is intentionally blocked from stable promotion until public technical review and independent external security review are completed against the exact same frozen review target.
 
@@ -95,52 +95,55 @@ See [`specification/0015-stable-profile-promotion-and-readiness.md`](specificati
 
 ---
 
-## v1.0 external review — round 2
+## v1.0 external review — round 3
 
 The active v1.0 external-review target is frozen as:
 
 ```text
-review target:  olp-v1.0-review-2
+review target:  olp-v1.0-review-3
 status:         frozen
-source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 Reviewers must inspect the **exact frozen source commit**, not a moving branch tip or later `main`:
 
-- [Frozen review-2 source snapshot](https://github.com/open-trust-layer/protocol/commit/d470970180bfa128ca14fd01ac920c95dd8ec288)
+- [Frozen review-3 source snapshot](https://github.com/open-trust-layer/protocol/commit/f0dd778f09f904e334477bb1d6294f78d3d466f0)
 - [Issue #24 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/24)
 - [Issue #25 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/25)
 
-The source snapshot itself contains review-2 in `preparing` state. That is intentional: a Git commit cannot contain its own eventual hash. A later metadata-only commit binds `olp-v1.0-review-2` to the immutable source SHA above.
+The source snapshot itself contains review-3 in `preparing` state. That is intentional: a Git commit cannot contain its own eventual hash. A later metadata-only commit binds `olp-v1.0-review-3` to the immutable source SHA above.
 
-### Why there is a review round 2
+### Why there is a review round 3
 
-The original review target remains immutable historical evidence:
+Earlier review targets remain immutable historical evidence:
 
 ```text
 review target:  olp-v1.0-review-1
 source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
 status:         historical / superseded
+
+review target:  olp-v1.0-review-2
+source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+status:         historical / superseded
 ```
 
-Issue #21 identified a release-integrity defect in review-1. Specification 0014 hashes exact repository bytes, but review-1 had no `.gitattributes`; a common Git for Windows checkout using `core.autocrlf=true` could materialize LF text as CRLF and cause the published corpus commitments and required-artifact hashes to fail reproduction.
+Review-1 was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. See [`docs/v1-review-2-rollover.md`](docs/v1-review-2-rollover.md).
 
-The correction did **not** change the corpus commitment construction, conformance corpus bytes, protocol semantics, or the two published commitments. The corrected review-2 source adds:
+Review-2 was superseded by two defects found during internal adversarial testing:
 
-- root `.gitattributes` with deterministic LF text checkout semantics;
-- explicit binary exclusions;
-- `tests/conformance/test_repository_byte_reproducibility.py`; and
-- a Windows readiness job that sets `core.autocrlf=true` before checkout and runs the actual reviewer-facing commitment and promotion commands.
+- **GHSA-x768-cq7q-w9mq** — the Specification 0009 resolver classified a host with its platform address parser, which accepts only dotted-quad IPv4, so non-canonical spellings of a loopback, private-range or metadata-service address were reported `RESOLVED` rather than `POLICY_BLOCKED`, with no DNS resolution involved. Both the Python and the independent Rust implementation had it, which is why Specification 0009 was corrected and not only the code.
+- **Corpus selection** — a conformance case was selected purely by capability, so adding regression coverage for the defect rewrote the identity of an already-accepted release. Frozen profiles are now pinned to explicit case-ID lists.
 
-That Windows path passes on the review-2 source.
+Neither published corpus commitment changed. `core-v1` remains 62 cases and `draft-v0.3-interoperable-v1` remains 180.
 
-See [Issue #21](https://github.com/open-trust-layer/protocol/issues/21) and [`docs/v1-review-2-rollover.md`](docs/v1-review-2-rollover.md).
+See [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md).
 
 ### Reviewer package
 
 - [`docs/v1-review-package-index.md`](docs/v1-review-package-index.md)
 - [`docs/v1-public-review-guide.md`](docs/v1-public-review-guide.md)
 - [`docs/v1-external-security-review-brief.md`](docs/v1-external-security-review-brief.md)
+- [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md)
 - [`docs/v1-review-2-rollover.md`](docs/v1-review-2-rollover.md)
 - [`docs/v1-review-round-lifecycle.md`](docs/v1-review-round-lifecycle.md)
 - [`docs/v1-threat-model.md`](docs/v1-threat-model.md)
@@ -174,7 +177,7 @@ A completed external gate must identify the exact frozen source commit and provi
 
 If a material finding requires a source-changing fix:
 
-1. `olp-v1.0-review-2` remains historically bound to its frozen source;
+1. `olp-v1.0-review-3` remains historically bound to its frozen source;
 2. the source is corrected;
 3. a new review-target identifier is frozen; and
 4. affected external reviews must apply to that new target.
@@ -380,11 +383,11 @@ See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-mod
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 26 is accepted and merged. Review round 1 was superseded after Issue #21; the corrected v1.0 external-review target is now frozen as `olp-v1.0-review-2` at `d470970180bfa128ca14fd01ac920c95dd8ec288`.
+Milestone 26 is accepted and merged. Review rounds 1 and 2 were superseded; the corrected v1.0 external-review target is now frozen as `olp-v1.0-review-3` at `f0dd778f09f904e334477bb1d6294f78d3d466f0`. See [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md).
 
 The current work is **review and disposition**, not speculative feature expansion:
 
-1. public technical reviewers inspect the exact review-2 source;
+1. public technical reviewers inspect the exact review-3 source;
 2. an independent external security reviewer assesses the exact same source;
 3. findings are reproduced, classified, and dispositioned;
 4. source-changing material fixes trigger another frozen review target; and

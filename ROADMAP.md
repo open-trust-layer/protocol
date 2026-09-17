@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — external review round 2 in progress
+**Current phase:** v1.0 candidate — external review round 3 in progress
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -13,28 +13,34 @@ Milestone numbers are project milestones, not protocol version numbers.
 The active external-review target is frozen as:
 
 ```text
-review target:  olp-v1.0-review-2
+review target:  olp-v1.0-review-3
 status:         frozen
-source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
-Review-2 supersedes review-1 after Issue #21 identified a cross-platform checkout reproducibility defect in the original frozen source. Review-1 remains immutable historical evidence:
+Review-3 supersedes review-2 after GHSA-x768-cq7q-w9mq, an SSRF policy bypass present in both implementations, and a corpus-selection defect under which adding its regression coverage rewrote an accepted release identity. Earlier targets remain immutable historical evidence:
 
 ```text
 review target:  olp-v1.0-review-1
 source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
 status:         historical / superseded
+
+review target:  olp-v1.0-review-2
+source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+status:         historical / superseded
 ```
 
-The review-2 source includes repository-enforced LF text checkout bytes, exact-byte regression coverage, and a Windows `core.autocrlf=true` reproduction gate. The published corpus commitments remain unchanged.
+The review-3 source retains the repository-enforced LF text checkout bytes and Windows `core.autocrlf=true` reproduction gate introduced for review-2, and adds host-form canonicalization in both implementations, five negative resolution vectors, Specifications 0009 v0.2 and 0014 v0.2, and pinned frozen profile corpora. Both published corpus commitments remain unchanged.
 
-Reviewers must inspect the frozen review-2 source commit, not a moving branch tip or later `main`.
+Reviewers must inspect the frozen review-3 source commit, not a moving branch tip or later `main`.
 
 Public coordination:
 
-- Issue #24 — public technical review of `olp-v1.0-review-2`
-- Issue #25 — independent external security review coordination for `olp-v1.0-review-2`
+- Issue #24 — public technical review of `olp-v1.0-review-3`
+- Issue #25 — independent external security review coordination for `olp-v1.0-review-3`
+- GHSA-x768-cq7q-w9mq — published advisory for the review-2 resolver defect
 - Issue #21 — review-1 checkout-byte reproducibility finding and rollover rationale
+- `docs/v1-review-3-rollover.md`
 - `docs/v1-review-package-index.md`
 - `docs/v1-public-review-guide.md`
 - `docs/v1-external-security-review-brief.md`
@@ -226,13 +232,17 @@ M26 does not publish v1.0. It makes the remaining external work explicit and pre
 
 Issue #21 found that a normal Git for Windows checkout with `core.autocrlf=true` could alter hash-critical working-tree text bytes, causing the central reproduction instructions to fail. The source was therefore superseded rather than silently rebound.
 
-### Review round 2 — active
+### Review round 2 — historical / superseded
+
+`olp-v1.0-review-2` is permanently bound to `d470970180bfa128ca14fd01ac920c95dd8ec288`. It was superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`.
+
+### Review round 3 — active
 
 The corrected exact candidate snapshot is frozen as:
 
 ```text
-olp-v1.0-review-2
-d470970180bfa128ca14fd01ac920c95dd8ec288
+olp-v1.0-review-3
+f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 The current legitimate work is:
@@ -246,11 +256,11 @@ The current legitimate work is:
 
 ### If another material source change is required
 
-A material fix does **not** silently modify the meaning of `olp-v1.0-review-2`.
+A material fix does **not** silently modify the meaning of `olp-v1.0-review-3`.
 
 Instead:
 
-1. review-2 remains historical evidence for its original bytes;
+1. review-3 remains historical evidence for its original bytes;
 2. the defect is fixed in a new source snapshot;
 3. a new review-target identifier is frozen;
 4. affected external gates return to `PENDING` for the new target; and
@@ -258,7 +268,7 @@ Instead:
 
 ### If no further material source change is required
 
-Once both external gates are legitimately completed for the same exact frozen review-2 source, the promotion evaluator may reach `READY`.
+Once both external gates are legitimately completed for the same exact frozen review-3 source, the promotion evaluator may reach `READY`.
 
 `READY` is permission to begin final stable publication mechanics. It is not itself the stable release.
 
