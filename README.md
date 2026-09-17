@@ -108,8 +108,8 @@ source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 Reviewers must inspect the **exact frozen source commit**, not a moving branch tip or later `main`:
 
 - [Frozen review-3 source snapshot](https://github.com/open-trust-layer/protocol/commit/f0dd778f09f904e334477bb1d6294f78d3d466f0)
-- [Issue #24 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/24)
-- [Issue #25 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/25)
+- [Issue #34 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/34)
+- [Issue #35 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/35)
 
 The source snapshot itself contains review-3 in `preparing` state. That is intentional: a Git commit cannot contain its own eventual hash. A later metadata-only commit binds `olp-v1.0-review-3` to the immutable source SHA above.
 

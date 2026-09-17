@@ -40,11 +40,11 @@ Use GitHub's private vulnerability reporting / Security Advisory workflow for th
 
 For non-sensitive public technical findings, use the active public review tracker:
 
-- Issue #24 — `OLP v1.0 public technical review` (retargeting to `olp-v1.0-review-3`)
+- Issue #34 — `OLP v1.0 public technical review — olp-v1.0-review-3`
 
 For independent external security-review coordination, use:
 
-- Issue #25 — `Independent external security review needed` (retargeting to `olp-v1.0-review-3`)
+- Issue #35 — `Independent external security review needed — olp-v1.0-review-3`
 
 The existence of either tracker does not satisfy a promotion gate.
 

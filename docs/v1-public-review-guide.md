@@ -4,7 +4,7 @@
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-3`  
 **Frozen source commit:** `f0dd778f09f904e334477bb1d6294f78d3d466f0`  
-**Public review tracker:** Issue #24  
+**Public review tracker:** Issue #34  
 **Current mandatory candidate core:** `core-v1`
 
 ## Review goal
@@ -116,7 +116,7 @@ A Git commit cannot contain its own hash, so the frozen snapshot cannot record t
 
 That commit changes `review_target.status` and `review_target.source_commit` in `stabilization/v1.0-candidate.json`, the assertions in `tests/conformance/test_promotion.py` and `tests/conformance/test_promotion_schemas.py` that track the checked-in candidate's own state, and reviewer-facing prose. It changes no specification, implementation, conformance vector, corpus commitment, or promotion-gate logic.
 
-For the same reason, the copies of this guide and of `docs/v1-external-security-review-brief.md` **inside** the frozen checkout still read `Source commit: not yet frozen`. Those copies predate the freeze. The authoritative statement of the frozen target is Issue #24, `SECURITY.md`, and the binding commit above.
+For the same reason, the copies of this guide and of `docs/v1-external-security-review-brief.md` **inside** the frozen checkout still read `Source commit: not yet frozen`. Those copies predate the freeze. The authoritative statement of the frozen target is Issue #34, `SECURITY.md`, and the binding commit above.
 
 The evaluator's refusal to let an external gate complete while `review_target.status` is `preparing` is deliberate fail-closed behavior: review evidence cannot be bound to a target that has no immutable source commit.
 
@@ -131,7 +131,7 @@ A useful public review finding should identify:
 5. a concrete conflicting interpretation, reproduction, or attack scenario where possible; and
 6. whether the proposed resolution would change deterministic bytes or capability semantics.
 
-Public findings belong in Issue #24 or a dedicated linked issue. Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
+Public findings belong in Issue #34 or a dedicated linked issue. Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
 
 ## Review completion
 

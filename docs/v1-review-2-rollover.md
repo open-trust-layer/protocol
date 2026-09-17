@@ -62,9 +62,9 @@ draft-v0.3-interoperable-v1
 d470970180bfa128ca14fd01ac920c95dd8ec288
 ```
 
-Public technical review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25.
+Public technical review was coordinated in Issue #24 and independent external security review in Issue #25. Both trackers are closed; review-2 was itself superseded by `olp-v1.0-review-3`, coordinated in Issue #34 and Issue #35. See `docs/v1-review-3-rollover.md`.
 
-Both external review gates remain pending for review-2. Any review-1 discussion may be useful background, but it cannot automatically satisfy a review-2 completion gate.
+Both external review gates were still pending for review-2 when it was superseded. Any review-1 discussion may have been useful background, but it could not automatically satisfy a review-2 completion gate, and no review-2 evidence carries to review-3.
 
 ## Stable-promotion consequence
 
