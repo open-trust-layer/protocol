@@ -32,4 +32,4 @@ reason superseded:      Issue #21 checkout-byte reproducibility defect
 
 No review-1 completion evidence is carried forward automatically.
 
-Public technical review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Both gates remain pending and must identify the exact frozen review-3 source commit before either gate can be completed.
+Public technical review is coordinated in Issue #34. Independent external security review is coordinated in Issue #35. Both gates remain pending and must identify the exact frozen review-3 source commit before either gate can be completed.

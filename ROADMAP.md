@@ -36,8 +36,8 @@ Reviewers must inspect the frozen review-3 source commit, not a moving branch ti
 
 Public coordination:
 
-- Issue #24 — public technical review of `olp-v1.0-review-3`
-- Issue #25 — independent external security review coordination for `olp-v1.0-review-3`
+- Issue #34 — public technical review of `olp-v1.0-review-3`
+- Issue #35 — independent external security review coordination for `olp-v1.0-review-3`
 - GHSA-x768-cq7q-w9mq — published advisory for the review-2 resolver defect
 - Issue #21 — review-1 checkout-byte reproducibility finding and rollover rationale
 - `docs/v1-review-3-rollover.md`
@@ -247,8 +247,8 @@ f0dd778f09f904e334477bb1d6294f78d3d466f0
 
 The current legitimate work is:
 
-1. obtain meaningful public technical review of that exact source through Issue #24 and related findings;
-2. obtain genuinely independent external security review of that exact source through Issue #25 / external reviewer deliverables;
+1. obtain meaningful public technical review of that exact source through Issue #34 and related findings;
+2. obtain genuinely independent external security review of that exact source through Issue #35 / external reviewer deliverables;
 3. reproduce and classify findings;
 4. disposition findings with durable references;
 5. add regression/conformance coverage for accepted defects where appropriate; and

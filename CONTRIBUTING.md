@@ -36,7 +36,7 @@ Please distinguish between:
 - **Public technical findings:** specification ambiguity, interoperability disagreement, deterministic-byte disagreement, conformance gaps, platform/reproducibility defects, governance contradictions, or non-sensitive implementation defects. These may be reported publicly.
 - **Security-sensitive findings:** exploitable vulnerabilities, practical attack details, secret material, or information that would materially increase exploitation risk. Do **not** publish these in a public issue; follow `SECURITY.md`.
 
-The active public technical-review tracker is Issue #24. Independent security-review coordination is Issue #25.
+The active public technical-review tracker is Issue #34. Independent security-review coordination is Issue #35.
 
 ## High-value review areas
 

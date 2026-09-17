@@ -4,7 +4,7 @@
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-3`  
 **Frozen source commit:** `f0dd778f09f904e334477bb1d6294f78d3d466f0`  
-**Security review tracker:** Issue #25
+**Security review tracker:** Issue #35
 
 ## Purpose
 
@@ -97,4 +97,4 @@ A review of a different source commit cannot satisfy the external-security promo
 
 High/critical findings affecting the promoted boundary keep stable promotion blocked until resolved. If a material source change is required, the project must freeze a new review-target identifier and obtain review evidence for that new target rather than reusing the old completion state.
 
-Coordination belongs in Issue #25. Sensitive vulnerability details should use the coordinated process in `SECURITY.md` rather than being posted publicly.
+Coordination belongs in Issue #35. Sensitive vulnerability details should use the coordinated process in `SECURITY.md` rather than being posted publicly.

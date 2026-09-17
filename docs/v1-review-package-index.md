@@ -10,7 +10,7 @@ Review-3 supersedes review-2 after GHSA-x768-cq7q-w9mq, an SSRF policy bypass pr
 
 Review-2 had earlier superseded review-1, whose source did not enforce deterministic LF working-tree bytes for Git for Windows checkouts with `core.autocrlf=true`. That defect and rollover rationale are recorded in Issue #21 and `docs/v1-review-2-rollover.md`.
 
-Public review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Neither tracker by itself satisfies a promotion gate.
+Public review is coordinated in Issue #34. Independent external security review is coordinated in Issue #35. Neither tracker by itself satisfies a promotion gate.
 
 ## Candidate and promotion state
 
@@ -32,7 +32,7 @@ Public review is coordinated in Issue #24. Independent external security review 
 
 - `docs/v1-public-review-guide.md`
 - `stabilization/v1-review-register.json`
-- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-3`
+- Issue #34 — `OLP v1.0 public technical review — olp-v1.0-review-3`
 
 ## Review-2 rollover and cross-platform reproduction
 
