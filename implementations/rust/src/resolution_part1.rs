@@ -3,7 +3,7 @@
 // This module consumes caller-supplied resolver snapshots. It performs no network I/O.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::net::{IpAddr, Ipv6Addr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 use crate::{
     error::OlpError,
