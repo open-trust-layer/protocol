@@ -2,8 +2,8 @@
 
 **Status:** reviewer brief; independent review not yet completed  
 **Candidate:** `olp-v1.0`  
-**Review target:** `olp-v1.0-review-2`  
-**Frozen source commit:** `d470970180bfa128ca14fd01ac920c95dd8ec288`  
+**Review target:** `olp-v1.0-review-3`  
+**Frozen source commit:** `f0dd778f09f904e334477bb1d6294f78d3d466f0`  
 **Security review tracker:** Issue #25
 
 ## Purpose
@@ -12,11 +12,13 @@ This document describes the intended scope for an independent external security 
 
 The project deliberately keeps this gate separate from maintainer review, automated conformance, and the internal Milestone 17/Milestone 26 adversarial work.
 
-`olp-v1.0-review-2` supersedes review-1 after a cross-platform checkout reproducibility defect was identified: exact-byte corpus and promotion-artifact hashes could fail on Git for Windows checkouts with `core.autocrlf=true`. Review-2 includes repository-enforced LF text checkout semantics and a Windows reproduction gate. See Issue #21 and `docs/v1-review-2-rollover.md`.
+`olp-v1.0-review-3` supersedes `olp-v1.0-review-2` after GHSA-x768-cq7q-w9mq, an SSRF policy bypass present in both implementations, and a corpus-selection defect under which adding its regression coverage rewrote an accepted release identity. See `docs/v1-review-3-rollover.md`.
+
+Review-2 had earlier superseded review-1 after a cross-platform checkout reproducibility defect: exact-byte corpus and promotion-artifact hashes could fail on Git for Windows checkouts with `core.autocrlf=true`. The review-3 source retains the LF checkout semantics and Windows reproduction gate introduced then. See Issue #21 and `docs/v1-review-2-rollover.md`.
 
 Review-1 remains historically bound to source commit `877493826d673ccf9bb94e7b6b113b35141ad220`; it is not rebound to the corrected source.
 
-Any review intended to satisfy the stable-promotion gate must examine the exact frozen review-2 source commit above. A branch tip or different commit cannot satisfy the gate.
+Any review intended to satisfy the stable-promotion gate must examine the exact frozen review-3 source commit above. A branch tip or different commit cannot satisfy the gate.
 
 ## Minimum review scope
 
@@ -80,8 +82,8 @@ Findings in those areas are still useful when they expose a protocol/specificati
 
 A useful review deliverable should identify:
 
-- review target `olp-v1.0-review-2`;
-- exact source commit `d470970180bfa128ca14fd01ac920c95dd8ec288`;
+- review target `olp-v1.0-review-3`;
+- exact source commit `f0dd778f09f904e334477bb1d6294f78d3d466f0`;
 - review methodology and scope;
 - findings with severity and affected components;
 - whether each finding changes deterministic bytes, capability semantics, implementation-only behavior, or documentation;

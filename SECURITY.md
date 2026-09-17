@@ -7,14 +7,14 @@ The current specification-set release is **Draft v0.3**. OLP v1.0 has not been r
 The active v1.0 external-review target is frozen as:
 
 ```text
-review target:  olp-v1.0-review-2
+review target:  olp-v1.0-review-3
 status:         frozen
-source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 The project is actively seeking public technical review and genuinely independent external security review of that exact source snapshot. Neither external promotion gate is complete.
 
-Review-1 remains immutable historical evidence at `877493826d673ccf9bb94e7b6b113b35141ad220`. It was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review evidence is never silently rebound from an older target to changed source.
+Review-1 remains immutable historical evidence at `877493826d673ccf9bb94e7b6b113b35141ad220`, superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review-2 remains immutable historical evidence at `d470970180bfa128ca14fd01ac920c95dd8ec288`, superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`. Review evidence is never silently rebound from an older target to changed source.
 
 ## Supported versions
 
@@ -22,8 +22,9 @@ There is currently no stable production-supported OLP release.
 
 | Version / branch | Security support |
 |---|---|
-| Frozen `olp-v1.0-review-2` source | Active public/external review and coordinated fixes |
+| Frozen `olp-v1.0-review-3` source | Active public/external review and coordinated fixes |
 | Draft v0.3 specification set / v1 candidate work | Experimental review and coordinated fixes |
+| `olp-v1.0-review-2` | Historical / superseded review evidence |
 | `olp-v1.0-review-1` | Historical / superseded review evidence |
 | Earlier draft snapshots | Historical/compatibility review only |
 | Future tagged pre-releases | As documented with the release |
@@ -39,11 +40,11 @@ Use GitHub's private vulnerability reporting / Security Advisory workflow for th
 
 For non-sensitive public technical findings, use the active public review tracker:
 
-- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-2`
+- Issue #24 — `OLP v1.0 public technical review` (retargeting to `olp-v1.0-review-3`)
 
 For independent external security-review coordination, use:
 
-- Issue #25 — `Independent external security review needed — olp-v1.0-review-2`
+- Issue #25 — `Independent external security review needed` (retargeting to `olp-v1.0-review-3`)
 
 The existence of either tracker does not satisfy a promotion gate.
 
@@ -67,30 +68,30 @@ Review evidence intended to satisfy a v1.0 promotion gate is source-bound.
 For the active review round, the only source commit that can satisfy the current external gates is:
 
 ```text
-d470970180bfa128ca14fd01ac920c95dd8ec288
+f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
-A review of later `main`, a branch tip, review-1, or another commit does not satisfy `olp-v1.0-review-2`.
+A review of later `main`, a branch tip, review-1, review-2, or another commit does not satisfy `olp-v1.0-review-3`.
 
-The source snapshot was merged first with review-2 in `preparing` state. A later metadata-only freeze binds the target identifier to that immutable SHA. This ordering is intentional: a Git commit cannot contain its own eventual hash.
+The source snapshot was merged first with review-3 in `preparing` state. A later metadata-only freeze binds the target identifier to that immutable SHA. This ordering is intentional: a Git commit cannot contain its own eventual hash.
 
 Opening a review issue, sending outreach, receiving an audit proposal, publishing a review URL, or receiving delivery confirmation is not completed review evidence.
 
 If a material finding requires source changes:
 
-1. `olp-v1.0-review-2` remains historically bound to its original bytes;
+1. `olp-v1.0-review-3` remains historically bound to its original bytes;
 2. the defect is fixed in a new source snapshot;
 3. a new review-target identifier is frozen;
 4. affected external gates return to pending for the new target; and
 5. review evidence is never silently rebound to changed source.
 
-See `docs/v1-review-round-lifecycle.md`, `docs/v1-review-2-rollover.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
+See `docs/v1-review-round-lifecycle.md`, `docs/v1-review-3-rollover.md`, `docs/v1-review-2-rollover.md`, and `specification/0015-stable-profile-promotion-and-readiness.md`.
 
 ## Cross-platform exact-byte reproducibility
 
 Specification 0014 commits exact repository file bytes and forbids newline normalization before hashing. Issue #21 demonstrated that this guarantee also requires deterministic repository checkout semantics.
 
-The active review-2 source therefore includes:
+The review-2 source added, and the active review-3 source retains:
 
 - root `.gitattributes` with `* text=auto eol=lf`;
 - explicit `-text` handling for common binary artifacts;
@@ -154,6 +155,7 @@ See:
 - `docs/v1-candidate-readiness.md`
 - `docs/v1-external-security-review-brief.md`
 - `docs/v1-review-package-index.md`
+- `docs/v1-review-3-rollover.md`
 - `docs/v1-review-2-rollover.md`
 - `specification/0015-stable-profile-promotion-and-readiness.md`
 

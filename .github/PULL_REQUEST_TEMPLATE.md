@@ -38,15 +38,15 @@ Explain any checked semantic impact:
 Current frozen target:
 
 ```text
-olp-v1.0-review-2
-d470970180bfa128ca14fd01ac920c95dd8ec288
+olp-v1.0-review-3
+f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 - [ ] This PR is operational/editorial and does not change the frozen reviewed source.
 - [ ] This PR is a material source-changing fix and may require a new review target.
 - [ ] Not applicable.
 
-If a new review target may be required, explain why. Do not silently rebind review evidence from an older target. `olp-v1.0-review-1` and any later superseded targets remain historical evidence for their original source bytes.
+If a new review target may be required, explain why. Do not silently rebind review evidence from an older target. `olp-v1.0-review-1`, `olp-v1.0-review-2` and any later superseded targets remain historical evidence for their original source bytes.
 
 ## Finding / issue linkage
 

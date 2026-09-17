@@ -1,12 +1,14 @@
 # OLP v1 Review Package Index
 
 **Status:** frozen review package index  
-**Review target:** `olp-v1.0-review-2`  
-**Source commit:** `d470970180bfa128ca14fd01ac920c95dd8ec288`
+**Review target:** `olp-v1.0-review-3`  
+**Source commit:** `f0dd778f09f904e334477bb1d6294f78d3d466f0`
 
-This index collects the materials for the second public/external review round of the OLP v1.0 candidate.
+This index collects the materials for the third public/external review round of the OLP v1.0 candidate.
 
-Review-2 supersedes review-1 because the review-1 source did not enforce deterministic LF working-tree bytes for Git for Windows checkouts with `core.autocrlf=true`. The defect and rollover rationale are recorded in Issue #21 and `docs/v1-review-2-rollover.md`.
+Review-3 supersedes review-2 after GHSA-x768-cq7q-w9mq, an SSRF policy bypass present in both implementations, and a corpus-selection defect under which adding its regression coverage rewrote an accepted release identity. That rationale is recorded in `docs/v1-review-3-rollover.md`.
+
+Review-2 had earlier superseded review-1, whose source did not enforce deterministic LF working-tree bytes for Git for Windows checkouts with `core.autocrlf=true`. That defect and rollover rationale are recorded in Issue #21 and `docs/v1-review-2-rollover.md`.
 
 Public review is coordinated in Issue #24. Independent external security review is coordinated in Issue #25. Neither tracker by itself satisfies a promotion gate.
 
@@ -30,11 +32,11 @@ Public review is coordinated in Issue #24. Independent external security review 
 
 - `docs/v1-public-review-guide.md`
 - `stabilization/v1-review-register.json`
-- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-2`
+- Issue #24 — `OLP v1.0 public technical review — olp-v1.0-review-3`
 
 ## Review-2 rollover and cross-platform reproduction
 
-- `docs/v1-review-2-rollover.md`
+- `docs/v1-review-3-rollover.md`
 - `.gitattributes`
 - `tests/conformance/test_repository_byte_reproducibility.py`
 - `.github/workflows/v1-candidate-readiness.yml`
@@ -91,8 +93,8 @@ Specification 0000 is the non-normative overview and should also be reviewed for
 Review-2 is frozen as:
 
 ```text
-id:             olp-v1.0-review-2
-source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+id:             olp-v1.0-review-3
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
 Reviewers must inspect that exact commit. A branch tip, later commit, or review of different source does not satisfy the promotion gate for this target.
@@ -104,4 +106,4 @@ id:             olp-v1.0-review-1
 source commit:  877493826d673ccf9bb94e7b6b113b35141ad220
 ```
 
-Review evidence for review-1 does not automatically satisfy review-2.
+Review evidence for review-1 does not automatically satisfy review-3.
