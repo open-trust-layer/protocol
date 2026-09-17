@@ -6,6 +6,21 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ## [Unreleased]
 
+### Resolver host canonicalization and pinned frozen corpora
+
+- Fix GHSA-x768-cq7q-w9mq: the Specification 0009 resolver classified a host with `ipaddress.ip_address`, which accepts only dotted-quad IPv4, so decimal, hexadecimal, octal and short spellings of a loopback, private-range or metadata-service address were treated as public DNS names and reported `RESOLVED` rather than `POLICY_BLOCKED`, with no DNS resolution involved.
+- Add `_ipv4_literal` to parse the `inet_aton`-accepted IPv4 spellings, and fail closed for a host whose labels are all numeric and which therefore cannot be a DNS name, rather than treating an unparseable address literal as a public target.
+- Validate character sets explicitly instead of relying on `int()`, which accepts underscores, surrounding whitespace and non-ASCII digits and would reintroduce a differential against the stack that later resolves the host.
+- Change `olp.resolution.v1` behavior: `http://2130706433/x`, its hexadecimal, octal and short equivalents, and the corresponding metadata-service forms now report `POLICY_BLOCKED`. Public hosts, dotted-quad addresses, IPv6 literals and non-`http` schemes are unaffected.
+- Add five negative conformance vectors covering those spellings, in their own manifest fragment so the accepted `resolution-v1` fragment retains its exact bytes.
+- Fix review finding F-1: a conformance case was selected purely by capability, so any new case carrying an already-selected capability was absorbed into every profile holding that capability, and adding regression coverage for a defect silently rewrote the identity of an already-accepted release.
+- Add `specification/releases/frozen-profile-corpora.json`, pinning `core-v1` to its 62 accepted case IDs and `draft-v0.3-interoperable-v1` to its 180; an unpinned profile such as `resolution-v1` keeps capability selection and continues to grow with the corpus.
+- Keep that registry outside the conformance root and out of every committed file set: the ordered case IDs are already authenticated in the suite-commitment preimage, so altering a pinned list changes the resulting digest, and the exclusion is what allows a profile to be pinned to the case set it already had without changing its published commitment.
+- Apply the same pinned selection in the conformance runner, so the executed corpus cannot drift from the committed one.
+- Advance Specification 0014 from v0.1 to v0.2: rewrite Section 6 as two selection modes, require rejection of a pinned case that is absent from the manifest or carries a capability outside the profile, forbid corpus growth elsewhere from altering a pinned profile's case set or commitment, and update the Section 8 fragment-contribution rule to follow Section 6 selection.
+- Preserve both published corpus commitments unchanged, `core-v1` `8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e` and `draft-v0.3-interoperable-v1` `62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc`, together with every accepted case, vector byte, profile capability list, and v1 identity-bearing protocol construction.
+- Require a new frozen review target before promotion: this is the first change to normative specification text and reference-implementation behavior since `olp-v1.0-review-2`, which remains historically bound to `d470970180bfa128ca14fd01ac920c95dd8ec288` with its review evidence unrebound.
+
 ### v1.0 external review round 1 and review-binding hardening
 
 - Add promotion-schema v2 source binding so completed external-review evidence must identify the exact frozen review-target source commit.
