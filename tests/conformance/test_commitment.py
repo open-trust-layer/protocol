@@ -74,3 +74,45 @@ def test_standalone_profile_registry_exactly_matches_loaded_manifest_profiles():
         assert raw["id"] == path.stem
         assert len(raw["capabilities"]) == len(set(raw["capabilities"]))
         assert tuple(raw["capabilities"]) == manifest.profiles[raw["id"]]
+
+
+def test_frozen_profiles_are_pinned_to_their_accepted_case_ids():
+    """A frozen profile's corpus is its pinned list, not a capability sweep."""
+    from olp_conformance.commitment import frozen_case_ids
+
+    root = MANIFEST.parent
+    assert frozen_case_ids(root, "core-v1") is not None
+    assert len(frozen_case_ids(root, "core-v1")) == 62
+    assert len(frozen_case_ids(root, "draft-v0.3-interoperable-v1")) == 180
+    # A living profile is not pinned and keeps growing with the corpus.
+    assert frozen_case_ids(root, "resolution-v1") is None
+
+
+def test_new_case_for_a_selected_capability_cannot_perturb_a_frozen_profile():
+    """The regression barrier for review finding F-1.
+
+    conformance/manifests/resolution-v1-private-address-forms.json adds five
+    cases carrying olp.resolution.v1, a capability held by the frozen
+    draft-v0.3-interoperable-v1 profile. Under capability selection those cases
+    were absorbed into that profile and changed its published commitment, so
+    adding regression coverage for a defect silently rewrote an accepted release
+    identity. Pinning keeps the accepted corpus fixed while the living
+    resolution-v1 profile picks the new coverage up.
+    """
+    frozen = build_profile_corpus_commitment(MANIFEST, "draft-v0.3-interoperable-v1")
+    assert len(frozen.case_ids) == 180
+    assert frozen.digest_hex == (
+        "62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc"
+    )
+    added = {f"resolution.network.private-address.{n:03d}" for n in range(2, 7)}
+    assert added.isdisjoint(frozen.case_ids)
+
+    core = build_profile_corpus_commitment(MANIFEST, "core-v1")
+    assert len(core.case_ids) == 62
+    assert core.digest_hex == (
+        "8b45732541679f179d0eeeb2e94e1730b1b03da55cf910e64157358361b45b5e"
+    )
+
+    living = build_profile_corpus_commitment(MANIFEST, "resolution-v1")
+    assert len(living.case_ids) == 21
+    assert "resolution.network.private-address.002" in living.case_ids

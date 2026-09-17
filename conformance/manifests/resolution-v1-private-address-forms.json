@@ -1,0 +1,13 @@
+{
+  "schema": "olp-conformance-manifest-fragment-v1",
+  "version": 1,
+  "harness_version": "0.1.0",
+  "profiles": {},
+  "cases": [
+    {"capability":"olp.resolution.v1","category":"negative","description":"Decimal-integer IPv4 form of a loopback address is policy-blocked","id":"resolution.network.private-address.002","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-002.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Hexadecimal IPv4 form of a loopback address is policy-blocked","id":"resolution.network.private-address.003","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-003.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Octal IPv4 form of a loopback address is policy-blocked","id":"resolution.network.private-address.004","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-004.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Short IPv4 form of a loopback address is policy-blocked","id":"resolution.network.private-address.005","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-005.json"},
+    {"capability":"olp.resolution.v1","category":"negative","description":"Decimal-integer IPv4 form of the link-local metadata service is policy-blocked","id":"resolution.network.private-address.006","operation":"resolve","vector":"vectors/resolution/negative/resolution-network-private-address-006.json"}
+  ]
+}

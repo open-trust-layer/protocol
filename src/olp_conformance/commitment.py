@@ -99,7 +99,48 @@ def _commitment_preimage(
     return bytes(out)
 
 
-def _fragment_contributes(fragment: Path, profile: str, capabilities: frozenset[str]) -> bool:
+FROZEN_CORPORA_SCHEMA = "olp-frozen-profile-corpora-v1"
+_FROZEN_CORPORA_PATH = Path("specification") / "releases" / "frozen-profile-corpora.json"
+
+
+def frozen_case_ids(root: Path, profile: str) -> tuple[str, ...] | None:
+    """Return the pinned case IDs for *profile*, or ``None`` when it is not frozen.
+
+    A frozen profile's corpus is an explicit ordered case list rather than
+    whatever the merged manifest currently selects by capability. Without this,
+    any later case carrying an already-selected capability is absorbed into every
+    profile holding that capability, so adding regression coverage for a defect
+    silently alters the identity of an already-accepted release.
+
+    The registry deliberately lives outside the conformance root and is therefore
+    not part of any committed corpus file set. It does not need to be: the ordered
+    case IDs are already authenticated inside the commitment preimage, so tampering
+    with the pin changes the resulting digest and is caught by comparing against the
+    published commitment.
+    """
+    registry = root.parent / _FROZEN_CORPORA_PATH
+    if not registry.is_file():
+        return None
+    raw = load_path(registry)
+    if raw.get("schema") != FROZEN_CORPORA_SCHEMA:
+        raise ValueError(f"unexpected frozen corpora schema: {raw.get('schema')!r}")
+    entry = raw.get("profiles", {}).get(profile)
+    if entry is None:
+        return None
+    case_ids = entry.get("case_ids")
+    if not isinstance(case_ids, list) or not case_ids:
+        raise ValueError(f"frozen profile {profile} declares no case_ids")
+    if len(set(case_ids)) != len(case_ids):
+        raise ValueError(f"frozen profile {profile} declares duplicate case_ids")
+    return tuple(case_ids)
+
+
+def _fragment_contributes(
+    fragment: Path,
+    profile: str,
+    capabilities: frozenset[str],
+    selected_case_ids: frozenset[str] | None = None,
+) -> bool:
     """Return whether an additive fragment contributes to the selected corpus.
 
     Unrelated future profile fragments MUST NOT perturb a frozen release
@@ -114,7 +155,10 @@ def _fragment_contributes(fragment: Path, profile: str, capabilities: frozenset[
     if profile in profiles:
         return True
     for case in raw.get("cases", []):
-        if case.get("capability") in capabilities:
+        if selected_case_ids is not None:
+            if case.get("id") in selected_case_ids:
+                return True
+        elif case.get("capability") in capabilities:
             return True
     return False
 
@@ -145,11 +189,32 @@ def build_profile_corpus_commitment(
         raise ValueError(f"conformance profile has no capabilities: {profile}")
 
     capability_set = frozenset(capabilities)
-    cases = tuple(case for case in manifest.cases if case.capability in capability_set)
+    root = manifest.root.resolve()
+
+    pinned = frozen_case_ids(root, profile)
+    if pinned is None:
+        cases = tuple(case for case in manifest.cases if case.capability in capability_set)
+        selected_ids: frozenset[str] | None = None
+    else:
+        by_id = {case.id: case for case in manifest.cases}
+        missing = [case_id for case_id in pinned if case_id not in by_id]
+        if missing:
+            raise ValueError(
+                f"frozen profile {profile} pins cases absent from the manifest: "
+                + ", ".join(missing)
+            )
+        foreign = [
+            case_id for case_id in pinned if by_id[case_id].capability not in capability_set
+        ]
+        if foreign:
+            raise ValueError(
+                f"frozen profile {profile} pins cases outside its capabilities: "
+                + ", ".join(foreign)
+            )
+        cases = tuple(by_id[case_id] for case_id in pinned)
+        selected_ids = frozenset(pinned)
     if not cases:
         raise ValueError(f"conformance profile selects no cases: {profile}")
-
-    root = manifest.root.resolve()
     profile_path = root / "profiles" / f"{profile}.json"
     if not profile_path.is_file():
         raise ValueError(f"standalone profile declaration not found: {profile_path.name}")
@@ -168,7 +233,7 @@ def build_profile_corpus_commitment(
     fragments_dir = root / "manifests"
     if fragments_dir.is_dir():
         for fragment in sorted(fragments_dir.glob("*.json"), key=lambda p: p.name.encode("utf-8")):
-            if _fragment_contributes(fragment, profile, capability_set):
+            if _fragment_contributes(fragment, profile, capability_set, selected_ids):
                 add_path(fragment)
     add_path(profile_path)
     for case in cases:

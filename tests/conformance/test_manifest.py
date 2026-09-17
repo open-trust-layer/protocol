@@ -12,8 +12,8 @@ def test_manifest_loads_all_cases():
     manifest = load_manifest(MANIFEST)
     assert manifest.version == 1
     assert manifest.harness_version == '0.1.0'
-    assert len(manifest.cases) == 180
-    assert len({case.id for case in manifest.cases}) == 180
+    assert len(manifest.cases) == 185
+    assert len({case.id for case in manifest.cases}) == 185
 
 
 def test_core_profile_contains_expected_capabilities():
