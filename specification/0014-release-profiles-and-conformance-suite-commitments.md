@@ -1,8 +1,9 @@
 # OLP Specification 0014 — Release Profiles and Conformance Suite Commitments
 
 **Status:** Draft  
-**Version:** v0.1  
+**Version:** v0.2  
 **Milestone:** 25 — Draft v0.3 Integration & Conformance Freeze  
+**Revision note:** v0.2 adds pinned corpora for frozen profiles in Sections 6 and 8. No accepted case, vector byte, or published suite commitment changes.  
 **Filename:** `specification/0014-release-profiles-and-conformance-suite-commitments.md`
 
 ---
@@ -99,23 +100,67 @@ Claiming `draft-v0.3-interoperable-v1` requires every capability listed above.
 
 ---
 
-## 6. Draft v0.3 accepted case set
+## 6. Profile corpus selection
 
-At the Milestone 25 freeze, the aggregate profile selects exactly 180 existing implementation-neutral cases.
+A profile corpus is selected in one of two modes, according to whether the profile is pinned in the registry defined in Section 6.2.
 
-Selection is deterministic:
+### 6.1 Capability selection for living profiles
+
+A profile that is not pinned selects its cases deterministically:
 
 1. load `conformance/manifest.json`;
 2. load additive manifest fragments from `conformance/manifests/*.json` in filename UTF-8 byte order;
-3. obtain the ordered capability list for `draft-v0.3-interoperable-v1`;
+3. obtain the ordered capability list for the profile;
 4. preserve manifest loading order; and
-5. select every case whose `capability` is in the aggregate profile.
+5. select every case whose `capability` is in the profile.
 
 Case IDs MUST remain globally unique.
 
-Adding a selected-capability case, removing a selected case, changing a selected case's capability, changing a referenced vector, or changing aggregate profile membership changes the release corpus and therefore MUST change its suite commitment.
+A living profile grows with the corpus. Adding a case whose capability the profile selects changes that profile's corpus and therefore MUST change its suite commitment.
 
-Adding a future manifest fragment that contributes only unrelated profiles/capabilities MUST NOT change an already-frozen profile commitment.
+### 6.2 Pinned selection for frozen profiles
+
+A frozen profile's corpus is an explicit ordered list of case IDs rather than the result of a capability sweep.
+
+Pinned corpora are declared in:
+
+```text
+specification/releases/frozen-profile-corpora.json
+```
+
+For a pinned profile:
+
+1. load the manifest and fragments as in Section 6.1;
+2. obtain the pinned ordered case-ID list for the profile; and
+3. select exactly those cases, in the pinned order.
+
+A pinned case ID absent from the merged manifest MUST be rejected.
+
+A pinned case whose `capability` is not in the profile's capability list MUST be rejected.
+
+Adding, removing, or renaming a case elsewhere in the corpus MUST NOT change a pinned profile's selected case set, its ordered case IDs, or its suite commitment.
+
+Changing a vector referenced by a pinned case, changing a pinned case's capability, or changing the pinned list itself changes the corpus and therefore MUST change the suite commitment.
+
+### 6.3 The registry is not part of a committed file set
+
+The frozen-profile corpus registry lies outside the conformance root and is excluded from every committed corpus file set defined in Section 8.
+
+It does not require that membership. The ordered case IDs are already authenticated inside the commitment preimage defined in Section 11, so altering a pinned list changes the resulting digest and is detected by comparison against the published commitment.
+
+That exclusion is also what allows a profile to be pinned to the case set it already had without changing its published commitment: the committed file set, the ordered case IDs, and therefore the digest all remain exactly as accepted.
+
+### 6.4 Draft v0.3 accepted case set
+
+At the Milestone 25 freeze, `draft-v0.3-interoperable-v1` selected exactly 180 implementation-neutral cases. Those 180 case IDs are that profile's pinned corpus, and its suite commitment remains the value published for Draft v0.3.
+
+The mandatory `core-v1` candidate core is pinned to its 62 accepted case IDs on the same basis.
+
+### 6.5 Rationale
+
+Capability-only selection made every profile's corpus a function of the whole repository. A case added for one profile was absorbed into every other profile holding the same capability. Adding regression coverage for an accepted defect therefore altered the identity of an already-published release, and a defect inside an accepted capability could not be corrected without rewriting release history.
+
+Pinning confines a frozen release to the corpus it was accepted with, and leaves living profiles free to grow.
 
 ---
 
@@ -155,9 +200,13 @@ For a profile corpus commitment, the committed file set consists of:
 An additive manifest fragment contributes when either:
 
 - it defines the selected profile identifier; or
-- it contains at least one case whose capability is in the selected profile.
+- it contains at least one case that the profile selects under Section 6.
 
-Fragments that only introduce unrelated future profiles/capabilities are intentionally excluded. This permits append-only repository growth without changing a previously frozen release commitment.
+For a living profile the second condition is satisfied by any case whose capability is in the profile. For a pinned profile it is satisfied only by a case whose ID appears in that profile's pinned list.
+
+Fragments contributing no selected case are intentionally excluded. For a pinned profile this means a fragment added after the freeze cannot enter the committed file set at all, so append-only repository growth leaves a frozen release commitment unchanged even when the added cases carry capabilities that frozen profile also holds.
+
+The frozen-profile corpus registry of Section 6.2 is never part of a committed file set.
 
 The complete manifest loader MUST still validate all visible fragments before corpus selection; excluding an unrelated fragment from a particular commitment does not make malformed global manifest composition acceptable.
 
