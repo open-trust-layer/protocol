@@ -214,7 +214,7 @@ jobs:
           import json
           report = json.load(open("conformance-rust-resolution.json", encoding="utf-8"))
           results = report["results"]
-          assert len(results) == 16, f"expected 16 resolution-v1 cases, got {len(results)}"
+          assert len(results) == 21, f"expected 21 resolution-v1 cases, got {len(results)}"
           failed = [item for item in results if item["status"] != "PASS"]
           assert not failed, failed
           print("Rust resolution-v1 conformance: 16/16 PASS")

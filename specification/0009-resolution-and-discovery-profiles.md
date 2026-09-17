@@ -1,8 +1,9 @@
 # OLP Specification 0009 — Resolution and Discovery Profiles
 
 **Status:** Draft  
-**Version:** v0.1  
+**Version:** v0.2  
 **Milestone:** 9 — Resolution & Discovery Profiles  
+**Revision note:** v0.2 requires host-form canonicalization before address-range classification in Section 25. Range membership is unchanged; the spellings that must be decoded before it is applied are now specified.  
 **Filename:** `specification/0009-resolution-and-discovery-profiles.md`
 
 ---
@@ -694,7 +695,35 @@ A generic OLP library MUST assume network identifiers in untrusted evidence can 
 
 Network resolvers SHOULD deny loopback, link-local, private, metadata-service, and other sensitive address ranges by default unless the embedding application explicitly permits them.
 
-Re-resolution after redirect or DNS change MUST reapply policy.
+### 25.1 Host form canonicalization
+
+Range classification MUST be applied to a canonicalized host, not to one textual spelling of it.
+
+An IPv4 address literal has more spellings than dotted-quad. The `inet_aton` forms accepted by common network stacks also include a single decimal integer, hexadecimal with a `0x` prefix, octal with a leading `0`, and short forms whose final part absorbs the remaining octets. The following all denote the same address:
+
+```text
+127.0.0.1    2130706433    0x7f000001    017700000001    127.1
+```
+
+A resolver MUST decode every such spelling to the address it denotes before applying range policy.
+
+A resolver MUST NOT treat a host as a permitted public target merely because its own address parser rejected it. An address parser accepting only dotted-quad notation rejects each spelling above, and a policy reading that rejection as "this must be a DNS name" admits exactly the targets this section exists to deny, with no DNS resolution taking place.
+
+### 25.2 Unparseable address literals fail closed
+
+The final label of a DNS name MUST NOT be entirely numeric. A host whose labels are all numeric is therefore an address literal however it is spelled.
+
+Where such a host does not decode to a valid address, a resolver MUST treat it as denied rather than as a public name.
+
+### 25.3 Explicit character classes
+
+A resolver MUST NOT rely on a permissive host-to-integer conversion. A conversion accepting digit separators, surrounding whitespace, a leading sign, or non-ASCII digits can decode a host differently from the network stack that subsequently connects to it, reintroducing the divergence this section forbids.
+
+The accepted character class MUST be validated explicitly for each spelling.
+
+### 25.4 Reapplication
+
+Re-resolution after redirect or DNS change MUST reapply policy, including the canonicalization required by Section 25.1.
 
 ---
 

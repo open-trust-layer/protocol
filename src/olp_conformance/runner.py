@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Iterable
 
 from .adapter import AdapterExecutionError, ConformanceAdapter
+from .commitment import frozen_case_ids
 from .manifest import ConformanceCase, ConformanceManifest, load_vector
 from .results import CaseResult, CaseStatus, RunReport
 
@@ -57,6 +58,12 @@ class ConformanceRunner:
             except KeyError as exc:
                 raise ValueError(f"unknown conformance profile {profile!r}") from exc
             capability_filter = capability_filter & profile_caps if capability_filter else profile_caps
+            # A frozen profile runs exactly the cases its commitment covers. Selecting
+            # by capability here while the commitment selects by pinned ID would let the
+            # executed corpus drift away from the committed one.
+            pinned = frozen_case_ids(self.manifest.root.resolve(), profile)
+            if pinned is not None:
+                id_filter = id_filter & set(pinned) if id_filter else set(pinned)
 
         adapter_caps = self.adapter.capabilities()
         results: list[CaseResult] = []
