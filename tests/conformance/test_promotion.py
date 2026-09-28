@@ -21,6 +21,7 @@ EXPECTED_BLOCKERS = (
     "INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED",
 )
 REVIEW_TARGET_ID = "olp-v1.0-review-4"
+CHECKED_IN_REVIEW_COMMIT = "c293c5524318b342149a80c3e0322e29742f44f7"
 FROZEN_COMMIT = "1" * 40
 OTHER_COMMIT = "2" * 40
 
@@ -83,8 +84,8 @@ def test_v1_candidate_is_internally_ready_but_externally_blocked():
     assert report.release_corpus_commitment == RELEASE_COMMITMENT
     assert report.core_corpus_commitment == CORE_COMMITMENT
     assert report.review_target_id == REVIEW_TARGET_ID
-    assert report.review_target_status == "preparing"
-    assert report.review_target_source_commit is None
+    assert report.review_target_status == "frozen"
+    assert report.review_target_source_commit == CHECKED_IN_REVIEW_COMMIT
     assert report.internal_readiness == "PASS"
     assert report.status == "BLOCKED"
     assert report.blockers == EXPECTED_BLOCKERS
@@ -305,8 +306,8 @@ def test_promotion_cli_reports_blocked_as_valid_diagnostic_and_require_ready_fai
     assert payload["status"] == "BLOCKED"
     assert payload["internal_readiness"] == "PASS"
     assert payload["review_target_id"] == REVIEW_TARGET_ID
-    assert payload["review_target_status"] == "preparing"
-    assert payload["review_target_source_commit"] is None
+    assert payload["review_target_status"] == "frozen"
+    assert payload["review_target_source_commit"] == CHECKED_IN_REVIEW_COMMIT
     assert payload["blockers"] == list(EXPECTED_BLOCKERS)
 
     assert main(["promotion-check", "--candidate", str(CANDIDATE), "--require-ready"]) == 1

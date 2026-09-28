@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — review round 4 preparation
+**Current phase:** v1.0 candidate — external review round 4
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -10,12 +10,12 @@ Milestone numbers are project milestones, not protocol version numbers.
 
 ## Current v1.0 review target
 
-The active external-review target is being prepared as:
+The active external-review target is frozen as:
 
 ```text
 review target:  olp-v1.0-review-4
-status:         preparing
-source commit:  null
+status:         frozen
+source commit:  c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
 Review-4 supersedes review-3 after an external reviewer found that the frozen review-3 `SECURITY.md` still identified review-2 and its superseded trackers. Earlier targets remain immutable historical evidence:
@@ -36,7 +36,7 @@ status:         historical / superseded
 
 The review-3 source retains the repository-enforced LF text checkout bytes and Windows `core.autocrlf=true` reproduction gate introduced for review-2, and adds host-form canonicalization in both implementations, five negative resolution vectors, Specifications 0009 v0.2 and 0014 v0.2, and pinned frozen profile corpora. Both published corpus commitments remain unchanged.
 
-Reviewers must wait for the exact review-4 source to be frozen; a moving branch tip cannot satisfy either gate.
+Reviewers must inspect the exact frozen review-4 source; a moving branch tip cannot satisfy either gate.
 
 Public coordination:
 
@@ -229,7 +229,7 @@ M26 does not publish v1.0. It makes the remaining external work explicit and pre
 
 ## Phase V — External review and finding disposition
 
-**In progress — review round 4 preparation.**
+**In progress — review round 4.**
 
 ### Review round 1 — historical / superseded
 
@@ -245,24 +245,23 @@ Issue #21 found that a normal Git for Windows checkout with `core.autocrlf=true`
 
 `olp-v1.0-review-3` is permanently bound to `f0dd778f09f904e334477bb1d6294f78d3d466f0`. It was superseded by the source-binding consistency finding recorded in `docs/v1-review-4-rollover.md`.
 
-### Review round 4 — preparing
+### Review round 4 — active
 
-The corrected candidate snapshot is being prepared as:
+The corrected candidate snapshot is frozen as:
 
 ```text
 olp-v1.0-review-4
-source commit: null
+c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
 The current legitimate work is:
 
-1. pass the full repository matrix and freeze the preparation commit;
-2. obtain meaningful public technical review of that exact source through Issue #37 and related findings;
-3. obtain genuinely independent external security review of that exact source through Issue #38 / external reviewer deliverables;
-4. reproduce and classify findings;
-5. disposition findings with durable references;
-6. add regression/conformance coverage for accepted defects where appropriate; and
-7. preserve exact source-binding in all promotion evidence.
+1. obtain meaningful public technical review of that exact source through Issue #37 and related findings;
+2. obtain genuinely independent external security review of that exact source through Issue #38 / external reviewer deliverables;
+3. reproduce and classify findings;
+4. disposition findings with durable references;
+5. add regression/conformance coverage for accepted defects where appropriate; and
+6. preserve exact source-binding in all promotion evidence.
 
 ### If another material source change is required
 

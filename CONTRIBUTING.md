@@ -6,17 +6,17 @@ OLP is currently an **experimental pre-1.0 candidate**. The project is in extern
 
 ## Current review round
 
-The active v1.0 review target is being prepared as:
+The active v1.0 review target is frozen as:
 
 ```text
 review target:  olp-v1.0-review-4
-status:         preparing
-source commit:  null
+status:         frozen
+source commit:  c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-Review-4 findings cannot satisfy a promotion gate until the preparation snapshot is frozen to one exact source commit.
+Review-4 findings intended to satisfy a promotion gate must identify that exact source commit.
 
-A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation commit after the full repository matrix passes.
+A later `main` commit may contain review coordination or maintenance, but review-4 evidence remains bound to the immutable source above.
 
 Earlier rounds remain historical and permanently bound to their own source:
 
@@ -60,11 +60,15 @@ External review is especially useful for:
 - conformance-corpus drift; and
 - stale review-evidence reuse during promotion.
 
-## Reproducing the preparing target
+## Reproducing the frozen target
 
-Until review-4 is frozen, check out the preparation branch or pull-request head. After freeze, Issues #37 and #38 will identify the exact source commit.
+Check out the exact source:
 
-The preparing source contains a root `.gitattributes` policy that forces LF working-tree bytes for textual files and excludes common binary formats from text conversion. CI also exercises a Git for Windows checkout with `core.autocrlf=true` before running exact-byte commitment checks.
+```bash
+git checkout c293c5524318b342149a80c3e0322e29742f44f7
+```
+
+The frozen source contains a root `.gitattributes` policy that forces LF working-tree bytes for textual files and excludes common binary formats from text conversion. CI also exercises a Git for Windows checkout with `core.autocrlf=true` before running exact-byte commitment checks.
 
 Install the Python implementation and tests:
 
@@ -156,7 +160,7 @@ For the active target:
 
 ```text
 olp-v1.0-review-4
-preparing / source commit null
+c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
 If a material accepted finding requires a source-changing fix:

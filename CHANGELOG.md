@@ -14,6 +14,7 @@ The project is experimental and has not yet made a stable release. Entries befor
 - Add the fail-closed `SECURITY_REVIEW_TARGET` promotion check and a regression proving mismatched source-policy metadata makes the candidate `INVALID`.
 - Amend Specification 0015 and the review-round lifecycle to require the security policy and candidate manifest to name the same active target.
 - Open Issue #37 for public technical review and Issue #38 for independent external security-review coordination; both gates remain pending.
+- Freeze `olp-v1.0-review-4` to exact source commit `c293c5524318b342149a80c3e0322e29742f44f7` after all five workflow families pass.
 - Preserve all protocol semantics, conformance vectors, accepted case selections, and published corpus commitments unchanged.
 
 ### Resolver host canonicalization and pinned frozen corpora

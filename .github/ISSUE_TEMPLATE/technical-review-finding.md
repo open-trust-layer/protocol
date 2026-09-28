@@ -17,10 +17,10 @@ olp-v1.0-review-4
 Exact source commit:
 
 ```text
-<exact frozen review-4 source commit>
+c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-Findings intended to satisfy the current v1.0 public-review gate must apply to the exact frozen review-4 source published in Issue #37. While review-4 is preparing, no source can satisfy the gate.
+Findings intended to satisfy the current v1.0 public-review gate must apply to the exact frozen review-4 source published in Issue #37.
 
 ## Finding summary
 
