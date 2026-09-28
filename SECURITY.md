@@ -4,15 +4,15 @@ Open Layer Protocol is currently **experimental / pre-1.0 candidate work**.
 
 The current specification-set release is **Draft v0.3**. OLP v1.0 has not been released.
 
-The active v1.0 external-review target is being prepared as:
+The active v1.0 external-review target is frozen as:
 
 ```text
 review target:  olp-v1.0-review-4
-status:         preparing
-source commit:  null
+status:         frozen
+source commit:  c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-The preparation snapshot will become the exact review source only after the full repository matrix passes and a later metadata-only commit freezes its immutable SHA. Neither external promotion gate is complete.
+The preparation snapshot passed the full repository matrix and is now the exact immutable review source. Neither external promotion gate is complete.
 
 Review-1 remains immutable historical evidence at `877493826d673ccf9bb94e7b6b113b35141ad220`, superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review-2 remains immutable historical evidence at `d470970180bfa128ca14fd01ac920c95dd8ec288`, superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`. Review-3 remains immutable at `f0dd778f09f904e334477bb1d6294f78d3d466f0`, superseded by the source-binding consistency finding recorded in `docs/v1-review-4-rollover.md`. Review evidence is never silently rebound from an older target to changed source.
 
@@ -22,7 +22,7 @@ There is currently no stable production-supported OLP release.
 
 | Version / branch | Security support |
 |---|---|
-| Preparing `olp-v1.0-review-4` source | Candidate validation before freeze |
+| Frozen `olp-v1.0-review-4` source | Active public/external review and coordinated fixes |
 | `olp-v1.0-review-3` | Historical / superseded review evidence |
 | Draft v0.3 specification set / v1 candidate work | Experimental review and coordinated fixes |
 | `olp-v1.0-review-2` | Historical / superseded review evidence |
@@ -66,15 +66,13 @@ A useful security report should include, where possible:
 
 Review evidence intended to satisfy a v1.0 promotion gate is source-bound.
 
-No source commit can satisfy the review-4 external gates until the preparation snapshot is frozen. The active target is:
+The only source commit that can satisfy the review-4 external gates is:
 
 ```text
-olp-v1.0-review-4
-status: preparing
-source commit: null
+c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-A review of a branch tip, review-1, review-2, review-3, or another commit does not satisfy `olp-v1.0-review-4`.
+A review of a branch tip, review-1, review-2, review-3, later `main`, or another commit does not satisfy `olp-v1.0-review-4`.
 
 The preparation snapshot names review-4 in both `SECURITY.md` and the candidate manifest. A later metadata-only freeze binds that target identifier to the preparation commit's immutable SHA. This ordering is intentional: a Git commit cannot contain its own eventual hash.
 

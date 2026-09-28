@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — review round 4 preparation
+**Current phase:** v1.0 candidate — external review round 4
 
 > **OLP v1.0 has not been released.** The current candidate is intentionally blocked from stable promotion until public technical review and independent external security review are completed against the exact same frozen review target.
 
@@ -95,22 +95,23 @@ See [`specification/0015-stable-profile-promotion-and-readiness.md`](specificati
 
 ---
 
-## v1.0 external review — round 4 preparation
+## v1.0 external review — round 4
 
-The active v1.0 external-review target is being prepared as:
+The active v1.0 external-review target is frozen as:
 
 ```text
 review target:  olp-v1.0-review-4
-status:         preparing
-source commit:  null
+status:         frozen
+source commit:  c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-The full repository matrix must pass before one exact source commit is frozen. Review coordination is already available:
+Reviewers must inspect the exact frozen source commit, not a moving branch tip or later `main`:
 
+- [Frozen review-4 source snapshot](https://github.com/open-trust-layer/protocol/commit/c293c5524318b342149a80c3e0322e29742f44f7)
 - [Issue #37 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/37)
 - [Issue #38 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/38)
 
-The preparation snapshot itself names review-4 in both `SECURITY.md` and the candidate manifest. That corrects the review-3 source-binding inconsistency. A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation SHA.
+The frozen source itself names review-4 in both `SECURITY.md` and the candidate manifest. The later metadata-only freeze binds `olp-v1.0-review-4` to that immutable source SHA.
 
 ### Why there is a review round 4
 
@@ -387,15 +388,14 @@ See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-mod
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 26 is accepted and merged. Review rounds 1–3 are historical; `olp-v1.0-review-4` is being prepared with an executable source-binding invariant. See [`docs/v1-review-4-rollover.md`](docs/v1-review-4-rollover.md).
+Milestone 26 is accepted and merged. Review rounds 1–3 are historical; `olp-v1.0-review-4` is frozen at `c293c5524318b342149a80c3e0322e29742f44f7` with an executable source-binding invariant. See [`docs/v1-review-4-rollover.md`](docs/v1-review-4-rollover.md).
 
 The current work is **review and disposition**, not speculative feature expansion:
 
-1. freeze the exact review-4 preparation source after the full matrix passes;
-2. public technical and independent security reviewers inspect that exact source;
-3. findings are reproduced, classified, and dispositioned;
-4. source-changing material fixes trigger another frozen review target; and
-5. stable promotion is considered only after all mandatory gates are satisfied for the same exact target.
+1. public technical and independent security reviewers inspect the exact review-4 source;
+2. findings are reproduced, classified, and dispositioned;
+3. source-changing material fixes trigger another frozen review target; and
+4. stable promotion is considered only after all mandatory gates are satisfied for the same exact target.
 
 Until then, the v1.0 candidate remains intentionally **BLOCKED** from stable promotion.
 
@@ -404,3 +404,4 @@ Until then, the v1.0 candidate remains intentionally **BLOCKED** from stable pro
 ## License
 
 Open Layer Protocol is licensed under the **Apache License 2.0**. See [`LICENSE`](LICENSE).
+- [Frozen review-4 source snapshot](https://github.com/open-trust-layer/protocol/commit/c293c5524318b342149a80c3e0322e29742f44f7)

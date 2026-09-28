@@ -3,7 +3,7 @@
 **Status:** reviewer brief; independent review not yet completed  
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-4`
-**Source status:** preparing; exact commit not yet frozen
+**Frozen source commit:** `c293c5524318b342149a80c3e0322e29742f44f7`
 **Security review tracker:** Issue #38
 
 ## Purpose
@@ -18,7 +18,7 @@ Review-2 had earlier superseded review-1 after a cross-platform checkout reprodu
 
 Review-1 remains historically bound to source commit `877493826d673ccf9bb94e7b6b113b35141ad220`; it is not rebound to the corrected source.
 
-Any review intended to satisfy the stable-promotion gate must examine the exact review-4 source after it is frozen. A branch tip, review-3, or different commit cannot satisfy the gate.
+Any review intended to satisfy the stable-promotion gate must examine the exact frozen review-4 source above. A branch tip, review-3, later `main`, or different commit cannot satisfy the gate.
 
 ## Minimum review scope
 
@@ -83,7 +83,7 @@ Findings in those areas are still useful when they expose a protocol/specificati
 A useful review deliverable should identify:
 
 - review target `olp-v1.0-review-4`;
-- exact frozen review-4 source commit;
+- exact source commit `c293c5524318b342149a80c3e0322e29742f44f7`;
 - review methodology and scope;
 - findings with severity and affected components;
 - whether each finding changes deterministic bytes, capability semantics, implementation-only behavior, or documentation;

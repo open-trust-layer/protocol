@@ -1,10 +1,10 @@
 # OLP v1 Review Package Index
 
-**Status:** review-4 preparation package index
+**Status:** frozen review-4 package index
 **Review target:** `olp-v1.0-review-4`
-**Source commit:** not yet frozen
+**Source commit:** `c293c5524318b342149a80c3e0322e29742f44f7`
 
-This index collects the materials being prepared for the fourth public/external review round of the OLP v1.0 candidate.
+This index collects the frozen materials for the fourth public/external review round of the OLP v1.0 candidate.
 
 Review-4 supersedes review-3 after the source-binding consistency finding reported in Issue #35. That rationale is recorded in `docs/v1-review-4-rollover.md`.
 
@@ -91,15 +91,15 @@ Specification 0000 is the non-normative overview and should also be reviewed for
 
 ## Source binding
 
-Review-4 is preparing as:
+Review-4 is frozen as:
 
 ```text
 id:             olp-v1.0-review-4
-status:         preparing
-source commit:  null
+status:         frozen
+source commit:  c293c5524318b342149a80c3e0322e29742f44f7
 ```
 
-No review can satisfy a review-4 promotion gate until the exact source commit is frozen.
+Reviewers must inspect that exact source. A branch tip, later commit, or different source cannot satisfy the review-4 promotion gates.
 
 Historical review-1 remains bound to:
 

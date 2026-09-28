@@ -3,7 +3,7 @@
 **Status:** open-review guide  
 **Candidate:** `olp-v1.0`  
 **Review target:** `olp-v1.0-review-4`
-**Source status:** preparing; exact commit not yet frozen
+**Frozen source commit:** `c293c5524318b342149a80c3e0322e29742f44f7`
 **Public review tracker:** Issue #37
 **Current mandatory candidate core:** `core-v1`
 
@@ -17,7 +17,7 @@ Review-2 had earlier superseded review-1, which did not enforce deterministic LF
 
 Review-1 remains immutable historical evidence for source commit `877493826d673ccf9bb94e7b6b113b35141ad220`. Its review evidence, if any, does not automatically satisfy review-3.
 
-Reviewers must inspect the exact review-4 source after it is frozen. A branch tip, review-3, or another commit is not the review-4 target.
+Reviewers must inspect the exact frozen review-4 source above. A branch tip, review-3, later `main`, or another commit is not the review-4 target.
 
 ## Primary questions
 
@@ -65,9 +65,13 @@ Optional profiles are not silently required for a mandatory-core conformance cla
 
 ## Reproduction invariant
 
-The preparing review-4 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
+The frozen review-4 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
 
-The exact source SHA will be published in this document and Issues #37/#38 by the freeze commit. Until then, no review can complete either gate.
+Check out exactly:
+
+```text
+c293c5524318b342149a80c3e0322e29742f44f7
+```
 
 Then run:
 
@@ -93,9 +97,9 @@ draft-v0.3-interoperable-v1
 
 The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
 
-### Expected `review_target` output in the preparation snapshot
+### Expected `review_target` output at the frozen source
 
-`promotion-check` run in the review-4 preparation snapshot reports:
+The frozen source necessarily contains the preparation state because a commit cannot contain its own eventual hash:
 
 ```text
 status:                       BLOCKED
@@ -109,7 +113,7 @@ SECURITY_REVIEW_TARGET:       PASS  SECURITY.md names the active review target o
 
 This is expected. It is not a defect and it does not mean you checked out the wrong commit.
 
-A Git commit cannot contain its own hash, so the preparation snapshot cannot record the SHA it is about to become. A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation commit.
+A later metadata-only commit binds `olp-v1.0-review-4` to `c293c5524318b342149a80c3e0322e29742f44f7`. The frozen bytes already name review-4 in `SECURITY.md`, and the evaluator verifies that identifier against the candidate manifest.
 
 That commit changes `review_target.status` and `review_target.source_commit` in `stabilization/v1.0-candidate.json`, the assertions in `tests/conformance/test_promotion.py` and `tests/conformance/test_promotion_schemas.py` that track the checked-in candidate's own state, and reviewer-facing prose. It changes no specification, implementation, conformance vector, corpus commitment, or promotion-gate logic.
 
