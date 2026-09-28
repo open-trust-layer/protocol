@@ -1,11 +1,11 @@
 # OLP v1 Review Target Status
 
-The second snapshot-bound OLP v1.0 review target is now frozen.
+The fourth snapshot-bound OLP v1.0 review target is being prepared.
 
 ```text
-review target:          olp-v1.0-review-3
-status:                 frozen
-source commit:          f0dd778f09f904e334477bb1d6294f78d3d466f0
+review target:          olp-v1.0-review-4
+status:                 preparing
+source commit:          null
 public review:          pending
 external security:      pending
 stable promotion:       BLOCKED
@@ -13,7 +13,7 @@ stable promotion:       BLOCKED
 
 Review-2 supersedes review-1 after Issue #21 identified a cross-platform checkout reproducibility defect: exact-byte corpus commitments and required-artifact digests could fail on Git for Windows checkouts with `core.autocrlf=true` because review-1 had no repository line-ending policy.
 
-The frozen review-3 source includes:
+The preparing review-4 source includes:
 
 - root `.gitattributes` enforcing LF working-tree bytes for text and excluding common binary formats;
 - a hash-critical repository-byte regression; and
@@ -32,4 +32,4 @@ reason superseded:      Issue #21 checkout-byte reproducibility defect
 
 No review-1 completion evidence is carried forward automatically.
 
-Public technical review is coordinated in Issue #34. Independent external security review is coordinated in Issue #35. Both gates remain pending and must identify the exact frozen review-3 source commit before either gate can be completed.
+Public technical review is coordinated in Issue #37. Independent external security review is coordinated in Issue #38. Both gates remain pending and cannot complete until the preparation snapshot is frozen to one exact commit.

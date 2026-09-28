@@ -20,8 +20,7 @@ EXPECTED_BLOCKERS = (
     "PUBLIC_TECHNICAL_REVIEW_REQUIRED",
     "INDEPENDENT_EXTERNAL_SECURITY_REVIEW_REQUIRED",
 )
-REVIEW_TARGET_ID = "olp-v1.0-review-3"
-CHECKED_IN_REVIEW_COMMIT = "f0dd778f09f904e334477bb1d6294f78d3d466f0"
+REVIEW_TARGET_ID = "olp-v1.0-review-4"
 FROZEN_COMMIT = "1" * 40
 OTHER_COMMIT = "2" * 40
 
@@ -31,6 +30,7 @@ def _copy_candidate_repo(tmp_path: Path) -> Path:
     root.mkdir()
     for name in ("conformance", "specification", "docs", "stabilization"):
         shutil.copytree(Path(name), root / name)
+    shutil.copy2(Path("SECURITY.md"), root / "SECURITY.md")
     return root
 
 
@@ -83,13 +83,14 @@ def test_v1_candidate_is_internally_ready_but_externally_blocked():
     assert report.release_corpus_commitment == RELEASE_COMMITMENT
     assert report.core_corpus_commitment == CORE_COMMITMENT
     assert report.review_target_id == REVIEW_TARGET_ID
-    assert report.review_target_status == "frozen"
-    assert report.review_target_source_commit == CHECKED_IN_REVIEW_COMMIT
+    assert report.review_target_status == "preparing"
+    assert report.review_target_source_commit is None
     assert report.internal_readiness == "PASS"
     assert report.status == "BLOCKED"
     assert report.blockers == EXPECTED_BLOCKERS
     assert "FAIL" not in _check_statuses(report).values()
     assert _check_statuses(report)["REVIEW_TARGET"] == "PASS"
+    assert _check_statuses(report)["SECURITY_REVIEW_TARGET"] == "PASS"
     assert _check_statuses(report)["PUBLIC_TECHNICAL_REVIEW"] == "BLOCKED"
     assert _check_statuses(report)["INDEPENDENT_EXTERNAL_SECURITY_REVIEW"] == "BLOCKED"
 
@@ -224,6 +225,24 @@ def test_frozen_review_target_requires_canonical_commit_id(tmp_path):
     assert _check_statuses(report)["REVIEW_TARGET"] == "FAIL"
 
 
+def test_security_policy_active_target_must_match_candidate(tmp_path):
+    root = _copy_candidate_repo(tmp_path)
+    security = root / "SECURITY.md"
+    security.write_text(
+        security.read_text(encoding="utf-8").replace(
+            "review target:  olp-v1.0-review-4",
+            "review target:  olp-v1.0-review-3",
+            1,
+        ),
+        encoding="utf-8",
+    )
+
+    report = evaluate_v1_promotion(root / "stabilization" / "v1.0-candidate.json")
+    assert report.status == "INVALID"
+    assert report.internal_readiness == "FAIL"
+    assert _check_statuses(report)["SECURITY_REVIEW_TARGET"] == "FAIL"
+
+
 def test_mandatory_core_cannot_be_widened_or_swapped(tmp_path):
     root = _copy_candidate_repo(tmp_path)
     path = root / "stabilization" / "v1.0-candidate.json"
@@ -286,8 +305,8 @@ def test_promotion_cli_reports_blocked_as_valid_diagnostic_and_require_ready_fai
     assert payload["status"] == "BLOCKED"
     assert payload["internal_readiness"] == "PASS"
     assert payload["review_target_id"] == REVIEW_TARGET_ID
-    assert payload["review_target_status"] == "frozen"
-    assert payload["review_target_source_commit"] == CHECKED_IN_REVIEW_COMMIT
+    assert payload["review_target_status"] == "preparing"
+    assert payload["review_target_source_commit"] is None
     assert payload["blockers"] == list(EXPECTED_BLOCKERS)
 
     assert main(["promotion-check", "--candidate", str(CANDIDATE), "--require-ready"]) == 1

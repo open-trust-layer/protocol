@@ -2,7 +2,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — external review round 3 in progress
+**Current phase:** v1.0 candidate — review round 4 preparation
 
 Milestone numbers are project milestones, not protocol version numbers.
 
@@ -10,15 +10,15 @@ Milestone numbers are project milestones, not protocol version numbers.
 
 ## Current v1.0 review target
 
-The active external-review target is frozen as:
+The active external-review target is being prepared as:
 
 ```text
-review target:  olp-v1.0-review-3
-status:         frozen
-source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
+review target:  olp-v1.0-review-4
+status:         preparing
+source commit:  null
 ```
 
-Review-3 supersedes review-2 after GHSA-x768-cq7q-w9mq, an SSRF policy bypass present in both implementations, and a corpus-selection defect under which adding its regression coverage rewrote an accepted release identity. Earlier targets remain immutable historical evidence:
+Review-4 supersedes review-3 after an external reviewer found that the frozen review-3 `SECURITY.md` still identified review-2 and its superseded trackers. Earlier targets remain immutable historical evidence:
 
 ```text
 review target:  olp-v1.0-review-1
@@ -28,19 +28,24 @@ status:         historical / superseded
 review target:  olp-v1.0-review-2
 source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
 status:         historical / superseded
+
+review target:  olp-v1.0-review-3
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
+status:         historical / superseded
 ```
 
 The review-3 source retains the repository-enforced LF text checkout bytes and Windows `core.autocrlf=true` reproduction gate introduced for review-2, and adds host-form canonicalization in both implementations, five negative resolution vectors, Specifications 0009 v0.2 and 0014 v0.2, and pinned frozen profile corpora. Both published corpus commitments remain unchanged.
 
-Reviewers must inspect the frozen review-3 source commit, not a moving branch tip or later `main`.
+Reviewers must wait for the exact review-4 source to be frozen; a moving branch tip cannot satisfy either gate.
 
 Public coordination:
 
-- Issue #34 — public technical review of `olp-v1.0-review-3`
-- Issue #35 — independent external security review coordination for `olp-v1.0-review-3`
+- Issue #37 — public technical review of `olp-v1.0-review-4`
+- Issue #38 — independent external security review coordination for `olp-v1.0-review-4`
 - GHSA-x768-cq7q-w9mq — published advisory for the review-2 resolver defect
 - Issue #21 — review-1 checkout-byte reproducibility finding and rollover rationale
 - `docs/v1-review-3-rollover.md`
+- `docs/v1-review-4-rollover.md`
 - `docs/v1-review-package-index.md`
 - `docs/v1-public-review-guide.md`
 - `docs/v1-external-security-review-brief.md`
@@ -224,7 +229,7 @@ M26 does not publish v1.0. It makes the remaining external work explicit and pre
 
 ## Phase V — External review and finding disposition
 
-**In progress — review round 2.**
+**In progress — review round 4 preparation.**
 
 ### Review round 1 — historical / superseded
 
@@ -236,31 +241,36 @@ Issue #21 found that a normal Git for Windows checkout with `core.autocrlf=true`
 
 `olp-v1.0-review-2` is permanently bound to `d470970180bfa128ca14fd01ac920c95dd8ec288`. It was superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`.
 
-### Review round 3 — active
+### Review round 3 — historical / superseded
 
-The corrected exact candidate snapshot is frozen as:
+`olp-v1.0-review-3` is permanently bound to `f0dd778f09f904e334477bb1d6294f78d3d466f0`. It was superseded by the source-binding consistency finding recorded in `docs/v1-review-4-rollover.md`.
+
+### Review round 4 — preparing
+
+The corrected candidate snapshot is being prepared as:
 
 ```text
-olp-v1.0-review-3
-f0dd778f09f904e334477bb1d6294f78d3d466f0
+olp-v1.0-review-4
+source commit: null
 ```
 
 The current legitimate work is:
 
-1. obtain meaningful public technical review of that exact source through Issue #34 and related findings;
-2. obtain genuinely independent external security review of that exact source through Issue #35 / external reviewer deliverables;
-3. reproduce and classify findings;
-4. disposition findings with durable references;
-5. add regression/conformance coverage for accepted defects where appropriate; and
-6. preserve exact source-binding in all promotion evidence.
+1. pass the full repository matrix and freeze the preparation commit;
+2. obtain meaningful public technical review of that exact source through Issue #37 and related findings;
+3. obtain genuinely independent external security review of that exact source through Issue #38 / external reviewer deliverables;
+4. reproduce and classify findings;
+5. disposition findings with durable references;
+6. add regression/conformance coverage for accepted defects where appropriate; and
+7. preserve exact source-binding in all promotion evidence.
 
 ### If another material source change is required
 
-A material fix does **not** silently modify the meaning of `olp-v1.0-review-3`.
+A material fix does **not** silently modify the meaning of `olp-v1.0-review-4`.
 
 Instead:
 
-1. review-3 remains historical evidence for its original bytes;
+1. review-4 remains historical evidence for its original bytes;
 2. the defect is fixed in a new source snapshot;
 3. a new review-target identifier is frozen;
 4. affected external gates return to `PENDING` for the new target; and
@@ -268,7 +278,7 @@ Instead:
 
 ### If no further material source change is required
 
-Once both external gates are legitimately completed for the same exact frozen review-3 source, the promotion evaluator may reach `READY`.
+Once both external gates are legitimately completed for the same exact frozen review-4 source, the promotion evaluator may reach `READY`.
 
 `READY` is permission to begin final stable publication mechanics. It is not itself the stable release.
 

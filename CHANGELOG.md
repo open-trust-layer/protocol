@@ -6,6 +6,16 @@ The project is experimental and has not yet made a stable release. Entries befor
 
 ## [Unreleased]
 
+### v1.0 external review round 4 source binding
+
+- Accept the external source-binding consistency finding reported in Issue #35: the frozen review-3 checkout's `SECURITY.md` still identified review-2 and its superseded trackers.
+- Preserve review-3 as immutable historical evidence at `f0dd778f09f904e334477bb1d6294f78d3d466f0`; do not rebind its review evidence.
+- Prepare `olp-v1.0-review-4` with the active target identifier present in both `SECURITY.md` and `stabilization/v1.0-candidate.json` before freeze.
+- Add the fail-closed `SECURITY_REVIEW_TARGET` promotion check and a regression proving mismatched source-policy metadata makes the candidate `INVALID`.
+- Amend Specification 0015 and the review-round lifecycle to require the security policy and candidate manifest to name the same active target.
+- Open Issue #37 for public technical review and Issue #38 for independent external security-review coordination; both gates remain pending.
+- Preserve all protocol semantics, conformance vectors, accepted case selections, and published corpus commitments unchanged.
+
 ### Resolver host canonicalization and pinned frozen corpora
 
 - Fix GHSA-x768-cq7q-w9mq: the Specification 0009 resolver classified a host with `ipaddress.ip_address`, which accepts only dotted-quad IPv4, so decimal, hexadecimal, octal and short spellings of a loopback, private-range or metadata-service address were treated as public DNS names and reported `RESOLVED` rather than `POLICY_BLOCKED`, with no DNS resolution involved.

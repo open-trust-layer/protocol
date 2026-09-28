@@ -2,22 +2,22 @@
 
 **Status:** open-review guide  
 **Candidate:** `olp-v1.0`  
-**Review target:** `olp-v1.0-review-3`  
-**Frozen source commit:** `f0dd778f09f904e334477bb1d6294f78d3d466f0`  
-**Public review tracker:** Issue #34  
+**Review target:** `olp-v1.0-review-4`
+**Source status:** preparing; exact commit not yet frozen
+**Public review tracker:** Issue #37
 **Current mandatory candidate core:** `core-v1`
 
 ## Review goal
 
 The public technical review is intended to challenge the proposed OLP v1.0 candidate boundary before stable promotion. It is not a vote on branding or project direction and it is not a substitute for independent security review.
 
-`olp-v1.0-review-3` supersedes `olp-v1.0-review-2` after GHSA-x768-cq7q-w9mq, an SSRF policy bypass present in both implementations, and a corpus-selection defect under which adding its regression coverage rewrote an accepted release identity. That rationale is recorded in `docs/v1-review-3-rollover.md`.
+`olp-v1.0-review-4` supersedes `olp-v1.0-review-3` after an external reviewer found that the review-3 source's `SECURITY.md` still named review-2 and the superseded trackers. The correction and rollover rationale are recorded in `docs/v1-review-4-rollover.md`.
 
 Review-2 had earlier superseded review-1, which did not enforce deterministic LF working-tree bytes on Git for Windows checkouts with `core.autocrlf=true`. That defect is recorded in Issue #21 and `docs/v1-review-2-rollover.md`; the review-3 source retains its correction.
 
 Review-1 remains immutable historical evidence for source commit `877493826d673ccf9bb94e7b6b113b35141ad220`. Its review evidence, if any, does not automatically satisfy review-3.
 
-Reviewers must inspect the exact frozen review-3 source commit above. A branch tip, later `main`, or another commit is not the review target.
+Reviewers must inspect the exact review-4 source after it is frozen. A branch tip, review-3, or another commit is not the review-4 target.
 
 ## Primary questions
 
@@ -63,15 +63,11 @@ streaming-http-v1
 
 Optional profiles are not silently required for a mandatory-core conformance claim.
 
-## Review-2 reproduction invariant
+## Reproduction invariant
 
-The frozen review-3 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
+The preparing review-4 source includes a root `.gitattributes` policy that forces LF working-tree bytes for textual files and explicit binary exclusions. The v1 candidate readiness workflow includes a `windows-latest` job that sets `core.autocrlf=true` before checkout, verifies effective Git attributes, and runs the actual reviewer-facing commitment and promotion commands.
 
-Check out exactly:
-
-```text
-f0dd778f09f904e334477bb1d6294f78d3d466f0
-```
+The exact source SHA will be published in this document and Issues #37/#38 by the freeze commit. Until then, no review can complete either gate.
 
 Then run:
 
@@ -97,26 +93,27 @@ draft-v0.3-interoperable-v1
 
 The promotion state is expected to remain `BLOCKED` throughout review until both public technical review and independent external security review are genuinely completed for this same frozen target.
 
-### Expected `review_target` output at the frozen commit
+### Expected `review_target` output in the preparation snapshot
 
-`promotion-check` run at the frozen review-3 source reports the review target as **not yet frozen**:
+`promotion-check` run in the review-4 preparation snapshot reports:
 
 ```text
 status:                       BLOCKED
 internal_readiness:           PASS
-review_target_id:             olp-v1.0-review-3
+review_target_id:             olp-v1.0-review-4
 review_target_status:         preparing
 review_target_source_commit:  null
 REVIEW_TARGET:                PASS  review target is valid and awaiting an immutable source commit
+SECURITY_REVIEW_TARGET:       PASS  SECURITY.md names the active review target olp-v1.0-review-4
 ```
 
 This is expected. It is not a defect and it does not mean you checked out the wrong commit.
 
-A Git commit cannot contain its own hash, so the frozen snapshot cannot record the SHA it is about to become. The binding of `olp-v1.0-review-3` to `f0dd778f09f904e334477bb1d6294f78d3d466f0` is made by a later metadata-only commit, findable in `main` history as the commit that sets `review_target.status` to `frozen` in `stabilization/v1.0-candidate.json`.
+A Git commit cannot contain its own hash, so the preparation snapshot cannot record the SHA it is about to become. A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation commit.
 
 That commit changes `review_target.status` and `review_target.source_commit` in `stabilization/v1.0-candidate.json`, the assertions in `tests/conformance/test_promotion.py` and `tests/conformance/test_promotion_schemas.py` that track the checked-in candidate's own state, and reviewer-facing prose. It changes no specification, implementation, conformance vector, corpus commitment, or promotion-gate logic.
 
-For the same reason, the copies of this guide and of `docs/v1-external-security-review-brief.md` **inside** the frozen checkout still read `Source commit: not yet frozen`. Those copies predate the freeze. The authoritative statement of the frozen target is Issue #34, `SECURITY.md`, and the binding commit above.
+Unlike review-3, the preparation snapshot itself already identifies review-4 in `SECURITY.md`. The evaluator verifies that identifier against the candidate manifest before the target can be considered internally ready.
 
 The evaluator's refusal to let an external gate complete while `review_target.status` is `preparing` is deliberate fail-closed behavior: review evidence cannot be bound to a target that has no immutable source commit.
 
@@ -124,17 +121,17 @@ The evaluator's refusal to let an external gate complete while `review_target.st
 
 A useful public review finding should identify:
 
-1. frozen source commit `f0dd778f09f904e334477bb1d6294f78d3d466f0`;
+1. exact frozen review-4 source commit;
 2. affected specification section(s) or implementation file(s);
 3. finding class (`ambiguity`, `interoperability`, `security`, `privacy`, `governance`, `reproducibility`, `editorial`, or other clearly described class);
 4. severity or likely impact;
 5. a concrete conflicting interpretation, reproduction, or attack scenario where possible; and
 6. whether the proposed resolution would change deterministic bytes or capability semantics.
 
-Public findings belong in Issue #34 or a dedicated linked issue. Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
+Public findings belong in Issue #37 or a dedicated linked issue. Security-sensitive exploit details should follow `SECURITY.md` rather than being posted publicly when disclosure would create avoidable risk.
 
 ## Review completion
 
 Public review is not complete merely because a tracker issue exists or a period of time has elapsed.
 
-Completion requires durable references that identify this exact frozen review-3 source commit and disposition of material findings. If a later material source change results, a new review target must be frozen and review evidence for review-3 cannot satisfy that new target automatically.
+Completion requires durable references that identify the exact frozen review-4 source commit and disposition of material findings. If a later material source change results, a new review target must be frozen and review-4 evidence cannot satisfy that new target automatically.

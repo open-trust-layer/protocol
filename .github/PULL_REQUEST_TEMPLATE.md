@@ -35,11 +35,11 @@ Explain any checked semantic impact:
 
 ## v1.0 review-target impact
 
-Current frozen target:
+Current preparing target:
 
 ```text
-olp-v1.0-review-3
-f0dd778f09f904e334477bb1d6294f78d3d466f0
+olp-v1.0-review-4
+source commit: null
 ```
 
 - [ ] This PR is operational/editorial and does not change the frozen reviewed source.

@@ -123,6 +123,14 @@
       "status": "resolved",
       "summary": "Stable-promotion governance itself could conflict with existing object/capability versioning or release-corpus rules if candidate/stable labels were allowed to reinterpret protocol semantics.",
       "resolution": "Specifications 0013-0015 explicitly keep candidate/stable status separate from object, encoding, cryptosuite, capability, and corpus versions; any changed deterministic bytes or materially changed capability semantics require explicit versioning rather than promotion metadata."
+    },
+    {
+      "id": "M26-R012",
+      "class": "review-source-binding-consistency",
+      "severity": "medium",
+      "status": "resolved",
+      "summary": "The review-3 source snapshot named review-2 and its superseded trackers in SECURITY.md, so its own bytes did not identify the promotion gate to which review evidence should bind.",
+      "resolution": "Review-4 is prepared with the active target identifier present in the source snapshot, Specification 0015 requires SECURITY.md and candidate-manifest target identifiers to agree, and the promotion evaluator enforces that invariant before freeze."
     }
   ]
 }

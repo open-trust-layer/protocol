@@ -15,6 +15,7 @@ def _copy_candidate_repo(tmp_path: Path) -> Path:
     root.mkdir()
     for name in ("conformance", "specification", "docs", "stabilization"):
         shutil.copytree(Path(name), root / name)
+    shutil.copy2(Path("SECURITY.md"), root / "SECURITY.md")
     return root
 
 

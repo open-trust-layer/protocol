@@ -66,7 +66,7 @@
     },
     "review_register": {
       "path": "stabilization/v1-review-register.json",
-      "sha256": "ad925eab6ac7fa9a8dc87b0b256fa029e4e4eb72d8171a350df271e7b72329a1"
+      "sha256": "d2099bd8a50a34c9c2b374957bf58b70b17605e879d3fb1ef80277d44c4d4ac9"
     },
     "release_process": {
       "path": "docs/v1-release-process.md",
@@ -74,9 +74,9 @@
     }
   },
   "review_target": {
-    "id": "olp-v1.0-review-3",
-    "status": "frozen",
-    "source_commit": "f0dd778f09f904e334477bb1d6294f78d3d466f0"
+    "id": "olp-v1.0-review-4",
+    "status": "preparing",
+    "source_commit": null
   },
   "external_gates": {
     "public_technical_review": {

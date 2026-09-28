@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 from pathlib import Path
+import re
 from typing import Any
 
 from .commitment import build_profile_corpus_commitment
@@ -322,6 +323,27 @@ def _review_target_check(raw: Any) -> tuple[bool, str | None, str | None, str | 
     return True, target_id, status, source_commit, f"review target is frozen to source commit {source_commit}"
 
 
+def _security_review_target_check(*, root: Path, expected_target_id: str | None) -> tuple[bool, str]:
+    """Require the security policy to name the same active review target.
+
+    The source snapshot cannot contain its own eventual commit hash, so this
+    invariant intentionally binds the target identifier rather than the later
+    freeze metadata. It prevents a frozen snapshot from routing reviewers to a
+    superseded review round while preserving the two-commit freeze lifecycle.
+    """
+
+    path = root / "SECURITY.md"
+    if not path.is_file():
+        return False, "SECURITY.md is missing"
+    text = path.read_text(encoding="utf-8")
+    matches = re.findall(r"^review target:\s+(olp-v1\.0-review-[1-9][0-9]*)\s*$", text, re.MULTILINE)
+    if len(matches) != 1:
+        return False, "SECURITY.md must contain exactly one active review-target declaration"
+    if expected_target_id is None or matches[0] != expected_target_id:
+        return False, "SECURITY.md active review target does not match the candidate manifest"
+    return True, f"SECURITY.md names the active review target {expected_target_id}"
+
+
 def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
     """Evaluate the repository's v1 candidate stable-promotion gates.
 
@@ -514,6 +536,18 @@ def evaluate_v1_promotion(candidate_path: str | Path) -> PromotionReport:
         raw.get("review_target")
     )
     checks.append(PromotionCheck("REVIEW_TARGET", "PASS" if review_target_ok else "FAIL", review_target_detail))
+
+    security_target_ok, security_target_detail = _security_review_target_check(
+        root=root,
+        expected_target_id=review_target_id,
+    )
+    checks.append(
+        PromotionCheck(
+            "SECURITY_REVIEW_TARGET",
+            "PASS" if security_target_ok else "FAIL",
+            security_target_detail,
+        )
+    )
 
     external = raw.get("external_gates")
     expected_external_names = {name for name, _ in _EXTERNAL_GATES}

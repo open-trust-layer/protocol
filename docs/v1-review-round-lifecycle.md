@@ -14,6 +14,8 @@ preparing
 
 with no source commit.
 
+The preparation snapshot must already name the new target identifier in both `SECURITY.md` and `stabilization/v1.0-candidate.json`. The promotion evaluator fails closed if those identifiers disagree. This lets reviewers determine the intended round from the source bytes without requiring the impossible condition that a Git commit contain its own future hash.
+
 After all pre-review hardening changes pass the full repository matrix, a metadata-only follow-up freezes the target:
 
 ```text

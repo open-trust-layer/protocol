@@ -6,7 +6,7 @@
 
 **Project status:** experimental / pre-1.0 candidate  
 **Specification-set status:** Draft v0.3  
-**Current phase:** v1.0 candidate — external review round 3 in progress
+**Current phase:** v1.0 candidate — review round 4 preparation
 
 > **OLP v1.0 has not been released.** The current candidate is intentionally blocked from stable promotion until public technical review and independent external security review are completed against the exact same frozen review target.
 
@@ -95,25 +95,24 @@ See [`specification/0015-stable-profile-promotion-and-readiness.md`](specificati
 
 ---
 
-## v1.0 external review — round 3
+## v1.0 external review — round 4 preparation
 
-The active v1.0 external-review target is frozen as:
+The active v1.0 external-review target is being prepared as:
 
 ```text
-review target:  olp-v1.0-review-3
-status:         frozen
-source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
+review target:  olp-v1.0-review-4
+status:         preparing
+source commit:  null
 ```
 
-Reviewers must inspect the **exact frozen source commit**, not a moving branch tip or later `main`:
+The full repository matrix must pass before one exact source commit is frozen. Review coordination is already available:
 
-- [Frozen review-3 source snapshot](https://github.com/open-trust-layer/protocol/commit/f0dd778f09f904e334477bb1d6294f78d3d466f0)
-- [Issue #34 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/34)
-- [Issue #35 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/35)
+- [Issue #37 — OLP v1.0 public technical review](https://github.com/open-trust-layer/protocol/issues/37)
+- [Issue #38 — Independent external security review needed](https://github.com/open-trust-layer/protocol/issues/38)
 
-The source snapshot itself contains review-3 in `preparing` state. That is intentional: a Git commit cannot contain its own eventual hash. A later metadata-only commit binds `olp-v1.0-review-3` to the immutable source SHA above.
+The preparation snapshot itself names review-4 in both `SECURITY.md` and the candidate manifest. That corrects the review-3 source-binding inconsistency. A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation SHA.
 
-### Why there is a review round 3
+### Why there is a review round 4
 
 Earlier review targets remain immutable historical evidence:
 
@@ -124,6 +123,10 @@ status:         historical / superseded
 
 review target:  olp-v1.0-review-2
 source commit:  d470970180bfa128ca14fd01ac920c95dd8ec288
+status:         historical / superseded
+
+review target:  olp-v1.0-review-3
+source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
 status:         historical / superseded
 ```
 
@@ -136,13 +139,14 @@ Review-2 was superseded by two defects found during internal adversarial testing
 
 Neither published corpus commitment changed. `core-v1` remains 62 cases and `draft-v0.3-interoperable-v1` remains 180.
 
-See [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md).
+Review-3 was superseded after an external reviewer found that its frozen `SECURITY.md` still named review-2 and the superseded trackers. Review-4 makes the active target identifier part of the source snapshot and enforces that binding in the promotion evaluator. See [`docs/v1-review-4-rollover.md`](docs/v1-review-4-rollover.md).
 
 ### Reviewer package
 
 - [`docs/v1-review-package-index.md`](docs/v1-review-package-index.md)
 - [`docs/v1-public-review-guide.md`](docs/v1-public-review-guide.md)
 - [`docs/v1-external-security-review-brief.md`](docs/v1-external-security-review-brief.md)
+- [`docs/v1-review-4-rollover.md`](docs/v1-review-4-rollover.md)
 - [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md)
 - [`docs/v1-review-2-rollover.md`](docs/v1-review-2-rollover.md)
 - [`docs/v1-review-round-lifecycle.md`](docs/v1-review-round-lifecycle.md)
@@ -177,7 +181,7 @@ A completed external gate must identify the exact frozen source commit and provi
 
 If a material finding requires a source-changing fix:
 
-1. `olp-v1.0-review-3` remains historically bound to its frozen source;
+1. `olp-v1.0-review-4` remains historically bound to its frozen source;
 2. the source is corrected;
 3. a new review-target identifier is frozen; and
 4. affected external reviews must apply to that new target.
@@ -338,10 +342,10 @@ olp-conformance promotion-check \
 
 and it must fail while required external review remains pending.
 
-To reproduce the active frozen review target itself, check out:
+Review-4 is not frozen yet. The previous immutable review-3 source remains available for historical reproduction:
 
 ```bash
-git checkout d470970180bfa128ca14fd01ac920c95dd8ec288
+git checkout f0dd778f09f904e334477bb1d6294f78d3d466f0
 python -m pip install -e '.[test]'
 python -m pytest -q
 olp-conformance run --profile core-v1
@@ -383,12 +387,12 @@ See [`SECURITY.md`](SECURITY.md), [`docs/v1-threat-model.md`](docs/v1-threat-mod
 
 See [`ROADMAP.md`](ROADMAP.md).
 
-Milestone 26 is accepted and merged. Review rounds 1 and 2 were superseded; the corrected v1.0 external-review target is now frozen as `olp-v1.0-review-3` at `f0dd778f09f904e334477bb1d6294f78d3d466f0`. See [`docs/v1-review-3-rollover.md`](docs/v1-review-3-rollover.md).
+Milestone 26 is accepted and merged. Review rounds 1–3 are historical; `olp-v1.0-review-4` is being prepared with an executable source-binding invariant. See [`docs/v1-review-4-rollover.md`](docs/v1-review-4-rollover.md).
 
 The current work is **review and disposition**, not speculative feature expansion:
 
-1. public technical reviewers inspect the exact review-3 source;
-2. an independent external security reviewer assesses the exact same source;
+1. freeze the exact review-4 preparation source after the full matrix passes;
+2. public technical and independent security reviewers inspect that exact source;
 3. findings are reproduced, classified, and dispositioned;
 4. source-changing material fixes trigger another frozen review target; and
 5. stable promotion is considered only after all mandatory gates are satisfied for the same exact target.
