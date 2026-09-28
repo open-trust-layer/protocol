@@ -421,6 +421,8 @@ Once a review-target identifier is frozen, that identifier MUST NOT be silently 
 
 If a material source change is required after freeze, the project MUST create a new review-target identifier and external review completion MUST be evaluated against that new target.
 
+Before a source snapshot is frozen, the repository security policy MUST name the same active review-target identifier as the candidate manifest. The promotion evaluator MUST fail closed when `SECURITY.md` and the manifest disagree. This identifier binding applies while the target is `preparing` and after it is `frozen`; it prevents a frozen checkout from routing reviewers to a superseded round. The preparing snapshot cannot contain its own eventual commit hash, so the exact source-commit binding remains a later metadata-only operation.
+
 ---
 
 ## 22. External-gate evidence

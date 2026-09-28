@@ -6,16 +6,17 @@ OLP is currently an **experimental pre-1.0 candidate**. The project is in extern
 
 ## Current review round
 
-The active v1.0 review target is frozen as:
+The active v1.0 review target is being prepared as:
 
 ```text
-review target:  olp-v1.0-review-3
-source commit:  f0dd778f09f904e334477bb1d6294f78d3d466f0
+review target:  olp-v1.0-review-4
+status:         preparing
+source commit:  null
 ```
 
-If your contribution is a finding about the current v1.0 candidate, identify that exact source commit in the issue or report.
+Review-4 findings cannot satisfy a promotion gate until the preparation snapshot is frozen to one exact source commit.
 
-A later `main` commit may contain review coordination, freeze metadata, documentation, or other maintenance work. Review evidence for `olp-v1.0-review-3` must still refer to the exact frozen source above.
+A later metadata-only commit will bind `olp-v1.0-review-4` to the immutable preparation commit after the full repository matrix passes.
 
 Earlier rounds remain historical and permanently bound to their own source:
 
@@ -25,9 +26,12 @@ olp-v1.0-review-1
 
 olp-v1.0-review-2
 d470970180bfa128ca14fd01ac920c95dd8ec288
+
+olp-v1.0-review-3
+f0dd778f09f904e334477bb1d6294f78d3d466f0
 ```
 
-Review-1 was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review-2 was superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`. Review evidence is never silently rebound from an older round to changed source.
+Review-1 was superseded after Issue #21 identified a cross-platform checkout-byte reproducibility defect. Review-2 was superseded by GHSA-x768-cq7q-w9mq and the corpus-selection defect recorded in `docs/v1-review-3-rollover.md`. Review-3 was superseded by the source-binding consistency finding recorded in `docs/v1-review-4-rollover.md`. Review evidence is never silently rebound from an older round to changed source.
 
 ## Before opening an issue
 
@@ -36,7 +40,7 @@ Please distinguish between:
 - **Public technical findings:** specification ambiguity, interoperability disagreement, deterministic-byte disagreement, conformance gaps, platform/reproducibility defects, governance contradictions, or non-sensitive implementation defects. These may be reported publicly.
 - **Security-sensitive findings:** exploitable vulnerabilities, practical attack details, secret material, or information that would materially increase exploitation risk. Do **not** publish these in a public issue; follow `SECURITY.md`.
 
-The active public technical-review tracker is Issue #34. Independent security-review coordination is Issue #35.
+The active public technical-review tracker is Issue #37. Independent security-review coordination is Issue #38.
 
 ## High-value review areas
 
@@ -56,15 +60,11 @@ External review is especially useful for:
 - conformance-corpus drift; and
 - stale review-evidence reuse during promotion.
 
-## Reproducing the frozen target
+## Reproducing the preparing target
 
-Check out the exact source:
+Until review-4 is frozen, check out the preparation branch or pull-request head. After freeze, Issues #37 and #38 will identify the exact source commit.
 
-```bash
-git checkout f0dd778f09f904e334477bb1d6294f78d3d466f0
-```
-
-The frozen source contains a root `.gitattributes` policy that forces LF working-tree bytes for textual files and excludes common binary formats from text conversion. CI also exercises a Git for Windows checkout with `core.autocrlf=true` before running exact-byte commitment checks.
+The preparing source contains a root `.gitattributes` policy that forces LF working-tree bytes for textual files and excludes common binary formats from text conversion. CI also exercises a Git for Windows checkout with `core.autocrlf=true` before running exact-byte commitment checks.
 
 Install the Python implementation and tests:
 
@@ -103,7 +103,7 @@ draft-v0.3-interoperable-v1
 62fe81b97e629deb67f01b809215f56ae9b553968b409d6f984df2399ce38afc
 ```
 
-Expected promotion state remains `BLOCKED` with internal readiness `PASS` until both required external reviews are genuinely completed for this same frozen source.
+Expected promotion state remains `BLOCKED` with internal readiness `PASS`. External review cannot complete before the target is frozen.
 
 ## Writing a useful technical finding
 
@@ -155,8 +155,8 @@ Do not silently mutate the meaning of a frozen review target.
 For the active target:
 
 ```text
-olp-v1.0-review-3
-f0dd778f09f904e334477bb1d6294f78d3d466f0
+olp-v1.0-review-4
+preparing / source commit null
 ```
 
 If a material accepted finding requires a source-changing fix:

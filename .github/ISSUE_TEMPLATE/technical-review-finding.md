@@ -11,16 +11,16 @@ assignees: ""
 Review target:
 
 ```text
-olp-v1.0-review-3
+olp-v1.0-review-4
 ```
 
 Exact source commit:
 
 ```text
-f0dd778f09f904e334477bb1d6294f78d3d466f0
+<exact frozen review-4 source commit>
 ```
 
-If you reviewed a different source, replace the values above and explain why. Findings intended to satisfy the current v1.0 public-review gate must apply to the exact frozen review-3 source.
+Findings intended to satisfy the current v1.0 public-review gate must apply to the exact frozen review-4 source published in Issue #37. While review-4 is preparing, no source can satisfy the gate.
 
 ## Finding summary
 
