@@ -1,0 +1,26 @@
+{
+  "moon_version": "0.1",
+  "service_id": "olp-protocol",
+  "name": "Open Layer Protocol",
+  "type": "protocol-specification-conformance",
+  "owner": "Moon Core",
+  "version": "0.0.6.dev0",
+  "environment": "candidate-review",
+  "capabilities": [],
+  "actions": [],
+  "dependencies": [],
+  "health": {
+    "kind": "workspace"
+  },
+  "events": {
+    "publish": [],
+    "subscribe": []
+  },
+  "knowledge_domains": [
+    "portable-verifiable-evidence",
+    "protocol-conformance",
+    "interoperability"
+  ],
+  "repository": "open-trust-layer/protocol",
+  "documentation": "README.md"
+}

@@ -12,6 +12,17 @@
 
 ---
 
+## Moon Company Awareness metadata
+
+The repository includes a root `moon.manifest.yaml` for Moon Company / Moon Core discovery.
+This file is non-normative project metadata only: it declares workspace presence and protocol
+knowledge domains, with no executable Moon capabilities, actions, endpoints, event contracts, or
+runtime-health claim.
+
+The manifest was added after the frozen `olp-v1.0-review-4` source. It does not modify that frozen
+source, rebind external review evidence, change protocol semantics or conformance commitments, or
+claim that OLP v1.0 has been released.
+
 ## What Open Layer Protocol is
 
 Open Layer Protocol (OLP) is an open protocol for portable, independently verifiable evidence between independent participants.
