@@ -12,6 +12,7 @@ from .adapters import BrokenAdapter, ReferenceAdapter
 from .commitment import build_profile_corpus_commitment
 from .manifest import load_manifest
 from .promotion import evaluate_v1_promotion
+from .review_evidence import validate_external_review_evidence
 from .reporting import render_console, write_json_report
 from .runner import ConformanceRunner
 
@@ -67,6 +68,14 @@ def build_parser() -> argparse.ArgumentParser:
     promotion.add_argument("--candidate", type=Path, default=_default_candidate())
     promotion.add_argument("--json", action="store_true")
     promotion.add_argument("--require-ready", action="store_true", help="return non-zero unless every promotion gate is READY")
+
+    evidence = sub.add_parser(
+        "review-evidence-check",
+        help="validate completed external-review evidence against the frozen target",
+    )
+    evidence.add_argument("--evidence", type=Path, required=True)
+    evidence.add_argument("--candidate", type=Path, default=_default_candidate())
+    evidence.add_argument("--json", action="store_true")
     return parser
 
 
@@ -85,6 +94,20 @@ def main(argv: list[str] | None = None) -> int:
             print(f"cases: {len(commitment.case_ids)}")
             print(f"files: {len(commitment.files)}")
             print(f"sha-256: {commitment.digest_hex}")
+        return 0
+
+    if args.command == "review-evidence-check":
+        result = validate_external_review_evidence(args.evidence, args.candidate)
+        payload = result.as_dict()
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(f"gate: {result.gate}")
+            print(f"review target: {result.review_target_id}")
+            print(f"reviewed commit: {result.reviewed_commit}")
+            print(f"reviewer: {result.reviewer_name} ({result.reviewer_organization})")
+            print(f"durable references: {len(result.references)}")
+            print("evidence status: VALID")
         return 0
 
     if args.command == "promotion-check":

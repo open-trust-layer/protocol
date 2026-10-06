@@ -31,3 +31,42 @@ def test_cli_list_json(capsys):
     payload = json.loads(capsys.readouterr().out)
     assert 'core-v1' in payload['profiles']
     assert any(case['id'] == 'proof.input.spec-vector.001' for case in payload['cases'])
+
+
+def test_cli_review_evidence_check_json(tmp_path, capsys):
+    evidence = tmp_path / 'review.json'
+    evidence.write_text(json.dumps({
+        'schema': 'olp-external-review-evidence-v1',
+        'version': 1,
+        'gate': 'public_technical_review',
+        'review_target': {
+            'id': 'olp-v1.0-review-4',
+            'source_commit': 'c293c5524318b342149a80c3e0322e29742f44f7',
+        },
+        'reviewer': {
+            'name': 'External Reviewer',
+            'organization': 'Review Lab',
+            'independence_statement': '',
+        },
+        'methodology': ['specification review'],
+        'scope': ['review-4 frozen source'],
+        'findings': [],
+        'excluded_areas': [],
+        'residual_risks': [],
+        'references': ['https://example.org/review/olp-review-4'],
+        'completed': True,
+    }), encoding='utf-8')
+
+    assert main([
+        'review-evidence-check',
+        '--candidate', 'stabilization/v1.0-candidate.json',
+        '--evidence', str(evidence),
+        '--json',
+    ]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload['status'] == 'valid'
+    assert payload['candidate_gate_payload'] == {
+        'status': 'completed',
+        'reviewed_commit': 'c293c5524318b342149a80c3e0322e29742f44f7',
+        'references': ['https://example.org/review/olp-review-4'],
+    }

@@ -42,6 +42,10 @@ Please distinguish between:
 
 The active public technical-review tracker is Issue #37. Independent security-review coordination is Issue #38.
 
+Reviewers who have completed a review may use the post-freeze evidence intake format described in
+`docs/v1-external-review-evidence-intake.md`. The validator checks exact source binding and evidence shape
+but does not mark a gate complete or modify the frozen target.
+
 ## High-value review areas
 
 External review is especially useful for:
