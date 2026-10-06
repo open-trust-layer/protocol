@@ -12,6 +12,11 @@ Review-2 had earlier superseded review-1, whose source did not enforce determini
 
 Public review is coordinated in Issue #37. Independent external security review is coordinated in Issue #38. Neither tracker by itself satisfies a promotion gate.
 
+Post-freeze coordination tooling on later `main` includes `docs/v1-external-review-evidence-intake.md`
+and `olp-conformance review-evidence-check`. That tooling is not part of the frozen review-4 source and
+does not change or rebind the target; it only validates reviewer evidence against the frozen ID/SHA before
+a maintainer considers updating promotion metadata.
+
 ## Candidate and promotion state
 
 - `stabilization/v1.0-candidate.json`

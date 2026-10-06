@@ -93,3 +93,12 @@ def test_checked_in_review_register_is_pinned_to_draft_v03_baseline():
     assert review["baseline_commit"] == "5acc4b8934305a5215379c480db32bd0fd22f3ae"
     assert review["findings"]
     assert all(item["status"] == "resolved" for item in review["findings"])
+
+
+def test_external_review_evidence_schema_is_strict_and_source_bound():
+    schema = _load(SCHEMAS / "v1-external-review-evidence.schema.json")
+    assert schema["properties"]["schema"]["const"] == "olp-external-review-evidence-v1"
+    assert schema["properties"]["completed"] == {"const": True}
+    assert schema["properties"]["review_target"]["required"] == ["id", "source_commit"]
+    assert schema["properties"]["references"]["minItems"] == 1
+    assert schema["additionalProperties"] is False
