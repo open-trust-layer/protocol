@@ -22,6 +22,7 @@ def test_moon_awareness_manifest_is_metadata_only() -> None:
     assert manifest["actions"] == []
     assert manifest["dependencies"] == []
     assert manifest["health"] == {"kind": "workspace"}
+    assert manifest["runtime"] == {"applicable": False}
     assert manifest["events"] == {"publish": [], "subscribe": []}
     assert "endpoints" not in manifest
     assert "permissions" not in manifest
