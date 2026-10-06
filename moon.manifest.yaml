@@ -12,6 +12,9 @@
   "health": {
     "kind": "workspace"
   },
+  "runtime": {
+    "applicable": false
+  },
   "events": {
     "publish": [],
     "subscribe": []
